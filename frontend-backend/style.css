@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navigacio {
+    position: fixed;          
+    top: 0;
+    left: 0;
+    width: 220px;           
+    height: 100vh;            
+    background: #00a8b5;     
+    color: white;
+    display: flex;
+    flex-direction: column;  
+    align-items: center;
+    padding-top: 40px;
+}
+
+.navigacio p {
+    margin: 20px 0;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.navigacio p:hover {
+    color: #e0e0e0;        
+}
+
+
+main {
+    margin-left: 220px;
+    padding: 20px;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navigacio {
+    position: fixed;         
+    top: 0;
+    left: 0;
+    width: 220px;            
+    height: 100vh;           
+    background: burlywood;      
+    color: white;
+    display: flex;
+    justify-content: center;   
+    align-items: center;  
+}
+
+.navigacio p {
+    margin: 20px 0;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.navigacio p:hover {
+    color: #e0e0e0;           
+}
+
+
+main {
+    margin-left: 10px;       
+    padding: 10px;
+}
+
+
+img{
+  height: 200px;
+}
+
+h1{
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* nav{
+  position: fixed;
+  inset: 2rem 3rem auto;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(0.5rem, 2.5vw, 3rem);
+  background-color: #00a8b5;
+  border-radius: 0.5rem;
+} */
+
+nav a{
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  font-weight: 500;
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+nav a:hover, nav a:focus-visible{
+  color: white;
+}
+
+section{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+
+/* !!!!!!!!!!!!!! az oldal bal oldalata csinaljam meg responzivra !!!!!!!!!!!!!!! */
