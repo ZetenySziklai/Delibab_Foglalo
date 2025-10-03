@@ -4,19 +4,16 @@ exports.getData = (req,res,next) =>
     res.status(200).json({ uzenet: "ajnsdkngfsklfdgkfgkljgfkjfgskjfdgklfdgkjfdhkj" });
 };
 
-//npm install mysql2
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",       
-//   password: "",     
-//   database: "etterem" 
-// });
 
-// exports.getData = (req, res) => {
-//   db.query("SELECT * FROM restaurants", (err, results) => {
-//     if (err) {
-//       return res.status(500).json({ error: "Adatbázis hiba" });
-//     }
-//     res.json(results); 
-//   });
-// };
+
+const db = require("../config/db");
+
+exports.getAdatB = async (req, res, next) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM foglaló");
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Adatbázis lekérdezési hiba" });
+  }
+};
