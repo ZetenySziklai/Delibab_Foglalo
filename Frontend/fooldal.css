@@ -39,7 +39,6 @@
   }
 
   nav a{
-    font-size: clamp(0.875rem, 2.5vw, 1rem);
     font-weight: 500;
     color: white;
     text-decoration: none;
@@ -83,6 +82,7 @@
     padding-left: 100px;
     text-align: center;     
     z-index: -1; 
+    
   }
   #gasztronomia::before {
   content: "";
@@ -104,6 +104,7 @@
 
   #gasztronomia h1 {
   margin-bottom: 20px;
+  border-bottom: 2px solid #734f20;
   }
 
   #gasztronomia p {
@@ -115,5 +116,53 @@
     background-image: url("../Képek/kapcsolat_bg.jpg");
     color: white;
   }
+  /* Centered blurred contact box like Türkiz Restaurant */
+#kapcsolat {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("../Képek/kapcsolat_bg.jpg");
+}
+
+.contact-container {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  text-align: center;
+  padding: 50px 50px;
+  border-radius: 20px;
+  max-width: 700px;
+
+}
+
+.contact-container h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #734f20;
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+.contact-container p {
+  line-height: 1.6;
+  margin: 10px;
+}
+
+
+
+.btn {
+  background-color:  #734f20;
+  color: white;
+  text-decoration: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+.btn:hover {
+  background-color: #593700;
+}
+
 
   /* !!!!!!!!!!!!!! az oldal bal oldalata csinaljam meg responzivra !!!!!!!!!!!!!!! */
