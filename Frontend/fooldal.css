@@ -67,57 +67,67 @@
     align-items: center;
   }
 
-  #menu{
-    background-image: url("../Képek/menu_bg.jpg");
-    background-size: cover; 
-    color: white;  
-  }
-  #gasztronomia {
-    position: relative;
-    display: flex;
-    flex-direction: column; 
-    justify-content: center;  
-    align-items: center; 
-    padding: 40px;
-    padding-left: 100px;
-    text-align: center;     
-    z-index: -1; 
+
+  #menu {  
+  background-image: url("../Képek/menu_bg.jpg");
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: url("../Képek/menu_bg.jpg");
     
   }
-  #gasztronomia::before {
+
+
+
+
+ #gasztronomia {
+  position: relative;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;  
+  align-items: center; 
+  padding: 40px 100px;
+  text-align: center;     
+  overflow: hidden;
+  z-index: -1; 
+}
+
+#gasztronomia::before {
   content: "";
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: url("../Képek/gasztronomia_bg.jpg") ;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../Képek/gasztronomia_bg.jpg") center/cover no-repeat;
   filter: blur(8px);
-  transform: scale(1.1); 
-  z-index: -1; 
-  }
+  transform: scale(1.1);
+  z-index: -1;
+}
 
-  #gasztronomia h1,
-  #gasztronomia p {
+#gasztronomia h1,
+#gasztronomia p {
   position: relative;
-  z-index: 1; 
+  z-index: 1;
   color: white;
-  }
+}
 
-  #gasztronomia h1 {
+#gasztronomia h1 {
   margin-bottom: 20px;
   border-bottom: 2px solid #734f20;
-  }
+}
 
-  #gasztronomia p {
+#gasztronomia p {
   font-size: 1.1rem;
   line-height: 1.6;
   max-width: 800px;
-  }
-  #kapcsolat{
-    background-image: url("../Képek/kapcsolat_bg.jpg");
-    color: white;
-  }
-  /* Centered blurred contact box like Türkiz Restaurant */
+}
+
+
 #kapcsolat {
+   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -147,7 +157,6 @@
   line-height: 1.6;
   margin: 10px;
 }
-
 
 
 .btn {
