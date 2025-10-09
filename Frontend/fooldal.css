@@ -13,13 +13,41 @@
       padding: 20px;
   }
 
+  h1  {
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background:  #734f20;
+  border-radius: 20px; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(65, 37, 0);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #332100; 
+}
+
+/* navigáció */
   .navigacio {
       position: fixed;          
       top: 0;
       left: 0;
       width: 220px;           
       height: 100vh;            
-      background: burlywood;     
+      background: rgb(65, 37, 0);     
       color: white;
       display: flex;
       flex-direction: column;  
@@ -29,9 +57,7 @@
 
   .navigacio p {
       margin: 50px 0;
-      font-size: 18px;
-      cursor: pointer;
-      transition: color 0.3s;
+      font-size: 18px;  
   }
 
   .navigacio p:hover {
@@ -42,23 +68,16 @@
     font-weight: 500;
     color: white;
     text-decoration: none;
-    transition: color 0.3s ease;
   }
 
   nav a:hover, nav a:focus-visible{
     color: white;
   }
 
-  img{
+  .ikon{
     height: 200px;
   }
 
-  h1{
-    font-size: 2.5rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
 
   section{
     height: 100vh;
@@ -67,20 +86,19 @@
     align-items: center;
   }
 
-
+/* menü */
   #menu {  
-  background-image: url("../Képek/menu_bg.jpg");
+  background: url("../Képek/menu_bg.jpg");
   color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: url("../Képek/menu_bg.jpg");
     
   }
 
 
-
+/* gasztronómia */
 
  #gasztronomia {
   position: relative;
@@ -95,14 +113,14 @@
 }
 
 #gasztronomia::before {
+  background: url("../Képek/gasztronomia_bg.jpg") ;
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: url("../Képek/gasztronomia_bg.jpg") center/cover no-repeat;
-  filter: blur(8px);
+  filter: blur(3px);
   transform: scale(1.1);
   z-index: -1;
 }
@@ -125,17 +143,21 @@
   max-width: 800px;
 }
 
-
+/* kapcsolat */
 #kapcsolat {
-   color: white;
+  background: url("../Képek/kapcsolat_bg.jpg");
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background: url("../Képek/kapcsolat_bg.jpg");
+  background-repeat: no-repeat;
+  
+  
 }
 
-.contact-container {
+/* containerek */
+.container {
   background: rgba(0, 0, 0, 0.75);
   color: white;
   text-align: center;
@@ -145,7 +167,7 @@
 
 }
 
-.contact-container h1 {
+.container h1 {
   font-size: 2em;
   margin-bottom: 20px;
   border-bottom: 2px solid #734f20;
@@ -158,7 +180,7 @@
   margin: 10px;
 }
 
-
+/* button */
 .btn {
   background-color:  #734f20;
   color: white;
@@ -172,6 +194,3 @@
 .btn:hover {
   background-color: #593700;
 }
-
-
-  /* !!!!!!!!!!!!!! az oldal bal oldalata csinaljam meg responzivra !!!!!!!!!!!!!!! */
