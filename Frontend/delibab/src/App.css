@@ -1,0 +1,241 @@
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+  }
+
+  main {
+      margin-left: 220px;
+      padding: 20px;
+  }
+
+  h1  {
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background:  #734f20;
+  border-radius: 20px; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(65, 37, 0);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #332100; 
+}
+
+/* navigáció */
+  .navigacio {
+      position: fixed;          
+      top: 0;
+      left: 0;
+      width: 220px;           
+      height: 100vh;            
+      background: rgb(65, 37, 0);     
+      color: white;
+      display: flex;
+      flex-direction: column;  
+      align-items: center;
+      padding-top: 250px;
+  }
+
+  .navigacio p {
+      margin: 50px 0;
+      font-size: 18px;  
+  }
+
+  .navigacio p:hover {
+      color: #e0e0e0;        
+  }
+
+  nav a{
+    font-weight: 500;
+    color: white;
+    text-decoration: none;
+  }
+
+  nav a:hover, nav a:focus-visible{
+    color: white;
+  }
+
+  .ikon{
+    height: 200px;
+  }
+
+
+  section{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+/* menü */
+  #menu {  
+  background: url("/kepek/menu_bg.jpg");
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+    
+  }
+
+
+/* gasztronómia */
+
+ #gasztronomia {
+  position: relative;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;  
+  align-items: center; 
+  padding: 40px 100px;
+  text-align: center;     
+  overflow: hidden;
+  z-index: -1; 
+}
+
+#gasztronomia::before {
+  background: url("/kepek/gasztronomia_bg.jpg") ;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(3px);
+  transform: scale(1.1);
+  z-index: -1;
+}
+
+#gasztronomia h1,
+#gasztronomia p {
+  position: relative;
+  z-index: 1;
+  color: white;
+}
+
+#gasztronomia h1 {
+  margin-bottom: 20px;
+  border-bottom: 2px solid #734f20;
+}
+
+#gasztronomia p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 800px;
+}
+
+/* kapcsolat */
+#kapcsolat {
+  background: url("/kepek/kapcsolat_bg.jpg");
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-repeat: no-repeat;
+  
+  
+}
+
+/* containerek */
+.container {
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  text-align: center;
+  padding: 50px 50px;
+  border-radius: 20px;
+  max-width: 700px;
+
+}
+
+.container h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #734f20;
+  display: inline-block;
+  padding-bottom: 10px;
+}
+
+.contact-container p {
+  line-height: 1.6;
+  margin: 10px;
+}
+
+/* button */
+.btn {
+  background-color:  #734f20;
+  color: white;
+  text-decoration: none;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+.btn:hover {
+  background-color: #593700;
+}
+
+
+
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+} */
