@@ -31,27 +31,6 @@ const db = {
   }
 })();
 
-//-------
-
-
-// (async () =>{
-//     try {
-//     await sequelize.authenticate();
-//     console.log('Adatbázis kapcsolat sikeresen létrejött.');
-//     }
-//     catch (error) {
-//     console.error('Nem sikerült csatlakozni az adatbázishoz:', error);
-//     throw error;
-//   }
-// })();
-
-
-
-
-//---------
-
-
-
 
 
 module.exports = db;

@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Tábla szerkezet ehhez a táblához `foglaló`
 --
 
+//foglalas legyen, tobb a tobbhoz legyen (user-asztal kozt) vagy egy a tobbhoz
 CREATE TABLE `foglaló` (
   `vezetéknév` varchar(255) NOT NULL,
   `keresztnév` varchar(255) NOT NULL,
@@ -45,6 +46,7 @@ CREATE TABLE `foglaló` (
 -- Tábla szerkezet ehhez a táblához `időpont`
 --
 
+//faszsag
 CREATE TABLE `időpont` (
   `foglalás_nap_idő` datetime NOT NULL,
   `időpont_id` int(255) NOT NULL
@@ -56,6 +58,7 @@ CREATE TABLE `időpont` (
 -- Tábla szerkezet ehhez a táblához `vendégek_száma`
 --
 
+//ez csere user, asztal, megjegyzes, foglalo, social ossze koto( pl googleal jelentkezik be, szemelyzet)
 CREATE TABLE `vendégek_száma` (
   `felnőtt` int(11) NOT NULL,
   `gyerek` int(11) NOT NULL,
@@ -68,6 +71,7 @@ CREATE TABLE `vendégek_száma` (
 -- Tábla szerkezet ehhez a táblához `étkezés_típusa`
 --
 
+// ezt esweetleg tovabb okoskodni
 CREATE TABLE `étkezés_típusa` (
   `reggeli` tinyint(1) NOT NULL,
   `ebéd` tinyint(1) NOT NULL,
