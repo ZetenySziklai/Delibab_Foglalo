@@ -6,6 +6,7 @@
   body {
       margin: 0;
       font-family: Arial, sans-serif;
+    overflow-x: hidden;
   }
 
   main {
@@ -40,29 +41,6 @@
   background: #332100; 
 }
 
-/* navigáció */
-  .navigacio {
-      position: fixed;          
-      top: 0;
-      left: 0;
-      width: 220px;           
-      height: 100vh;            
-      background: rgb(65, 37, 0);     
-      color: white;
-      display: flex;
-      flex-direction: column;  
-      align-items: center;
-      padding-top: 250px;
-  }
-
-  .navigacio p {
-      margin: 50px 0;
-      font-size: 18px;  
-  }
-
-  .navigacio p:hover {
-      color: #e0e0e0;        
-  }
 
   nav a{
     font-weight: 500;
@@ -79,11 +57,13 @@
   }
 
 
+  /* use min-height so sections can grow on small screens and don't force overflow */
   section{
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-sizing: border-box;
   }
 
 /* menü */
@@ -94,6 +74,9 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
     
   }
 
@@ -123,6 +106,9 @@
   filter: blur(3px);
   transform: scale(1.1);
   z-index: -1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 #gasztronomia h1,
@@ -150,8 +136,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   
   
 }
@@ -194,6 +182,43 @@
 .btn:hover {
   background-color: #593700;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* navigáció */
+  /* .navigacio {
+      position: fixed;          
+      top: 0;
+      left: 0;
+      width: 220px;           
+      height: 100vh;            
+      background: rgb(65, 37, 0);     
+      color: white;
+      display: flex;
+      flex-direction: column;  
+      align-items: center;
+      padding-top: 250px;
+  }
+
+  .navigacio p {
+      margin: 50px 0;
+      font-size: 18px;  
+  }
+
+  .navigacio p:hover {
+      color: #e0e0e0;        
+  } */
+
 
 
 
