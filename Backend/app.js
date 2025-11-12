@@ -9,16 +9,25 @@ app.use(cors()); //talan kell csere
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-const idopontRoutes = require("./api/routes/idopontRoutes");
-const foglaloRoutes = require("./api/routes/foglaloRoutes");
-const vendegszamaRoutes = require("./api/routes/vendegekszamaRoutes"); 
-const etkezestipusaRoutes = require("./api/routes/etkezestipusaRoutes")
+
+const userRoutes = require("./api/routes/userRoutes");
+const asztalRoutes = require("./api/routes/asztalRoutes");
+const foglalasRoutes = require("./api/routes/foglalasRoutes");
+const allergenRoutes = require("./api/routes/allergenRoutes");
+const allergeninfoRoutes = require("./api/routes/allergeninfoRoutes");
+const megjegyzesRoutes = require("./api/routes/megjegyzesRoutes");
+const asztalAllapotRoutes = require("./api/routes/asztalAllapotRoutes");
+const etkezesTipusaRoutes = require("./api/routes/etkezesTipusaRoutes");
 
 app.use("/api", api);
-api.use("/idopontok", idopontRoutes)
-api.use("/foglalo", foglaloRoutes)
-api.use("/vendegekszama", vendegszamaRoutes)
-api.use("/etkezestipusa", etkezestipusaRoutes)
+api.use("/users", userRoutes);
+api.use("/asztalok", asztalRoutes);
+api.use("/foglalasok", foglalasRoutes);
+api.use("/allergenek", allergenRoutes);
+api.use("/allergeninfok", allergeninfoRoutes);
+api.use("/megjegyzesek", megjegyzesRoutes);
+api.use("/asztal-allapotok", asztalAllapotRoutes);
+api.use("/etkezes-tipusok", etkezesTipusaRoutes);
 
 
 

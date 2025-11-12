@@ -1,73 +1,44 @@
 class EtkezesTipusaService {
     constructor(db){
-        this.etkezestipusaRepository = require("../repositories")(db).etkezestipusaRepository;
+        this.etkezesTipusaRepository = require("../repositories")(db).etkezesTipusaRepository;
     }
     
     async getEtkezesTipusa(){
-        return await this.etkezestipusaRepository.getEtkezesTipusa();
+        return await this.etkezesTipusaRepository.getEtkezesTipusa();
     }
 
     async getEtkezesTipusaById(id){
-        if (!id || isNaN(id)) {
-            throw new Error("Érvényes ID-t adjon meg");
-        }
-        return await this.etkezestipusaRepository.getEtkezesTipusaById(id);
+        return await this.etkezesTipusaRepository.getEtkezesTipusaById(id);
     }
 
-    async getEtkezesTipusaByType(type){
-        const validTypes = ['reggeli', 'ebed', 'vacsora'];
-        if (!validTypes.includes(type)) {
-            throw new Error("Érvényes étkezés típust adjon meg: reggeli, ebed, vacsora");
-        }
-        return await this.etkezestipusaRepository.getEtkezesTipusaByType(type);
-    }
-
-    async getEtkezesTipusaByMealCount(count){
-        if (count < 0 || count > 3 || isNaN(count)) {
-            throw new Error("Érvényes étkezés számot adjon meg (0-3 között)");
-        }
-        return await this.etkezestipusaRepository.getEtkezesTipusaByMealCount(count);
-    }
-    
     async createEtkezesTipusa(data){
-        if (!data.reggeli && !data.ebed && !data.vacsora) {
-            throw new Error("Legalább egy étkezés típust ki kell választani");
-        }
-        
-        if (data.reggeli !== 0 && data.reggeli !== 1 && data.reggeli !== undefined) {
-            throw new Error("Reggeli értéke 0 vagy 1 lehet");
-        }
-        
-        if (data.ebed !== 0 && data.ebed !== 1 && data.ebed !== undefined) {
-            throw new Error("Ebéd értéke 0 vagy 1 lehet");
-        }
-        
-        if (data.vacsora !== 0 && data.vacsora !== 1 && data.vacsora !== undefined) {
-            throw new Error("Vacsora értéke 0 vagy 1 lehet");
+        if (!data.nev) {
+            throw new Error("Étkezés típus név kötelező");
         }
 
-        return await this.etkezestipusaRepository.createEtkezesTipusa(data);
+        // Név nem lehet üres
+        if (!data.nev.trim()) {
+            throw new Error("Az étkezés típus név nem lehet üres");
+        }
+
+        // Név hossz ellenőrzése (max 50 karakter)
+        if (data.nev.length > 50) {
+            throw new Error("Az étkezés típus név maximum 50 karakter lehet");
+        }
+
+        return await this.etkezesTipusaRepository.createEtkezesTipusa(data);
     }
 
     async updateEtkezesTipusa(id, data){
-        if (!id || isNaN(id)) {
-            throw new Error("Érvényes ID-t adjon meg");
-        }
-        
-        if (data.reggeli !== undefined && data.reggeli !== 0 && data.reggeli !== 1) {
-            throw new Error("Reggeli értéke 0 vagy 1 lehet");
-        }
-        
-        if (data.ebed !== undefined && data.ebed !== 0 && data.ebed !== 1) {
-            throw new Error("Ebéd értéke 0 vagy 1 lehet");
-        }
-        
-        if (data.vacsora !== undefined && data.vacsora !== 0 && data.vacsora !== 1) {
-            throw new Error("Vacsora értéke 0 vagy 1 lehet");
-        }
+        return await this.etkezesTipusaRepository.updateEtkezesTipusa(id, data);
+    }
 
-        return await this.etkezestipusaRepository.updateEtkezesTipusa(id, data);
+    async deleteEtkezesTipusa(id){
+        return await this.etkezesTipusaRepository.deleteEtkezesTipusa(id);
     }
 }
 
 module.exports = EtkezesTipusaService;
+
+
+

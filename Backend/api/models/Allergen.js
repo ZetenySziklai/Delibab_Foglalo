@@ -1,9 +1,9 @@
 const {Model, DataTypes} = require("sequelize");
 
 module.exports = (sequelize) => {
-    class EtkezesTipusa extends Model {};
+    class Allergen extends Model {};
 
-    EtkezesTipusa.init(
+    Allergen.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -18,14 +18,14 @@ module.exports = (sequelize) => {
         },
         {
             sequelize,
-            modelName: "EtkezesTipusa",
-            tableName: "etkezes_tipusa",
+            modelName: "Allergen",
+            tableName: "allergen",
             createdAt: false,
             updatedAt: false,
             freezeTableName: true,
         }
     );
-    return EtkezesTipusa;
+    return Allergen;
 }
 
 

@@ -1,21 +1,31 @@
-const IdopontService = require("./IdopontService");
-const FoglaloService = require("./FoglaloService");
-const VendegekSzamaService = require("./VendegekSzamaService")
-const EtkezesTipusaService = require("./EtkezesTipusaService")
-
-
+const UserService = require("./UserService");
+const AsztalService = require("./AsztalService");
+const FoglalasService = require("./FoglalasService");
+const AllergenService = require("./AllergenService");
+const AllergeninfoService = require("./AllergeninfoService");
+const MegjegyzesService = require("./MegjegyzesService");
+const AsztalAllapotService = require("./AsztalAllapotService");
+const EtkezesTipusaService = require("./EtkezesTipusaService");
 
 module.exports = (db) => {
-    const idopontService = new IdopontService(db);
-    const foglaloService = new FoglaloService(db);
-    const vendegekszamaService = new VendegekSzamaService(db);
-    const etkezestipusaService = new EtkezesTipusaService(db);
+    const userService = new UserService(db);
+    const asztalService = new AsztalService(db);
+    const foglalasService = new FoglalasService(db);
+    const allergenService = new AllergenService(db);
+    const allergeninfoService = new AllergeninfoService(db);
+    const megjegyzesService = new MegjegyzesService(db);
+    const asztalAllapotService = new AsztalAllapotService(db);
+    const etkezesTipusaService = new EtkezesTipusaService(db);
 
     return {
-        idopontService,
-        foglaloService,
-        vendegekszamaService, 
-        etkezestipusaService,
+        userService,
+        asztalService,
+        foglalasService,
+        allergenService,
+        allergeninfoService,
+        megjegyzesService,
+        asztalAllapotService,
+        etkezesTipusaService
     };
 }
 

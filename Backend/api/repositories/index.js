@@ -1,21 +1,30 @@
-const IdopontRepository = require("./IdopontRepository");
-const FoglaloRepository = require("./FoglaloRepository");
-const VendegekSzamaRepository = require("./VendegekSzamaRepository")
-const EtkezesTipusaRepository = require("./EtkezesTipusaRepository")
-
+const UserRepository = require("./UserRepository");
+const AsztalRepository = require("./AsztalRepository");
+const FoglalasRepository = require("./FoglalasRepository");
+const AllergenRepository = require("./AllergenRepository");
+const AllergeninfoRepository = require("./AllergeninfoRepository");
+const MegjegyzesRepository = require("./MegjegyzesRepository");
+const AsztalAllapotRepository = require("./AsztalAllapotRepository");
+const EtkezesTipusaRepository = require("./EtkezesTipusaRepository");
 
 module.exports = (db) =>{
-    const idopontRepository = new IdopontRepository(db);
-    const foglaloRepository = new FoglaloRepository(db);
-    const vendegekSzamaRepository = new VendegekSzamaRepository(db);
-    const etkezestipusaRepository = new EtkezesTipusaRepository(db);
-
-
+    const userRepository = new UserRepository(db);
+    const asztalRepository = new AsztalRepository(db);
+    const foglalasRepository = new FoglalasRepository(db);
+    const allergenRepository = new AllergenRepository(db);
+    const allergeninfoRepository = new AllergeninfoRepository(db);
+    const megjegyzesRepository = new MegjegyzesRepository(db);
+    const asztalAllapotRepository = new AsztalAllapotRepository(db);
+    const etkezesTipusaRepository = new EtkezesTipusaRepository(db);
 
     return {
-        idopontRepository,
-        foglaloRepository, 
-        vendegekSzamaRepository, 
-        etkezestipusaRepository,
+        userRepository,
+        asztalRepository,
+        foglalasRepository,
+        allergenRepository,
+        allergeninfoRepository,
+        megjegyzesRepository,
+        asztalAllapotRepository,
+        etkezesTipusaRepository
     };
 }

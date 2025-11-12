@@ -1,9 +1,9 @@
 const db = require("../db");
-const {etkezestipusaService} = require("../services")(db);
+const {etkezesTipusaService} = require("../services")(db);
 
 exports.getEtkezesTipusa = async(req,res,next) =>{
   try {
-    res.status(200).json(await etkezestipusaService.getEtkezesTipusa());
+    res.status(200).json(await etkezesTipusaService.getEtkezesTipusa());
   } catch (error) {
     next(error);
   }
@@ -12,21 +12,11 @@ exports.getEtkezesTipusa = async(req,res,next) =>{
 exports.getEtkezesTipusaById = async(req,res,next) =>{
   try {
     const { id } = req.params;
-    const etkezes = await etkezestipusaService.getEtkezesTipusaById(id);
-    if(!etkezes){
+    const etkezesTipusa = await etkezesTipusaService.getEtkezesTipusaById(id);
+    if(!etkezesTipusa){
       return res.status(404).json({message: "Étkezés típusa nem található"});
     }
-    res.status(200).json(etkezes);
-  } catch (error) {
-    next(error);
-  }
-}
-
-exports.getEtkezesTipusaByType = async(req,res,next) =>{
-  try {
-    const { type } = req.params;
-    const etkezesek = await etkezestipusaService.getEtkezesTipusaByType(type);
-    res.status(200).json(etkezesek);
+    res.status(200).json(etkezesTipusa);
   } catch (error) {
     next(error);
   }
@@ -34,7 +24,7 @@ exports.getEtkezesTipusaByType = async(req,res,next) =>{
 
 exports.createEtkezesTipusa = async(req,res,next) =>{
   try{
-    const created = await etkezestipusaService.createEtkezesTipusa(req.body);
+    const created = await etkezesTipusaService.createEtkezesTipusa(req.body);
     res.status(201).json(created);
   }catch(error){
     next(error);
@@ -44,9 +34,9 @@ exports.createEtkezesTipusa = async(req,res,next) =>{
 exports.updateEtkezesTipusa = async(req,res,next) =>{
   try{
     const { id } = req.params;
-    const updated = await etkezestipusaService.updateEtkezesTipusa(id, req.body);
+    const updated = await etkezesTipusaService.updateEtkezesTipusa(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Nem talalhato"});
+      return res.status(404).json({message: "Étkezés típusa nem található"});
     }
     res.status(200).json(updated);
   }catch(error){
@@ -57,7 +47,7 @@ exports.updateEtkezesTipusa = async(req,res,next) =>{
 exports.deleteEtkezesTipusa = async(req,res,next) =>{
   try{
     const { id } = req.params;
-    const deleted = await etkezestipusaService.deleteEtkezesTipusa(id);
+    const deleted = await etkezesTipusaService.deleteEtkezesTipusa(id);
     if(!deleted){
       return res.status(404).json({message: "Étkezés típusa nem található"});
     }
@@ -67,48 +57,4 @@ exports.deleteEtkezesTipusa = async(req,res,next) =>{
   }
 }
 
-exports.getEtkezesTipusaStatistics = async(req,res,next) =>{
-  try {
-    const result = await etkezestipusaService.getEtkezesTipusaStatistics();
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-}
 
-exports.getEtkezesTipusaWithFoglalok = async(req,res,next) =>{
-  try {
-    const result = await etkezestipusaService.getEtkezesTipusaWithFoglalok();
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-}
-
-exports.getEtkezesTipusaByTimeSlot = async(req,res,next) =>{
-  try {
-    const result = await etkezestipusaService.getEtkezesTipusaByTimeSlot();
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-}
-
-exports.getMostPopularEtkezesCombinations = async(req,res,next) =>{
-  try {
-    const { limit } = req.query;
-    const result = await etkezestipusaService.getMostPopularEtkezesCombinations(limit);
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-}
-
-exports.getEtkezesTipusaWithVendegekSzama = async(req,res,next) =>{
-  try {
-    const result = await etkezestipusaService.getEtkezesTipusaWithVendegekSzama();
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-}

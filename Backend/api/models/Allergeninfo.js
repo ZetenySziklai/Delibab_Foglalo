@@ -1,9 +1,9 @@
 const {Model, DataTypes} = require("sequelize");
 
 module.exports = (sequelize) => {
-    class EtkezesTipusa extends Model {};
+    class Allergeninfo extends Model {};
 
-    EtkezesTipusa.init(
+    Allergeninfo.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -11,21 +11,25 @@ module.exports = (sequelize) => {
                 autoIncrement: true,
                 allowNull: false
             },
-            nev: {
-                type: DataTypes.STRING(50),
+            allergen_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            foglalas_id: {
+                type: DataTypes.INTEGER,
                 allowNull: false
             }
         },
         {
             sequelize,
-            modelName: "EtkezesTipusa",
-            tableName: "etkezes_tipusa",
+            modelName: "Allergeninfo",
+            tableName: "allergeninfo",
             createdAt: false,
             updatedAt: false,
             freezeTableName: true,
         }
     );
-    return EtkezesTipusa;
+    return Allergeninfo;
 }
 
 
