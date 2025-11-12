@@ -1,0 +1,2 @@
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdatokLekerese\obj\Debug\AdatokElerese.csproj.AssemblyReference.cache
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdatokLekerese\obj\Debug\AdatokElerese.csproj.CoreCompileInputs.cache

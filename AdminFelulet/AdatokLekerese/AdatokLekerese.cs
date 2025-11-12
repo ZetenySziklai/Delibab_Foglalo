@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+
+
 namespace AdatokLekerese
 {
-    class AdatokLekerese
+    public class AdatokLekerese
     {
-        static List<AdatokFeldolgozasa> adatok = new List<AdatokFeldolgozasa>();
+        static public List<AdatokFeldolgozasa> adatok = new List<AdatokFeldolgozasa>();
         static void Main(string[] args)
         {
             Fajlbeolvasas();
         }
-        private static void Fajlbeolvasas()
+        public static void Fajlbeolvasas()
         {
             StreamReader f = new StreamReader("teszt_adatok");
             f.ReadLine();
@@ -23,8 +25,8 @@ namespace AdatokLekerese
                 adatok.Add(s);
             }
             f.Close();
-        }   
-        private void FoglalasValtoztatas()
+        }
+        public void FoglalasValtoztatas()
         {
             for(int i = 0; i < adatok.Count; i++)
             {
@@ -34,7 +36,7 @@ namespace AdatokLekerese
                 }
             }
         }
-        private bool Eldontes(bool adat)
+        public bool Eldontes(bool adat)
         {
             if (adat == false)
             {

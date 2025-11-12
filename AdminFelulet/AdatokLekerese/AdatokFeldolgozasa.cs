@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace AdatokLekerese
 {
-    class AdatokFeldolgozasa
+    public class AdatokFeldolgozasa
     {
         public string ido;
         public List<bool> asztal;
 
         public AdatokFeldolgozasa(string sor)
         {
+            
             string[] adatok = sor.Split(';');
             ido = adatok[0];
             for(int i = 1; i < adatok.Length; i++)

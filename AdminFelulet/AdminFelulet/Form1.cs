@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace AdminFelulet
@@ -48,6 +50,33 @@ namespace AdminFelulet
                 }
             }
         }
-        
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            getData();
+        }
+
+        public void getData()
+        {
+            string kapcsolat = "server=localhost;uid=root,pwd=root;database=asztalfoglalas;";
+            MySqlConnection kap = new MySqlConnection(kapcsolat);
+            kap.Open();
+            string query = @"SELECT 
+                    a.id AS asztal_id,
+                    a.foglalt,
+                    u.nev AS felhasznalo_nev,
+                    u.email,
+                    asztal.szam AS asztal_szam,
+                    asztal.helyek
+                 FROM asztalallapot a
+                 INNER JOIN User u ON a.user_id = u.id
+                 INNER JOIN Asztal asztal ON a.asztal_id = asztal.id
+                 WHERE a.foglalt = true";
+            MySqlCommand cmd = new MySqlCommand(query, kap);
+            MySqlDataReader dr = cmd.ExecuteReader();
+            DataTable dt = new DataTable();
+            dt.Load(dr);
+            dataGridView1.DataSource = dt;
+        }
     }
 }
