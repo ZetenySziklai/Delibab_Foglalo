@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Foglalás — Délibáb</title>
+    <style>
+      body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 24px; background: #fafafa; color: #222 }
+      header { background: rgb(65, 37, 0); color: white; padding: 20px 24px }
+      main { max-width: 800px; margin: 28px auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,0.06) }
+      .back { display:inline-block; margin-bottom:12px; color:#6b4f9a; text-decoration:none }
+      label { display:block; margin-top:10px }
+      input, textarea, select { width:100%; padding:8px; margin-top:6px; box-sizing:border-box }
+      button { background: rgb(65, 37, 0); color:white; border:none; padding:10px 16px; border-radius:6px; cursor:pointer; margin-top:12px }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Foglalás — Délibáb Kávézó</h1>
+    </header>
+    <main>
+      <a class="back" href="/">← Vissza a főoldalra</a>
+
+      <h2>Foglalási űrlap (példa)</h2>
+      <p>Töltsd ki az alábbi mezőket, és mi felvesszük veled a kapcsolatot.</p>
+
+      <form action="#" onsubmit="alert('Köszönjük, a foglalási kérés rögzítve!'); return false;">
+        <label for="name">Név</label>
+        <input id="name" name="name" required />
+
+        <label for="phone">Telefonszám</label>
+        <input id="phone" name="phone" required />
+
+        <label for="date">Dátum és idő</label>
+        <input id="date" name="date" type="datetime-local" required />
+
+        <label for="people">Férőhelyek száma</label>
+        <select id="people" name="people">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5+</option>
+        </select>
+
+        <label for="notes">Megjegyzés</label>
+        <textarea id="notes" name="notes" rows="4"></textarea>
+
+        <button type="submit">Foglalás küldése</button>
+      </form>
+    </main>
+  </body>
+</html>
