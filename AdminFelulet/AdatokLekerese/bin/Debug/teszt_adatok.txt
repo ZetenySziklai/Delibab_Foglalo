@@ -1,0 +1,2 @@
+IDŐ;Asztal1;Asztal2;Asztal3;
+9:00-10:00;true;false;true;false;false;false;

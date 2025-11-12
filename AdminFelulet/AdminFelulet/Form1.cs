@@ -1,0 +1,53 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace AdminFelulet
+{
+    public partial class Form1 : Form
+    {
+        static AdatokLekerese al = new AdatokLekerese("teszt_adatok.txt");
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private void HonapokComboBox(AdatokLekerese al)
+        {
+            comboBox1.Items.Add("Január");
+        }
+        private void NapokComboBox(AdatokLekerese al)
+        {
+            comboBox2.Items.Add("Hétfő");
+        }
+        private void SorFeltoltesDGV(AdatokLekerese al)
+        {
+            dataGridView1.RowCount = al.adatok.Count;
+            for(int i = 0; i < al.adatok.Count; i++)
+            {
+                AdatokBeirasaDGV(i, al);
+            }
+        }
+        private void AdatokBeirasaDGV(int i,AdatokLekerese al)
+        {
+            dataGridView1.Rows[i].HeaderCell.Value = al.adatok[i].ido;
+            for (int j = 0; j < al.lista[i].asztal; j++)
+            {
+                if(al.adatok[i].asztal[j] == true)
+                {
+                    dataGridView1.Rows[i].Cells[j + 1].Style.BackColor = Color.Green;
+                }
+                else 
+                { 
+                    dataGridView1.Rows[i].Cells[j + 1].Style.BackColor = Color.Red;
+                }
+            }
+        }
+        
+    }
+}
