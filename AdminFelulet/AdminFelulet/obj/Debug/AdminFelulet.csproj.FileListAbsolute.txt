@@ -3,3 +3,8 @@ C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelul
 C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.Properties.Resources.resources
 C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.csproj.GenerateResource.cache
 C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.csproj.CoreCompileInputs.cache
+H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.csproj.AssemblyReference.cache
+H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.Form1.resources
+H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.Properties.Resources.resources
+H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.csproj.GenerateResource.cache
+H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.csproj.CoreCompileInputs.cache

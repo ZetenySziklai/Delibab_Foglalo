@@ -1,2 +1,4 @@
 C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdatokLekerese\obj\Debug\AdatokElerese.csproj.AssemblyReference.cache
 C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdatokLekerese\obj\Debug\AdatokElerese.csproj.CoreCompileInputs.cache
+H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdatokLekerese\obj\Debug\AdatokElerese.csproj.AssemblyReference.cache
+H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdatokLekerese\obj\Debug\AdatokElerese.csproj.CoreCompileInputs.cache

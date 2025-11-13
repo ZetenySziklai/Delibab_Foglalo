@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+//Konstruktor
 
-
-namespace AdatokLekerese
+namespace AdatokElerese
 {
     public class AdatokLekerese
     {
-        static public List<AdatokFeldolgozasa> adatok = new List<AdatokFeldolgozasa>();
+        public List<AdatokFeldolgozasa> adatok = new List<AdatokFeldolgozasa>();
         static void Main(string[] args)
         {
             Fajlbeolvasas();
