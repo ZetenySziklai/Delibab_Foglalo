@@ -10,7 +10,13 @@ namespace AdatokElerese
 {
     public class AdatokLekerese
     {
+     
         public List<AdatokFeldolgozasa> adatok = new List<AdatokFeldolgozasa>();
+
+        public AdatokLekerese()
+        {
+            adatok = new List<AdatokFeldolgozasa> ();
+        }
         static void Main(string[] args)
         {
             Fajlbeolvasas();
