@@ -1,29 +1,33 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\",
+  "WorkspaceRootPath": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|h:\\13\\vizsga\\d\u00E9lib\u00E1b \u00E9tterem vizsga\\adminfelulet\\adatoklekerese\\adatoklekerese.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|c:\\users\\zeten\\downloads\\vizsgaremekrepo\\delibab_foglalo\\adminfelulet\\adatoklekerese\\adatoklekerese.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|solutionrelative:adatoklekerese\\adatoklekerese.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\adminfelulet\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\adminfelulet\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|solutionrelative:adminfelulet\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\adminfelulet\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|solutionrelative:adminfelulet\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\adatoklekerese\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|solutionrelative:adatoklekerese\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\adatoklekerese\\adatokfeldolgozasa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\adatoklekerese\\adatokfeldolgozasa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|solutionrelative:adatoklekerese\\adatokfeldolgozasa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\adatoklekerese\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|c:\\users\\zeten\\downloads\\vizsgaremekrepo\\delibab_foglalo\\adminfelulet\\adminfelulet\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|solutionrelative:adminfelulet\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\adminfelulet\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{BED9CBED-CAEA-4EF1-BAE4-F31E3C2F0AF4}|AdminFelulet\\AdminFelulet.csproj|solutionrelative:adminfelulet\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\adatoklekerese\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "RelativeMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|solutionrelative:adatoklekerese\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\adatoklekerese\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{411D5613-3F83-4CC0-B2AC-0867C12FF91C}|AdatokLekerese\\AdatokElerese.csproj|solutionrelative:adatoklekerese\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -34,15 +38,36 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 6,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdminFelulet\\Program.cs",
+              "RelativeDocumentMoniker": "AdminFelulet\\Program.cs",
+              "ToolTip": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdminFelulet\\Program.cs",
+              "RelativeToolTip": "AdminFelulet\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T18:41:50.245Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "App.config",
-              "DocumentMoniker": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\App.config",
+              "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\App.config",
               "RelativeDocumentMoniker": "AdatokLekerese\\App.config",
-              "ToolTip": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\App.config",
+              "ToolTip": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\App.config",
               "RelativeToolTip": "AdatokLekerese\\App.config",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
@@ -53,24 +78,24 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Form1.cs",
-              "DocumentMoniker": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdminFelulet\\Form1.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdminFelulet\\Form1.cs",
               "RelativeDocumentMoniker": "AdminFelulet\\Form1.cs",
-              "ToolTip": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdminFelulet\\Form1.cs",
+              "ToolTip": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdminFelulet\\Form1.cs",
               "RelativeToolTip": "AdminFelulet\\Form1.cs",
-              "ViewState": "AgIAADgAAAAAAAAAAAAywDsAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAA3AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-12T18:51:13.099Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "AdatokFeldolgozasa.cs",
-              "DocumentMoniker": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\AdatokFeldolgozasa.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\AdatokFeldolgozasa.cs",
               "RelativeDocumentMoniker": "AdatokLekerese\\AdatokFeldolgozasa.cs",
-              "ToolTip": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\AdatokFeldolgozasa.cs",
+              "ToolTip": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\AdatokFeldolgozasa.cs",
               "RelativeToolTip": "AdatokLekerese\\AdatokFeldolgozasa.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-12T18:49:44.507Z",
               "EditorCaption": ""
@@ -79,22 +104,22 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "AdatokLekerese.cs",
-              "DocumentMoniker": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\AdatokLekerese.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\AdatokLekerese.cs",
               "RelativeDocumentMoniker": "AdatokLekerese\\AdatokLekerese.cs",
-              "ToolTip": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\AdatokLekerese.cs",
+              "ToolTip": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\AdatokLekerese.cs",
               "RelativeToolTip": "AdatokLekerese\\AdatokLekerese.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAYwBwAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAH4AAAAAAAAAAAAAABQAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-12T18:49:32.59Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
-              "DocumentMoniker": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\Program.cs",
               "RelativeDocumentMoniker": "AdatokLekerese\\Program.cs",
-              "ToolTip": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdatokLekerese\\Program.cs",
+              "ToolTip": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdatokLekerese\\Program.cs",
               "RelativeToolTip": "AdatokLekerese\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -103,11 +128,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdminFelulet\\Form1.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdminFelulet\\Form1.cs",
               "RelativeDocumentMoniker": "AdminFelulet\\Form1.cs",
-              "ToolTip": "H:\\13\\Vizsga\\D\u00E9lib\u00E1b \u00E9tterem Vizsga\\AdminFelulet\\AdminFelulet\\Form1.cs [Design]",
+              "ToolTip": "C:\\Users\\zeten\\Downloads\\vizsgaremekrepo\\Delibab_Foglalo\\AdminFelulet\\AdminFelulet\\Form1.cs [Design]",
               "RelativeToolTip": "AdminFelulet\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-12T18:47:45.12Z",
