@@ -8,6 +8,7 @@ type ButtonProps = {
 	label: string
 	external?: boolean
 	className?: string
+	onClick?: () => void
 }
 
 type KartyaProps = {
@@ -28,7 +29,7 @@ const Kartya: React.FC<KartyaProps> = ({ id, title, text, children, buttons }) =
 				{buttons && buttons.length > 0 ? (
 					<div className="kartya-buttons" style={{ marginTop: 12 }}>
 						{buttons.map((b, i) => (
-							<KartyaGomb key={i} href={b.href} label={b.label} external={b.external} className={b.className} />
+							<KartyaGomb key={i} href={b.href} label={b.label} external={b.external} className={b.className} onClick={b.onClick} />
 						))}
 					</div>
 				) : null}

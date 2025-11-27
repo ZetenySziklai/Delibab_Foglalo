@@ -1,0 +1,62 @@
+.foglalo-container {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.foglalo-header {
+  background: rgb(65, 37, 0);
+  color: white;
+  padding: 20px 24px;
+  margin: 0;
+}
+
+.foglalo-header h1 {
+  margin: 0;
+}
+
+.foglalo-main {
+  max-width: 800px;
+  margin: 28px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.foglalo-back {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #6b4f9a;
+  text-decoration: none;
+}
+
+.foglalo-back:hover {
+  text-decoration: underline;
+}
+
+.foglalo-main label {
+  display: block;
+  margin-top: 10px;
+}
+
+.foglalo-main input,
+.foglalo-main textarea,
+.foglalo-main select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  box-sizing: border-box;
+}
+
+.foglalo-main button {
+  background: rgb(65, 37, 0);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.foglalo-main button:hover {
+  background: rgb(85, 50, 0);
+}
