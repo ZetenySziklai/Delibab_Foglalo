@@ -10,13 +10,68 @@
       flex-direction: column;  
       align-items: center;
       padding-top: 250px;
+      z-index: 1000;
+  }
+
+  .navigacio a {
+      text-decoration: none;
+      color: white;
+      padding: 3px 0;
+      margin: 2px 0;
+      transition: color 0.3s;
+  }
+
+  .navigacio a:hover {
+      color: #d4a574;
   }
 
   .navigacio p {
-      margin: 50px 0;
+      margin: 30px 0 15px 0;
       font-size: 18px;  
   }
 
   .navigacio p:hover {
       color: #e0e0e0;        
+  }
+
+  /* Responsive navbar */
+  @media (max-width: 768px) {
+      .navigacio {
+          position: relative;
+          width: 100%;
+          height: auto;
+          padding: 10px 0;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          padding-top: 0;
+      }
+
+      .navigacio p {
+          margin: 10px;
+      }
+
+      .navigacio a {
+          padding: 10px 15px;
+          margin: 5px;
+          border-radius: 4px;
+          background: rgba(255, 255, 255, 0.1);
+      }
+
+      .navigacio a:hover {
+          background: rgba(255, 255, 255, 0.2);
+      }
+  }
+
+  @media (max-width: 480px) {
+      .navigacio {
+          flex-direction: column;
+          flex-wrap: nowrap;
+      }
+
+      .navigacio a {
+          width: 80%;
+          text-align: center;
+      }
   }
