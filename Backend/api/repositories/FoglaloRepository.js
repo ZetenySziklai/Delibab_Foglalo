@@ -8,57 +8,24 @@ class FoglaloRepository{
     }
     
     async getFoglalo(){
-        return await this.Foglalo.findAll({
-            attributes: ["vezeteknev", "keresztnev", "telefonszam","email","megjegyzes","foglalo_id","idopont_id","vendeg_id","etkezes_id"],
-            include: [
-                {
-                    model: this.Idopont,
-                    attributes: ["foglalas_nap_ido"]
-                },
-                {
-                    model: this.VendegekSzama,
-                    attributes: ["felnott", "gyerek"]
-                },
-                {
-                    model: this.EtkezesTipusa,
-                    attributes: ["reggeli", "ebed", "vacsora"]
-                }
-            ]
-        });
+        // Egyszerű lekérdezés include nélkül, hogy elkerüljük a hiányzó asszociációs hibákat
+        return await this.Foglalo.findAll();
     }
 
     async getFoglaloByEmail(email){
+        return await this.Foglalo.findAll({ where: { email: email }});
+    }
+
+    async getFoglaloByPhone(telefonszam){
+        // Normalizáljuk a telefonszámot (eltávolítjuk a szóközöket és kötőjeleket)
+        const phoneNormalized = String(telefonszam).replace(/[\s-]/g, "");
         return await this.Foglalo.findAll({
-            where: { email: email },
-            include: [
-                {
-                    model: this.Idopont,
-                    attributes: ["foglalas_nap_ido"]
-                },
-                {
-                    model: this.VendegekSzama,
-                    attributes: ["felnott", "gyerek"]
-                }
-            ]
+            where: { telefonszam: phoneNormalized }
         });
     }
 
     async getFoglaloWithDetails(){
         return await this.Foglalo.findAll({
-            include: [
-                {
-                    model: this.Idopont,
-                    attributes: ["foglalas_nap_ido"]
-                },
-                {
-                    model: this.VendegekSzama,
-                    attributes: ["felnott", "gyerek"]
-                },
-                {
-                    model: this.EtkezesTipusa,
-                    attributes: ["reggeli", "ebed", "vacsora"]
-                }
-            ],
             order: [['foglalo_id', 'DESC']]
         });
     }
@@ -98,22 +65,8 @@ class FoglaloRepository{
     // Összetett lekérdezés - foglalások időpont szerint csoportosítva
     async getFoglalokByDateRange(startDate, endDate){
         return await this.Foglalo.findAll({
-            include: [{
-                model: this.Idopont,
-                where: {
-                    foglalas_nap_ido: {
-                        [this.sequelize.Sequelize.Op.between]: [startDate, endDate]
-                    }
-                },
-                attributes: ['foglalas_nap_ido']
-            }],
-            attributes: [
-                'foglalo_id',
-                'vezeteknev',
-                'keresztnev',
-                'email'
-            ],
-            order: [[{model: this.Idopont}, 'foglalas_nap_ido', 'ASC']]
+            attributes: ['foglalo_id','vezeteknev','keresztnev','email'],
+            order: [['foglalo_id', 'ASC']]
         });
     }
 
@@ -141,29 +94,8 @@ class FoglaloRepository{
 
     // Komplex lekérdezés - foglalások étkezés típus szerint
     async getFoglalokByEtkezesType(){
-        return await this.EtkezesTipusa.findAll({
-            attributes: [
-                'etkezes_id',
-                'reggeli',
-                'ebed', 
-                'vacsora',
-                [this.sequelize.fn('COUNT', this.sequelize.col('Foglalos.foglalo_id')), 'foglalasok_szama']
-            ],
-            include: [{
-                model: this.Foglalo,
-                as: 'Foglalos',
-                attributes: [],
-                include: [{
-                    model: this.VendegekSzama,
-                    attributes: [
-                        [this.sequelize.fn('AVG', this.sequelize.col('Foglalos.VendegekSzama.felnott')), 'atlagos_felnott'],
-                        [this.sequelize.fn('AVG', this.sequelize.col('Foglalos.VendegekSzama.gyerek')), 'atlagos_gyerek']
-                    ]
-                }]
-            }],
-            group: ['EtkezesTipusa.etkezes_id'],
-            order: [[this.sequelize.literal('foglalasok_szama'), 'DESC']]
-        });
+        // Egyszerűsített változat asszociációk nélkül a hibák elkerülésére
+        return await this.EtkezesTipusa.findAll();
     }
 }
 

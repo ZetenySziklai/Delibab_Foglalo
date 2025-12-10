@@ -30,6 +30,22 @@ class FoglaloService {
             throw new BadRequestError("Érvényes email címet adjon meg");
         }
 
+        // Telefonszám: csak számok (+ előjel és szóköz/-, 7-15 számjegy)
+        const phoneNormalized = String(data.telefonszam).replace(/[\s-]/g, "");
+        if (!/^\+?\d{7,15}$/.test(phoneNormalized)) {
+            throw new BadRequestError("A telefonszám csak szám lehet (7-15 számjegy)");
+        }
+
+        // Duplikáció tiltása: ugyanaz az email vagy telefonszám már szerepel
+        const existingByEmail = await this.foglaloRepository.getFoglaloByEmail(data.email);
+        // Normalizált telefonszámot használunk a duplikáció ellenőrzéshez
+        const existingByPhone = await this.foglaloRepository.getFoglaloByPhone(phoneNormalized);
+        if ((existingByEmail && existingByEmail.length > 0) || (existingByPhone && existingByPhone.length > 0)) {
+            throw new BadRequestError("Ezzel az emaillel vagy telefonszámmal már van foglaló");
+        }
+
+        // Normalizált telefonszámot mentjük az adatbázisba
+        data.telefonszam = phoneNormalized;
         return await this.foglaloRepository.createFoglalo(data);
     }
 

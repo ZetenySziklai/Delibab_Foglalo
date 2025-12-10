@@ -1,6 +1,7 @@
 const UserRepository = require("./UserRepository");
 const AsztalRepository = require("./AsztalRepository");
 const FoglalasRepository = require("./FoglalasRepository");
+const FoglaloRepository = require("./foglaloRepository");
 const AllergenRepository = require("./AllergenRepository");
 const AllergeninfoRepository = require("./AllergeninfoRepository");
 const MegjegyzesRepository = require("./MegjegyzesRepository");
@@ -11,6 +12,7 @@ module.exports = (db) =>{
     const userRepository = new UserRepository(db);
     const asztalRepository = new AsztalRepository(db);
     const foglalasRepository = new FoglalasRepository(db);
+    const foglaloRepository = new FoglaloRepository(db);
     const allergenRepository = new AllergenRepository(db);
     const allergeninfoRepository = new AllergeninfoRepository(db);
     const megjegyzesRepository = new MegjegyzesRepository(db);
@@ -21,6 +23,7 @@ module.exports = (db) =>{
         userRepository,
         asztalRepository,
         foglalasRepository,
+        foglaloRepository,
         allergenRepository,
         allergeninfoRepository,
         megjegyzesRepository,

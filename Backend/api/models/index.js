@@ -7,6 +7,7 @@ module.exports = (sequelize) => {
     const Megjegyzes = require("./Megjegyzes")(sequelize);
     const Allergen = require("./Allergen")(sequelize);
     const Allergeninfo = require("./Allergeninfo")(sequelize);
+    const Foglalo = require("./Foglalo")(sequelize);
 
     // User N-<>-M Asztal = Foglalas tábla
     User.hasMany(Foglalas, {
@@ -70,7 +71,8 @@ module.exports = (sequelize) => {
         EtkezesTipusa,
         Megjegyzes,
         Allergen,
-        Allergeninfo
+        Allergeninfo,
+        Foglalo
     };
 }
 
