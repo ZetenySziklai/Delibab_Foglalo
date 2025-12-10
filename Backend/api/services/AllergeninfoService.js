@@ -1,3 +1,5 @@
+const { BadRequestError, NotFoundError } = require("../errors");
+
 class AllergeninfoService {
     constructor(db){
         this.allergeninfoRepository = require("../repositories")(db).allergeninfoRepository;
@@ -15,19 +17,19 @@ class AllergeninfoService {
 
     async createAllergeninfo(data){
         if (!data.allergen_id || !data.foglalas_id) {
-            throw new Error("Allergen ID és Foglalás ID kötelező");
+            throw new BadRequestError("Allergen ID és Foglalás ID kötelező");
         }
 
         // Allergen létezik-e
         const allergen = await this.allergenRepository.getAllergenById(data.allergen_id);
         if (!allergen) {
-            throw new Error("A megadott allergen nem létezik");
+            throw new NotFoundError("A megadott allergen nem létezik");
         }
 
         // Foglalás létezik-e
         const foglalas = await this.foglalasRepository.getFoglalasById(data.foglalas_id);
         if (!foglalas) {
-            throw new Error("A megadott foglalás nem létezik");
+            throw new NotFoundError("A megadott foglalás nem létezik");
         }
 
         return await this.allergeninfoRepository.createAllergeninfo(data);
@@ -43,14 +45,14 @@ class AllergeninfoService {
 
     async getAllergeninfoByFoglalas(foglalasId){
         if (!foglalasId) {
-            throw new Error("Foglalás ID kötelező");
+            throw new BadRequestError("Foglalás ID kötelező");
         }
         return await this.allergeninfoRepository.getAllergeninfoByFoglalas(foglalasId);
     }
 
     async deleteAllergeninfoByFoglalas(foglalasId){
         if (!foglalasId) {
-            throw new Error("Foglalás ID kötelező");
+            throw new BadRequestError("Foglalás ID kötelező");
         }
         return await this.allergeninfoRepository.deleteAllergeninfoByFoglalas(foglalasId);
     }

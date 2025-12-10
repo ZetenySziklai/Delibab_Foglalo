@@ -1,5 +1,6 @@
 const db = require("../db");
 const {foglaloService} = require("../services")(db);
+const { NotFoundError } = require("../errors");
 
 exports.getFoglalo = async(req,res,next) =>{
   try {
@@ -14,7 +15,7 @@ exports.getFoglaloByEmail = async(req,res,next) =>{
     const { email } = req.params;
     const foglalo = await foglaloService.getFoglaloByEmail(email);
     if(!foglalo || foglalo.length === 0){
-      return res.status(404).json({message: "Foglaló nem található"});
+      throw new NotFoundError("Foglaló nem található");
     }
     res.status(200).json(foglalo);
   } catch (error) {
@@ -36,7 +37,7 @@ exports.updateFoglalo = async(req,res,next) =>{
     const { id } = req.params;
     const updated = await foglaloService.updateFoglalo(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Nem talalhato"});
+      throw new NotFoundError("Foglaló nem található");
     }
     res.status(200).json(updated);
   }catch(error){
@@ -49,7 +50,7 @@ exports.deleteFoglalo = async(req,res,next) =>{
     const { id } = req.params;
     const deleted = await foglaloService.deleteFoglalo(id);
     if(!deleted){
-      return res.status(404).json({message: "Foglaló nem található"});
+      throw new NotFoundError("Foglaló nem található");
     }
     res.status(200).json({message: "Foglaló sikeresen törölve"});
   }catch(error){
@@ -79,9 +80,6 @@ exports.getTopFoglalok = async(req,res,next) =>{
 exports.getFoglalokByDateRange = async(req,res,next) =>{
   try {
     const { startDate, endDate } = req.query;
-    if (!startDate || !endDate) {
-      return res.status(400).json({message: "Kezdő és végdátum megadása kötelező"});
-    }
     const result = await foglaloService.getFoglalokByDateRange(startDate, endDate);
     res.status(200).json(result);
   } catch (error) {

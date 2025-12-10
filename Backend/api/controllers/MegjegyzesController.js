@@ -1,5 +1,6 @@
 const db = require("../db");
 const {megjegyzesService} = require("../services")(db);
+const { NotFoundError } = require("../errors");
 
 exports.getMegjegyzes = async(req,res,next) =>{
   try {
@@ -14,7 +15,7 @@ exports.getMegjegyzesById = async(req,res,next) =>{
     const { id } = req.params;
     const megjegyzes = await megjegyzesService.getMegjegyzesById(id);
     if(!megjegyzes){
-      return res.status(404).json({message: "Megjegyzés nem található"});
+      throw new NotFoundError("Megjegyzés nem található");
     }
     res.status(200).json(megjegyzes);
   } catch (error) {
@@ -36,7 +37,7 @@ exports.updateMegjegyzes = async(req,res,next) =>{
     const { id } = req.params;
     const updated = await megjegyzesService.updateMegjegyzes(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Megjegyzés nem található"});
+      throw new NotFoundError("Megjegyzés nem található");
     }
     res.status(200).json(updated);
   }catch(error){
@@ -49,7 +50,7 @@ exports.deleteMegjegyzes = async(req,res,next) =>{
     const { id } = req.params;
     const deleted = await megjegyzesService.deleteMegjegyzes(id);
     if(!deleted){
-      return res.status(404).json({message: "Megjegyzés nem található"});
+      throw new NotFoundError("Megjegyzés nem található");
     }
     res.status(200).json({message: "Megjegyzés sikeresen törölve"});
   }catch(error){

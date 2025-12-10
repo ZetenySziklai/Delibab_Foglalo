@@ -1,5 +1,6 @@
 const db = require("../db");
 const {idopontService} = require("../services")(db);
+const { NotFoundError } = require("../errors");
 
 exports.getIdopontok = async(req,res,next) =>{
   try {
@@ -14,7 +15,7 @@ exports.getIdopontById = async(req,res,next) =>{
     const { id } = req.params;
     const idopont = await idopontService.getIdopontById(id);
     if(!idopont){
-      return res.status(404).json({message: "Időpont nem található"});
+      throw new NotFoundError("Időpont nem található");
     }
     res.status(200).json(idopont);
   } catch (error) {
@@ -46,7 +47,7 @@ exports.updateIdopont = async(req,res,next) =>{
     const { id } = req.params;
     const updated = await idopontService.updateIdopont(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Nem talalhato"});
+      throw new NotFoundError("Időpont nem található");
     }
     res.status(200).json(updated);
   }catch(error){
@@ -59,7 +60,7 @@ exports.deleteIdopont = async(req,res,next) =>{
     const { id } = req.params;
     const deleted = await idopontService.deleteIdopont(id);
     if(!deleted){
-      return res.status(404).json({message: "Időpont nem található"});
+      throw new NotFoundError("Időpont nem található");
     }
     res.status(200).json({message: "Időpont sikeresen törölve"});
   }catch(error){

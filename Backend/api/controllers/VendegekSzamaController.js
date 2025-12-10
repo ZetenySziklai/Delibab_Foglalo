@@ -1,5 +1,6 @@
 const db = require("../db");
 const {vendegekszamaService} = require("../services")(db);
+const { NotFoundError } = require("../errors");
 
 exports.getVendegekSzama = async(req,res,next) =>{
   try {
@@ -14,7 +15,7 @@ exports.getVendegekSzamaById = async(req,res,next) =>{
     const { id } = req.params;
     const vendeg = await vendegekszamaService.getVendegekSzamaById(id);
     if(!vendeg){
-      return res.status(404).json({message: "Vendég nem található"});
+      throw new NotFoundError("Vendég nem található");
     }
     res.status(200).json(vendeg);
   } catch (error) {
@@ -46,7 +47,7 @@ exports.updateVendegekSzama = async(req,res,next) =>{
     const { id } = req.params;
     const updated = await vendegekszamaService.updateVendegekSzama(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Nem talalhato"});
+      throw new NotFoundError("Vendég szám nem található");
     }
     res.status(200).json(updated);
   }catch(error){
@@ -59,7 +60,7 @@ exports.deleteVendegekSzama = async(req,res,next) =>{
     const { id } = req.params;
     const deleted = await vendegekszamaService.deleteVendegekSzama(id);
     if(!deleted){
-      return res.status(404).json({message: "Vendég szám nem található"});
+      throw new NotFoundError("Vendég szám nem található");
     }
     res.status(200).json({message: "Vendég szám sikeresen törölve"});
   }catch(error){

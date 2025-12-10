@@ -1,5 +1,6 @@
 const db = require("../db");
 const {foglalasService} = require("../services")(db);
+const { NotFoundError } = require("../errors");
 
 exports.getFoglalas = async(req,res,next) =>{
   try {
@@ -14,7 +15,7 @@ exports.getFoglalasById = async(req,res,next) =>{
     const { id } = req.params;
     const foglalas = await foglalasService.getFoglalasById(id);
     if(!foglalas){
-      return res.status(404).json({message: "Foglalás nem található"});
+      throw new NotFoundError("Foglalás nem található");
     }
     res.status(200).json(foglalas);
   } catch (error) {
@@ -36,7 +37,7 @@ exports.updateFoglalas = async(req,res,next) =>{
     const { id } = req.params;
     const updated = await foglalasService.updateFoglalas(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Foglalás nem található"});
+      throw new NotFoundError("Foglalás nem található");
     }
     res.status(200).json(updated);
   }catch(error){
@@ -49,7 +50,7 @@ exports.deleteFoglalas = async(req,res,next) =>{
     const { id } = req.params;
     const deleted = await foglalasService.deleteFoglalas(id);
     if(!deleted){
-      return res.status(404).json({message: "Foglalás nem található"});
+      throw new NotFoundError("Foglalás nem található");
     }
     res.status(200).json({message: "Foglalás sikeresen törölve"});
   }catch(error){
@@ -60,9 +61,6 @@ exports.deleteFoglalas = async(req,res,next) =>{
 exports.getFoglaltIdopontok = async(req,res,next) =>{
   try {
     const { datum, asztalId } = req.query;
-    if(!datum || !asztalId){
-      return res.status(400).json({message: "Dátum és asztal ID kötelező"});
-    }
     const foglaltIdopontok = await foglalasService.getFoglaltIdopontok(datum, asztalId);
     res.status(200).json({ 
       datum: datum,
@@ -77,9 +75,6 @@ exports.getFoglaltIdopontok = async(req,res,next) =>{
 exports.getFoglalasByDatum = async(req,res,next) =>{
   try {
     const { datum } = req.query;
-    if(!datum){
-      return res.status(400).json({message: "Dátum kötelező"});
-    }
     const foglalasok = await foglalasService.getFoglalasByDatum(datum);
     res.status(200).json(foglalasok);
   } catch (error) {

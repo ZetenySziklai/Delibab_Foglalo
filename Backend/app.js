@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const api = express();
 const cors = require("cors");
+const errorHandler = require("./api/middlewares/errorHandler");
 
 
 //cors
@@ -29,6 +30,8 @@ api.use("/megjegyzesek", megjegyzesRoutes);
 api.use("/asztal-allapotok", asztalAllapotRoutes);
 api.use("/etkezes-tipusok", etkezesTipusaRoutes);
 
+// Error handler middleware - mindig az utolsóként kell használni
+app.use(errorHandler);
 
 
 

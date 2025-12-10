@@ -1,5 +1,6 @@
 const db = require("../db");
 const {etkezesTipusaService} = require("../services")(db);
+const { NotFoundError } = require("../errors");
 
 exports.getEtkezesTipusa = async(req,res,next) =>{
   try {
@@ -14,7 +15,7 @@ exports.getEtkezesTipusaById = async(req,res,next) =>{
     const { id } = req.params;
     const etkezesTipusa = await etkezesTipusaService.getEtkezesTipusaById(id);
     if(!etkezesTipusa){
-      return res.status(404).json({message: "Étkezés típusa nem található"});
+      throw new NotFoundError("Étkezés típusa nem található");
     }
     res.status(200).json(etkezesTipusa);
   } catch (error) {
@@ -36,7 +37,7 @@ exports.updateEtkezesTipusa = async(req,res,next) =>{
     const { id } = req.params;
     const updated = await etkezesTipusaService.updateEtkezesTipusa(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Étkezés típusa nem található"});
+      throw new NotFoundError("Étkezés típusa nem található");
     }
     res.status(200).json(updated);
   }catch(error){
@@ -49,7 +50,7 @@ exports.deleteEtkezesTipusa = async(req,res,next) =>{
     const { id } = req.params;
     const deleted = await etkezesTipusaService.deleteEtkezesTipusa(id);
     if(!deleted){
-      return res.status(404).json({message: "Étkezés típusa nem található"});
+      throw new NotFoundError("Étkezés típusa nem található");
     }
     res.status(200).json({message: "Étkezés típusa sikeresen törölve"});
   }catch(error){

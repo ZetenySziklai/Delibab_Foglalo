@@ -1,5 +1,6 @@
 const db = require("../db");
 const {userService} = require("../services")(db);
+const { NotFoundError } = require("../errors");
 
 exports.getUser = async(req,res,next) =>{
   try {
@@ -14,7 +15,7 @@ exports.getUserById = async(req,res,next) =>{
     const { id } = req.params;
     const user = await userService.getUserById(id);
     if(!user){
-      return res.status(404).json({message: "Felhasználó nem található"});
+      throw new NotFoundError("Felhasználó nem található");
     }
     res.status(200).json(user);
   } catch (error) {
@@ -36,7 +37,7 @@ exports.updateUser = async(req,res,next) =>{
     const { id } = req.params;
     const updated = await userService.updateUser(id, req.body);
     if(!updated){
-      return res.status(404).json({message: "Felhasználó nem található"});
+      throw new NotFoundError("Felhasználó nem található");
     }
     res.status(200).json(updated);
   }catch(error){
@@ -49,7 +50,7 @@ exports.deleteUser = async(req,res,next) =>{
     const { id } = req.params;
     const deleted = await userService.deleteUser(id);
     if(!deleted){
-      return res.status(404).json({message: "Felhasználó nem található"});
+      throw new NotFoundError("Felhasználó nem található");
     }
     res.status(200).json({message: "Felhasználó sikeresen törölve"});
   }catch(error){

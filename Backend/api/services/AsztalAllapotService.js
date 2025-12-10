@@ -1,3 +1,5 @@
+const { BadRequestError } = require("../errors");
+
 class AsztalAllapotService {
     constructor(db){
         this.asztalAllapotRepository = require("../repositories")(db).asztalAllapotRepository;
@@ -13,23 +15,31 @@ class AsztalAllapotService {
 
     async createAsztalAllapot(data){
         if (!data.nev) {
-            throw new Error("Asztal állapot név kötelező");
+            throw new BadRequestError("Asztal állapot név kötelező");
         }
 
         // Név nem lehet üres
         if (!data.nev.trim()) {
-            throw new Error("Az asztal állapot név nem lehet üres");
+            throw new BadRequestError("Az asztal állapot név nem lehet üres");
         }
 
         // Név hossz ellenőrzése (max 50 karakter)
         if (data.nev.length > 50) {
-            throw new Error("Az asztal állapot név maximum 50 karakter lehet");
+            throw new BadRequestError("Az asztal állapot név maximum 50 karakter lehet");
         }
 
         return await this.asztalAllapotRepository.createAsztalAllapot(data);
     }
 
     async updateAsztalAllapot(id, data){
+        if (data.nev !== undefined) {
+            if (!data.nev || !data.nev.trim()) {
+                throw new BadRequestError("Az asztal állapot név nem lehet üres");
+            }
+            if (data.nev.length > 50) {
+                throw new BadRequestError("Az asztal állapot név maximum 50 karakter lehet");
+            }
+        }
         return await this.asztalAllapotRepository.updateAsztalAllapot(id, data);
     }
 

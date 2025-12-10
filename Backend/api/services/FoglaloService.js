@@ -1,3 +1,5 @@
+const { BadRequestError } = require("../errors");
+
 class FoglaloService {
     constructor(db){
         this.foglaloRepository = require("../repositories")(db).foglaloRepository;
@@ -9,7 +11,7 @@ class FoglaloService {
 
     async getFoglaloByEmail(email){
         if (!email || !email.includes('@')) {
-            throw new Error("Érvényes email címet adjon meg");
+            throw new BadRequestError("Érvényes email címet adjon meg");
         }
         return await this.foglaloRepository.getFoglaloByEmail(email);
     }
@@ -21,23 +23,60 @@ class FoglaloService {
     async createFoglalo(data){
         // Validálás
         if (!data.vezeteknev || !data.keresztnev || !data.email || !data.telefonszam) {
-            throw new Error("Minden kötelező mezőt ki kell tölteni");
+            throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
         
         if (!data.email.includes('@')) {
-            throw new Error("Érvényes email címet adjon meg");
+            throw new BadRequestError("Érvényes email címet adjon meg");
         }
 
         return await this.foglaloRepository.createFoglalo(data);
     }
 
     async updateFoglalo(id, data){
-        const existing = await this.foglaloRepository.getFoglaloByEmail(data.email || '');
-        if (existing && existing.length > 0 && existing[0].foglalo_id !== parseInt(id)) {
-            throw new Error("Ez az email cím már használatban van");
+        if (data.email) {
+            const existing = await this.foglaloRepository.getFoglaloByEmail(data.email);
+            if (existing && existing.length > 0 && existing[0].foglalo_id !== parseInt(id)) {
+                throw new BadRequestError("Ez az email cím már használatban van");
+            }
         }
         
         return await this.foglaloRepository.updateFoglalo(id, data);
+    }
+
+    async deleteFoglalo(id){
+        return await this.foglaloRepository.deleteFoglalo(id);
+    }
+
+    async getFoglaloCountByEmail(){
+        return await this.foglaloRepository.getFoglaloCountByEmail();
+    }
+
+    async getTopFoglalok(limit){
+        return await this.foglaloRepository.getTopFoglalok(limit);
+    }
+
+    async getFoglalokByDateRange(startDate, endDate){
+        if (!startDate || !endDate) {
+            throw new BadRequestError("Kezdő és végdátum megadása kötelező");
+        }
+        
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            throw new BadRequestError("Érvényes dátumokat adjon meg");
+        }
+        
+        if (start > end) {
+            throw new BadRequestError("A kezdő dátum nem lehet későbbi, mint a végdátum");
+        }
+        
+        return await this.foglaloRepository.getFoglalokByDateRange(startDate, endDate);
+    }
+
+    async getFoglalokByEtkezesType(){
+        return await this.foglaloRepository.getFoglalokByEtkezesType();
     }
 }
 

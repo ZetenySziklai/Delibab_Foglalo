@@ -1,3 +1,5 @@
+const { BadRequestError } = require("../errors");
+
 class IdopontService {
     constructor(db){
         this.idopontRepository = require("../repositories")(db).idopontRepository;
@@ -9,19 +11,19 @@ class IdopontService {
 
     async getIdopontById(id){
         if (!id || isNaN(id)) {
-            throw new Error("Érvényes ID-t adjon meg");
+            throw new BadRequestError("Érvényes ID-t adjon meg");
         }
         return await this.idopontRepository.getIdopontById(id);
     }
 
     async getIdopontokByDate(date){
         if (!date) {
-            throw new Error("Dátum megadása kötelező");
+            throw new BadRequestError("Dátum megadása kötelező");
         }
         
         const inputDate = new Date(date);
         if (isNaN(inputDate.getTime())) {
-            throw new Error("Érvényes dátumot adjon meg");
+            throw new BadRequestError("Érvényes dátumot adjon meg");
         }
         
         return await this.idopontRepository.getIdopontokByDate(date);
@@ -33,16 +35,16 @@ class IdopontService {
 
     async createIdopont(data){
         if (!data.foglalas_nap_ido) {
-            throw new Error("Foglalás dátuma kötelező");
+            throw new BadRequestError("Foglalás dátuma kötelező");
         }
         
         const inputDate = new Date(data.foglalas_nap_ido);
         if (isNaN(inputDate.getTime())) {
-            throw new Error("Érvényes dátumot adjon meg");
+            throw new BadRequestError("Érvényes dátumot adjon meg");
         }
         
         if (inputDate < new Date()) {
-            throw new Error("A foglalás dátuma nem lehet a múltban");
+            throw new BadRequestError("A foglalás dátuma nem lehet a múltban");
         }
 
         return await this.idopontRepository.createIdopont(data);
@@ -50,13 +52,13 @@ class IdopontService {
 
     async updateIdopont(id, data){
         if (!id || isNaN(id)) {
-            throw new Error("Érvényes ID-t adjon meg");
+            throw new BadRequestError("Érvényes ID-t adjon meg");
         }
         
         if (data.foglalas_nap_ido) {
             const inputDate = new Date(data.foglalas_nap_ido);
             if (isNaN(inputDate.getTime())) {
-                throw new Error("Érvényes dátumot adjon meg");
+                throw new BadRequestError("Érvényes dátumot adjon meg");
             }
         }
         

@@ -1,3 +1,5 @@
+const { BadRequestError, NotFoundError } = require("../errors");
+
 class FoglalasService {
     constructor(db){
         this.foglalasRepository = require("../repositories")(db).foglalasRepository;
@@ -13,36 +15,36 @@ class FoglalasService {
     async createFoglalas(data){
         // Kötelező mezők ellenőrzése
         if (!data.user_id || !data.asztal_id || !data.foglalas_datum || !data.etkezes_id) {
-            throw new Error("Minden kötelező mezőt ki kell tölteni");
+            throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
 
         // Felhasználó létezik-e
         const user = await this.userRepository.getUserById(data.user_id);
         if (!user) {
-            throw new Error("A megadott felhasználó nem létezik");
+            throw new NotFoundError("A megadott felhasználó nem létezik");
         }
 
         // Asztal létezik-e
         const asztal = await this.asztalRepository.getAsztalById(data.asztal_id);
         if (!asztal) {
-            throw new Error("A megadott asztal nem létezik");
+            throw new NotFoundError("A megadott asztal nem létezik");
         }
 
         // Étkezés típus létezik-e
         const etkezes = await this.etkezesTipusaRepository.getEtkezesTipusaById(data.etkezes_id);
         if (!etkezes) {
-            throw new Error("A megadott étkezés típus nem létezik");
+            throw new NotFoundError("A megadott étkezés típus nem létezik");
         }
 
         // Dátum validáció - nem lehet múltban
         const foglalasDatum = new Date(data.foglalas_datum);
         if (isNaN(foglalasDatum.getTime())) {
-            throw new Error("Érvénytelen dátum formátum");
+            throw new BadRequestError("Érvénytelen dátum formátum");
         }
 
         const most = new Date();
         if (foglalasDatum < most) {
-            throw new Error("A foglalás dátuma nem lehet a múltban");
+            throw new BadRequestError("A foglalás dátuma nem lehet a múltban");
         }
 
         // Duplikált foglalás ellenőrzése - ugyanaz az asztal, ugyanaz az időpont
@@ -60,7 +62,7 @@ class FoglalasService {
         });
         
         if (vanDuplikatum) {
-            throw new Error("Az asztal már foglalt ezen az időponton");
+            throw new BadRequestError("Az asztal már foglalt ezen az időponton");
         }
 
         return await this.foglalasRepository.createFoglalas(data);
@@ -80,21 +82,21 @@ class FoglalasService {
 
     async getFoglaltIdopontok(datum, asztalId){
         if (!datum || !asztalId) {
-            throw new Error("Dátum és asztal ID kötelező");
+            throw new BadRequestError("Dátum és asztal ID kötelező");
         }
         return await this.foglalasRepository.getFoglaltIdopontok(datum, asztalId);
     }
 
     async getFoglalasByDatum(datum){
         if (!datum) {
-            throw new Error("Dátum kötelező");
+            throw new BadRequestError("Dátum kötelező");
         }
         return await this.foglalasRepository.getFoglalasByDatum(datum);
     }
 
     async getFoglalasByUser(userId){
         if (!userId) {
-            throw new Error("Felhasználó ID kötelező");
+            throw new BadRequestError("Felhasználó ID kötelező");
         }
         return await this.foglalasRepository.getFoglalasByUser(userId);
     }
