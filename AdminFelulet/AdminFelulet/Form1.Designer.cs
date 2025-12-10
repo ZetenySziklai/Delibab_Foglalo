@@ -122,7 +122,7 @@ namespace AdminFelulet
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(373, 12);
+            this.button5.Location = new System.Drawing.Point(363, 10);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(369, 52);
             this.button5.TabIndex = 9;

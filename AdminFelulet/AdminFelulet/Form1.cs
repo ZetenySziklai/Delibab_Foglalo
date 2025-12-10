@@ -1,5 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,12 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
+using AdatokElerese;
+//using HTTPClient;
 
 namespace AdminFelulet
 {
     public partial class Form1 : Form
     {
-        static AdatokLekerese al = new AdatokLekerese("teszt_adatok.txt");
+        static AdatokLekerese al = new AdatokLekerese();
+        //static AdatokLekerese al = new AdatokLekerese("teszt_adatok.txt");
         public Form1()
         {
             InitializeComponent();
@@ -38,7 +40,7 @@ namespace AdminFelulet
         private void AdatokBeirasaDGV(int i,AdatokLekerese al)
         {
             dataGridView1.Rows[i].HeaderCell.Value = al.adatok[i].ido;
-            for (int j = 0; j < al.lista[i].asztal; j++)
+            for (int j = 0; j < al.adatok[i].asztal.Count; j++)
             {
                 if(al.adatok[i].asztal[j] == true)
                 {
@@ -58,25 +60,25 @@ namespace AdminFelulet
 
         public void getData()
         {
-            string kapcsolat = "server=localhost;uid=root,pwd=root;database=asztalfoglalas;";
-            MySqlConnection kap = new MySqlConnection(kapcsolat);
-            kap.Open();
-            string query = @"SELECT 
-                    a.id AS asztal_id,
-                    a.foglalt,
-                    u.nev AS felhasznalo_nev,
-                    u.email,
-                    asztal.szam AS asztal_szam,
-                    asztal.helyek
-                 FROM asztalallapot a
-                 INNER JOIN User u ON a.user_id = u.id
-                 INNER JOIN Asztal asztal ON a.asztal_id = asztal.id
-                 WHERE a.foglalt = true";
-            MySqlCommand cmd = new MySqlCommand(query, kap);
-            MySqlDataReader dr = cmd.ExecuteReader();
-            DataTable dt = new DataTable();
-            dt.Load(dr);
-            dataGridView1.DataSource = dt;
+            //string kapcsolat = "server=localhost;uid=root,pwd=root;database=asztalfoglalas;";
+            //MySqlConnection kap = new MySqlConnection(kapcsolat);
+            //kap.Open();
+            //string query = @"SELECT 
+            //        a.id AS asztal_id,
+            //        a.foglalt,
+            //        u.nev AS felhasznalo_nev,
+            //        u.email,
+            //        asztal.szam AS asztal_szam,
+            //        asztal.helyek
+            //     FROM asztalallapot a
+            //     INNER JOIN User u ON a.user_id = u.id
+            //     INNER JOIN Asztal asztal ON a.asztal_id = asztal.id
+            //     WHERE a.foglalt = true";
+            //MySqlCommand cmd = new MySqlCommand(query, kap);
+            //MySqlDataReader dr = cmd.ExecuteReader();
+            //DataTable dt = new DataTable();
+            //dt.Load(dr);
+            //dataGridView1.DataSource = dt;
         }
     }
 }

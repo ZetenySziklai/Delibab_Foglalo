@@ -9,16 +9,71 @@
     overflow-x: hidden;
   }
 
-  main {
-      margin-left: 220px;
-      padding: 20px;
-  }
-
   h1  {
     font-size: 2.5rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
+  }
+
+  /* Responsive navbar and layout */
+  @media (max-width: 768px) {
+    main {
+      margin-left: 0;
+      padding: 10px;
+    }
+
+    .navigacio {
+      position: relative !important;
+      width: 100% !important;
+      height: auto !important;
+      padding: 10px 0 !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      justify-content: center !important;
+    }
+
+    .navigacio p {
+      margin: 10px 0 !important;
+    }
+
+    .navigacio a {
+      padding: 10px 15px !important;
+      margin: 5px !important;
+    }
+
+    .ikon {
+      height: 80px !important;
+    }
+
+    h1 {
+      font-size: 1.8rem !important;
+    }
+
+    section {
+      min-height: auto !important;
+      padding: 20px !important;
+    }
+
+    .container {
+      padding: 20px !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.5rem !important;
+    }
+
+    .container {
+      padding: 15px !important;
+    }
+
+    .btn {
+      padding: 8px 15px !important;
+      margin: 5px 5px !important;
+      font-size: 0.9rem !important;
+    }
   }
 ::-webkit-scrollbar {
   width: 10px;
@@ -93,6 +148,18 @@
   text-align: center;     
   overflow: hidden;
   z-index: -1; 
+}
+
+@media (max-width: 768px) {
+  #gasztronomia {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  #gasztronomia {
+    padding: 20px 10px;
+  }
 }
 
 #gasztronomia::before {

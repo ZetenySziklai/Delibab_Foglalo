@@ -1,5 +1,0 @@
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminForm\AdminOldal\AdminOldal\obj\Debug\AdminOldal.csproj.AssemblyReference.cache
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminForm\AdminOldal\AdminOldal\obj\Debug\AdminOldal.Form1.resources
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminForm\AdminOldal\AdminOldal\obj\Debug\AdminOldal.Properties.Resources.resources
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminForm\AdminOldal\AdminOldal\obj\Debug\AdminOldal.csproj.GenerateResource.cache
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminForm\AdminOldal\AdminOldal\obj\Debug\AdminOldal.csproj.CoreCompileInputs.cache

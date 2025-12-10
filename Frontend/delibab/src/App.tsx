@@ -1,11 +1,40 @@
 import './App.css'
+import { useState } from 'react'
 import Navbar from './components/navbar/navbar'
 import Kartya from './components/kartya/kartya'
+import { FoglaloOldal } from './components/foglalo/foglalo';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState<'home' | 'foglalo'>('home')
+
+  if (currentPage === 'foglalo') {
+    return (
+      <>
+        <FoglaloOldal />
+        <button
+          onClick={() => setCurrentPage('home')}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '10px 20px',
+            background: 'rgb(65, 37, 0)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            zIndex: 1000,
+          }}
+        >
+          Vissza
+        </button>
+      </>
+    )
+  }
+
   return (
     <>
-      <Navbar />
+      <Navbar onFoglalasClick={() => setCurrentPage('foglalo')} />
 
       <Kartya
         id="menu"
@@ -28,7 +57,7 @@ function App() {
         id="kapcsolat"
         title="KAPCSOLAT"
         buttons={[
-          { href: './foglalooldal.html', label: 'Foglalás', external: true, className: 'btn' },
+          { href: '#', label: 'Foglalás', external: false, className: 'btn', onClick: () => setCurrentPage('foglalo') },
           {
             href: 'https://www.google.com/maps/place/D%C3%A9lib%C3%A1b+k%C3%A1v%C3%A9z%C3%B3+%C3%A9s+Street+Food/@47.171818,19.7966277,16z/data=!4m6!3m5!1s0x474170f67aa0a9f5:0x4576a795714e678c!8m2!3d47.1710083!4d19.7974191!16s%2Fg%2F1v0ljk2r?entry=ttu&g_ep=EgoyMDI1MTAwMS4wIKXMDSoASAFQAw%3D%3D',
             label: 'Navigáció',
