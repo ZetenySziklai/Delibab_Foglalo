@@ -8,3 +8,46 @@ H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\Admin
 H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.Properties.Resources.resources
 H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.csproj.GenerateResource.cache
 H:\13\Vizsga\Délibáb étterem Vizsga\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.csproj.CoreCompileInputs.cache
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\AdminFelulet.exe.config
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\AdminFelulet.exe
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\AdminFelulet.pdb
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\AdatokLekerese.exe
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\BouncyCastle.Cryptography.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\Google.Protobuf.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\K4os.Compression.LZ4.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\K4os.Compression.LZ4.Streams.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\K4os.Hash.xxHash.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Buffers.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.IO.Pipelines.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Memory.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\ZstdSharp.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Text.Json.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Net.Http.Json.dll
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\AdatokLekerese.pdb
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\AdatokLekerese.exe.config
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\BouncyCastle.Cryptography.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\Google.Protobuf.pdb
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\Google.Protobuf.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\K4os.Compression.LZ4.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\K4os.Compression.LZ4.Streams.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\K4os.Hash.xxHash.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Buffers.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.IO.Pipelines.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Memory.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Text.Encodings.Web.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Text.Json.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\bin\Debug\System.Net.Http.Json.xml
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\obj\Debug\AdminFel.8C8BE76E.Up2Date
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.exe
+C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet\AdminFelulet\obj\Debug\AdminFelulet.pdb

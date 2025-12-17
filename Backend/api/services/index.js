@@ -7,6 +7,7 @@ const AllergeninfoService = require("./AllergeninfoService");
 const MegjegyzesService = require("./MegjegyzesService");
 const AsztalAllapotService = require("./AsztalAllapotService");
 const EtkezesTipusaService = require("./EtkezesTipusaService");
+const IdopontService = require("./IdopontService");
 
 module.exports = (db) => {
     const userService = new UserService(db);
@@ -18,6 +19,7 @@ module.exports = (db) => {
     const megjegyzesService = new MegjegyzesService(db);
     const asztalAllapotService = new AsztalAllapotService(db);
     const etkezesTipusaService = new EtkezesTipusaService(db);
+    const idopontService = new IdopontService(db);
 
     return {
         userService,
@@ -28,7 +30,8 @@ module.exports = (db) => {
         allergeninfoService,
         megjegyzesService,
         asztalAllapotService,
-        etkezesTipusaService
+        etkezesTipusaService,
+        idopontService
     };
 }
 
