@@ -18,9 +18,9 @@ namespace AdatokElerese.Services
         private readonly string _baseUrl;
 
         /// <summary>
-        /// Konstruktor - alapértelmezett URL: http://localhost:8000/api/
+        /// Konstruktor - alapértelmezett URL: http://localhost:8000
         /// </summary>
-        public ApiService(string baseUrl = "http://localhost:8000/api/")
+        public ApiService(string baseUrl = "http://localhost:8000")
         {
             _baseUrl = baseUrl;
             _httpClient = new HttpClient();

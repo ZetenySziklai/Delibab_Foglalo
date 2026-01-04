@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AdatokElerese;
@@ -11,83 +10,201 @@ namespace AdminFelulet
 {
     public partial class Form1 : Form
     {
-        // Adatok kezelése
-        private AdatokLekerese al;
-        
-        // Elérhető időpontok (választható lista)
-        private readonly string[] elhetoIdopontok = {
-            "8:00-9:00", "9:00-10:00", "10:00-11:00", "10:30-11:30",
-            "11:00-12:00", "12:00-13:00", "12:30-13:30", "13:00-14:00",
-            "13:30-14:30", "14:00-15:00", "15:00-16:00", "15:30-16:30",
-            "16:00-17:00", "16:30-17:30", "17:00-18:00", "18:00-19:00",
-            "18:30-19:30", "19:00-20:00", "19:30-20:30", "20:00-21:00",
-            "20:30-21:30", "21:00-22:00", "21:30-22:30", "22:00-23:00"
-        };
+        // Ez az osztály kezeli az adatokat (asztalok, időpontok, foglalások)
+        private AdatokLekerese adatokKezelo;
 
-        // Változások követése
-        private bool vanValtozas = false;
+        // Ez jelzi, hogy van-e mentetlen változás
+        private bool vanMentetlenValtozas = false;
 
+        // Konstruktor - itt inicializáljuk az adatkezelőt
         public Form1()
         {
             InitializeComponent();
-            al = new AdatokLekerese();
+            adatokKezelo = new AdatokLekerese();
         }
 
-        /// <summary>
-        /// Form betöltésekor automatikusan betölti az adatokat
-        /// </summary>
+        // Form betöltésekor automatikusan betöltjük az adatokat az API-ból
         private async void Form1_Load(object sender, EventArgs e)
         {
-            await AdatokBetoltese();
+            await AdatokBetolteseAPIbol();
         }
 
+        // ============================================
+        // ADATOK BETÖLTÉSE AZ API-BÓL
+        // ============================================
         /// <summary>
-        /// Adatok betöltése az API-ból vagy helyi adatokkal
+        /// Betölti az adatokat az API-ból (asztalok, időpontok, foglalások)
+        /// Ha nincs adat vagy az API nem elérhető, üres táblát mutat
         /// </summary>
-        private async Task AdatokBetoltese()
+        private async Task AdatokBetolteseAPIbol()
         {
+            // Először töröljük az összes adatot, hogy biztosan ne legyen beégetett adat
+            adatokKezelo.adatok.Clear();
+            adatokKezelo.asztalKapacitasok.Clear();
+            
             try
             {
-                labelStatus.Text = "⏳ Adatok betöltése...";
+                labelStatus.Text = "⏳ Adatok betöltése az API-ból...";
                 labelStatus.ForeColor = Color.Orange;
 
-                // Próbáljuk meg az API-ból betölteni
-                var eredmeny = await al.AsztalokLekereseAPIbol();
+                // 1. LÉPÉS: Asztalok lekérése az API-ból
+                var asztalEredmeny = await adatokKezelo.AsztalokLekereseAPIbol();
                 
-                if (eredmeny.Sikeres)
+                if (!asztalEredmeny.Sikeres)
                 {
-                    labelStatus.Text = "✅ Adatok betöltve az API-ból";
+                    // Ha nem sikerült, üres táblát mutatunk és részletes hibaüzenetet
+                    string hibaUzenet = "API nem elérhető: " + adatokKezelo.UtolsoHiba;
+                    labelStatus.Text = "❌ " + hibaUzenet;
+                    labelStatus.ForeColor = Color.Red;
+                    
+                    // Üres táblázat
+                    GridBeallitasa();
+                    GridFrissitese();
+                    ComboBoxokFrissitese();
+                    vanMentetlenValtozas = false;
+                    
+                    // Részletes hibaüzenet
+                    MessageBox.Show(
+                        "Az API nem elérhető!\n\n" +
+                        "Hiba: " + adatokKezelo.UtolsoHiba + "\n\n" +
+                        "Ellenőrizd:\n" +
+                        "1. Fut-e a Backend? (http://localhost:8000)\n" +
+                        "2. Fut-e a MySQL? (XAMPP)\n" +
+                        "3. Létre van-e hozva az 'asztalfoglalas' adatbázis?\n\n" +
+                        "Az alkalmazás üres táblázattal folytatja.",
+                        "API nem elérhető",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 2. LÉPÉS: Időpontok lekérése az API-ból
+                var idopontEredmeny = await adatokKezelo.IdopontokLekereseAPIbol();
+                
+                if (idopontEredmeny.Sikeres)
+                {
+                    int idopontokSzama = adatokKezelo.adatok.Count;
+                    int asztalokSzama = adatokKezelo.asztalKapacitasok.Count;
+                    labelStatus.Text = "✅ Adatok betöltve az API-ból (" + asztalokSzama + " asztal, " + idopontokSzama + " időpont)";
                     labelStatus.ForeColor = Color.LightGreen;
                 }
                 else
                 {
-                    // Ha nincs API, helyi adatokat használunk
-                    al.AlapAdatokLetrehozasa();
-                    labelStatus.Text = "⚠️ Helyi adatok (API nem elérhető)";
-                    labelStatus.ForeColor = Color.Yellow;
+                    // Ha nincs időpont az API-ban, üres táblát mutatunk
+                    int asztalokSzama = adatokKezelo.asztalKapacitasok.Count;
+                    labelStatus.Text = "✅ Asztalok betöltve (" + asztalokSzama + " asztal), nincs időpont az adatbázisban";
+                    labelStatus.ForeColor = Color.LightGreen;
+                }
+
+                // 3. LÉPÉS: Foglalások lekérése (mai napra)
+                string maiDatum = DateTime.Now.ToString("yyyy-MM-dd");
+                var foglalasEredmeny = await adatokKezelo.FoglalasokLekereseAPIbol(maiDatum);
+                
+                if (foglalasEredmeny.Sikeres)
+                {
+                    List<FoglalasDto> foglalasok = (List<FoglalasDto>)foglalasEredmeny.Eredmeny;
+                    if (foglalasok != null && foglalasok.Count > 0)
+                    {
+                        FrissitElerhetosegekFoglalasokAlapjan(foglalasok);
+                    }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // API hiba esetén helyi adatokat használunk
-                al.AlapAdatokLetrehozasa();
-                labelStatus.Text = "⚠️ Helyi adatok (API hiba)";
-                labelStatus.ForeColor = Color.Yellow;
+                // Hiba esetén töröljük az összes adatot, hogy biztosan ne legyen régi adat
+                adatokKezelo.adatok.Clear();
+                adatokKezelo.asztalKapacitasok.Clear();
+                
+                // Hiba esetén üres táblát mutatunk és részletes hibaüzenetet
+                string hibaUzenet = "API hiba: " + ex.Message;
+                labelStatus.Text = "❌ " + hibaUzenet;
+                labelStatus.ForeColor = Color.Red;
+                
+                // Üres táblázat
+                GridBeallitasa();
+                GridFrissitese();
+                ComboBoxokFrissitese();
+                vanMentetlenValtozas = false;
+                
+                // Részletes hibaüzenet
+                MessageBox.Show(
+                    "Hiba történt az API elérésekor!\n\n" +
+                    "Hiba részletek: " + ex.Message + "\n\n" +
+                    "Ellenőrizd:\n" +
+                    "1. Fut-e a Backend? (http://localhost:8000)\n" +
+                    "2. Fut-e a MySQL? (XAMPP)\n" +
+                    "3. Létre van-e hozva az 'asztalfoglalas' adatbázis?\n\n" +
+                    "Az alkalmazás üres táblázattal folytatja.",
+                    "API hiba",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
             }
 
             // Grid és ComboBox-ok frissítése
             GridBeallitasa();
             GridFrissitese();
             ComboBoxokFrissitese();
-            vanValtozas = false;
+            vanMentetlenValtozas = false;
         }
 
+        // ============================================
+        // FOGLALÁSOK ALAPJÁN FRISSÍTÉS
+        // ============================================
         /// <summary>
-        /// Grid beállítása - oszlopok az asztalokhoz
+        /// A foglalások alapján beállítja, melyik asztal foglalt
+        /// </summary>
+        private void FrissitElerhetosegekFoglalasokAlapjan(List<FoglalasDto> foglalasok)
+        {
+            // Először minden asztalt elérhetőnek jelölünk
+            foreach (var idopont in adatokKezelo.adatok)
+            {
+                for (int i = 0; i < idopont.asztal.Count; i++)
+                {
+                    idopont.asztal[i] = true; // true = szabad
+                }
+            }
+
+            // Aztán a foglalások alapján beállítjuk a foglaltakat
+            foreach (var foglalas in foglalasok)
+            {
+                // Az asztal ID-ja 1-től kezdődik, de az index 0-tól
+                int asztalIndex = foglalas.AsztalId - 1;
+                
+                // Ellenőrizzük, hogy érvényes az index
+                if (asztalIndex >= 0 && asztalIndex < adatokKezelo.SzamolAsztalokSzama())
+                {
+                    // A foglalás dátumát összehasonlítjuk a mai dátummal
+                    DateTime foglalasDatum = foglalas.FoglalasDatum.Date;
+                    DateTime maiDatum = DateTime.Now.Date;
+                    
+                    if (foglalasDatum == maiDatum)
+                    {
+                        // Ha a mai napra van foglalás, beállítjuk foglaltnak
+                        foreach (var idopont in adatokKezelo.adatok)
+                        {
+                            if (asztalIndex < idopont.asztal.Count)
+                            {
+                                idopont.asztal[asztalIndex] = false; // false = foglalt
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // ============================================
+        // GRID BEÁLLÍTÁSA ÉS FRISSÍTÉSE
+        // ============================================
+        /// <summary>
+        /// Beállítja a grid oszlopait (asztalok)
         /// </summary>
         private void GridBeallitasa()
         {
+            // Töröljük a régi oszlopokat
             dataGridView1.Columns.Clear();
+            
+            // Grid beállítások
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.SelectionMode = DataGridViewSelectionMode.CellSelect;
@@ -99,18 +216,20 @@ namespace AdminFelulet
             dataGridView1.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // Asztal oszlopok hozzáadása
-            int asztalokSzama = al.SzamolAsztalokSzama();
+            int asztalokSzama = adatokKezelo.SzamolAsztalokSzama();
             for (int i = 0; i < asztalokSzama; i++)
             {
-                int kapacitas = 4;
-                if (i < al.asztalKapacitasok.Count)
+                // Kapacitás lekérése - csak az API-ból érkező adatokkal
+                int kapacitas = 0; // Ha nincs adat, 0-t használunk
+                if (i < adatokKezelo.asztalKapacitasok.Count)
                 {
-                    kapacitas = al.asztalKapacitasok[i];
+                    kapacitas = adatokKezelo.asztalKapacitasok[i];
                 }
 
+                // Új oszlop létrehozása
                 DataGridViewTextBoxColumn oszlop = new DataGridViewTextBoxColumn();
-                oszlop.Name = $"asztal_{i + 1}";
-                oszlop.HeaderText = $"Asztal {i + 1}\n({kapacitas} fő)";
+                oszlop.Name = "asztal_" + (i + 1);
+                oszlop.HeaderText = "Asztal " + (i + 1) + "\n(" + kapacitas + " fő)";
                 oszlop.Width = 100;
                 oszlop.ReadOnly = true;
                 oszlop.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -119,32 +238,43 @@ namespace AdminFelulet
         }
 
         /// <summary>
-        /// Grid feltöltése adatokkal
+        /// Feltölti a grid-et az adatokkal
         /// </summary>
         private void GridFrissitese()
         {
+            // Töröljük a régi sorokat
             dataGridView1.Rows.Clear();
             
-            foreach (var idopont in al.adatok)
+            // Ha nincs időpont, üres táblát mutatunk
+            if (adatokKezelo.adatok.Count == 0)
             {
-                int rowIndex = dataGridView1.Rows.Add();
-                dataGridView1.Rows[rowIndex].HeaderCell.Value = idopont.ido;
-                dataGridView1.Rows[rowIndex].Height = 35;
+                return;
+            }
+            
+            // Minden időponthoz hozzáadunk egy sort
+            foreach (var idopont in adatokKezelo.adatok)
+            {
+                int sorIndex = dataGridView1.Rows.Add();
+                dataGridView1.Rows[sorIndex].HeaderCell.Value = idopont.ido;
+                dataGridView1.Rows[sorIndex].Height = 35;
 
+                // Minden asztalhoz beállítjuk a színt
                 for (int j = 0; j < idopont.asztal.Count && j < dataGridView1.Columns.Count; j++)
                 {
                     bool elerheto = idopont.asztal[j];
-                    DataGridViewCell cella = dataGridView1.Rows[rowIndex].Cells[j];
+                    DataGridViewCell cella = dataGridView1.Rows[sorIndex].Cells[j];
                     
                     if (elerheto)
                     {
-                        cella.Style.BackColor = Color.FromArgb(40, 167, 69); // Zöld
+                        // Zöld = szabad
+                        cella.Style.BackColor = Color.FromArgb(40, 167, 69);
                         cella.Value = "Szabad";
                         cella.Style.ForeColor = Color.White;
                     }
                     else
                     {
-                        cella.Style.BackColor = Color.FromArgb(220, 53, 69); // Piros
+                        // Piros = foglalt
+                        cella.Style.BackColor = Color.FromArgb(220, 53, 69);
                         cella.Value = "Foglalt";
                         cella.Style.ForeColor = Color.White;
                     }
@@ -155,40 +285,45 @@ namespace AdminFelulet
         }
 
         /// <summary>
-        /// ComboBox-ok frissítése
+        /// Frissíti a ComboBox-okat (asztal és időpont törléshez)
         /// </summary>
         private void ComboBoxokFrissitese()
         {
             // Asztal törlés ComboBox
             comboBoxAsztalTorlendo.Items.Clear();
-            int asztalokSzama = al.SzamolAsztalokSzama();
+            int asztalokSzama = adatokKezelo.SzamolAsztalokSzama();
             for (int i = 0; i < asztalokSzama; i++)
             {
-                int kapacitas = 4;
-                if (i < al.asztalKapacitasok.Count)
+                int kapacitas = 0; // Ha nincs adat, 0-t használunk
+                if (i < adatokKezelo.asztalKapacitasok.Count)
                 {
-                    kapacitas = al.asztalKapacitasok[i];
+                    kapacitas = adatokKezelo.asztalKapacitasok[i];
                 }
-                comboBoxAsztalTorlendo.Items.Add($"Asztal {i + 1} ({kapacitas} fő)");
+                comboBoxAsztalTorlendo.Items.Add("Asztal " + (i + 1) + " (" + kapacitas + " fő)");
             }
 
             // Időpont törlés ComboBox
             comboBoxIdopontTorlendo.Items.Clear();
-            foreach (var idopont in al.adatok)
+            foreach (var idopont in adatokKezelo.adatok)
             {
                 comboBoxIdopontTorlendo.Items.Add(idopont.ido);
             }
         }
 
+        // ============================================
+        // CELLÁK KEZELÉSE
+        // ============================================
         /// <summary>
-        /// Cella kattintás - foglalás váltás
+        /// Cella kattintáskor vált a foglalás állapota (szabad <-> foglalt)
         /// </summary>
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
+            // Ellenőrizzük, hogy érvényes cellára kattintottunk
             if (e.RowIndex < 0 || e.ColumnIndex < 0)
                 return;
 
-            var eredmeny = al.FoglalasValtoztatasa(e.RowIndex, e.ColumnIndex);
+            // Váltjuk a foglalás állapotát
+            var eredmeny = adatokKezelo.FoglalasValtoztatasa(e.RowIndex, e.ColumnIndex);
             
             if (eredmeny.Sikeres)
             {
@@ -197,109 +332,134 @@ namespace AdminFelulet
                 
                 if (ujElerheto)
                 {
+                    // Szabad
                     cella.Style.BackColor = Color.FromArgb(40, 167, 69);
                     cella.Value = "Szabad";
                 }
                 else
                 {
+                    // Foglalt
                     cella.Style.BackColor = Color.FromArgb(220, 53, 69);
                     cella.Value = "Foglalt";
                 }
                 cella.Style.SelectionBackColor = cella.Style.BackColor;
                 
-                vanValtozas = true;
+                vanMentetlenValtozas = true;
                 labelStatus.Text = "⚠️ Mentetlen változások vannak!";
                 labelStatus.ForeColor = Color.Orange;
             }
         }
 
+        // ============================================
+        // ASZTAL HOZZÁADÁSA
+        // ============================================
         /// <summary>
-        /// + Asztal gomb - új asztal hozzáadása
+        /// Új asztal hozzáadása (gomb kattintás)
         /// </summary>
-        private void btnAsztalHozzaad_Click(object sender, EventArgs e)
+        private async void btnAsztalHozzaad_Click(object sender, EventArgs e)
         {
-            // Kapacitás bekérése
-            using (Form inputForm = new Form())
+            // Kapacitás bekérése egy ablakban
+            Form inputAblak = new Form();
+            inputAblak.Width = 350;
+            inputAblak.Height = 200;
+            inputAblak.Text = "Új asztal hozzáadása";
+            inputAblak.StartPosition = FormStartPosition.CenterParent;
+            inputAblak.FormBorderStyle = FormBorderStyle.FixedDialog;
+            inputAblak.MaximizeBox = false;
+            inputAblak.MinimizeBox = false;
+
+            Label label = new Label();
+            label.Left = 20;
+            label.Top = 20;
+            label.Width = 300;
+            label.Text = "Hány személyes legyen az új asztal?";
+            label.Font = new Font("Segoe UI", 10);
+            
+            NumericUpDown numericKapacitas = new NumericUpDown();
+            numericKapacitas.Left = 20;
+            numericKapacitas.Top = 55;
+            numericKapacitas.Width = 290;
+            numericKapacitas.Height = 30;
+            numericKapacitas.Minimum = 1;
+            numericKapacitas.Maximum = 20;
+            numericKapacitas.Value = 4;
+            numericKapacitas.Font = new Font("Segoe UI", 12);
+            
+            Label infoLabel = new Label();
+            infoLabel.Left = 20;
+            infoLabel.Top = 90;
+            infoLabel.Width = 300;
+            infoLabel.Text = "Az új asztal: Asztal " + (adatokKezelo.SzamolAsztalokSzama() + 1);
+            infoLabel.Font = new Font("Segoe UI", 9, FontStyle.Italic);
+            infoLabel.ForeColor = Color.Gray;
+            
+            Button okGomb = new Button();
+            okGomb.Text = "Hozzáadás";
+            okGomb.Left = 100;
+            okGomb.Width = 100;
+            okGomb.Top = 120;
+            okGomb.DialogResult = DialogResult.OK;
+            okGomb.BackColor = Color.FromArgb(40, 167, 69);
+            okGomb.ForeColor = Color.White;
+            okGomb.FlatStyle = FlatStyle.Flat;
+            
+            Button megseGomb = new Button();
+            megseGomb.Text = "Mégse";
+            megseGomb.Left = 210;
+            megseGomb.Width = 100;
+            megseGomb.Top = 120;
+            megseGomb.DialogResult = DialogResult.Cancel;
+
+            inputAblak.Controls.Add(label);
+            inputAblak.Controls.Add(numericKapacitas);
+            inputAblak.Controls.Add(infoLabel);
+            inputAblak.Controls.Add(okGomb);
+            inputAblak.Controls.Add(megseGomb);
+            inputAblak.AcceptButton = okGomb;
+            inputAblak.CancelButton = megseGomb;
+
+            if (inputAblak.ShowDialog() == DialogResult.OK)
             {
-                inputForm.Width = 350;
-                inputForm.Height = 200;
-                inputForm.Text = "Új asztal hozzáadása";
-                inputForm.StartPosition = FormStartPosition.CenterParent;
-                inputForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-                inputForm.MaximizeBox = false;
-                inputForm.MinimizeBox = false;
-
-                Label label = new Label() 
-                { 
-                    Left = 20, Top = 20, Width = 300, 
-                    Text = "Hány személyes legyen az új asztal?",
-                    Font = new Font("Segoe UI", 10)
-                };
+                int kapacitas = (int)numericKapacitas.Value;
                 
-                NumericUpDown numericKapacitas = new NumericUpDown() 
-                { 
-                    Left = 20, Top = 55, Width = 290, Height = 30,
-                    Minimum = 1, Maximum = 20, Value = 4,
-                    Font = new Font("Segoe UI", 12)
-                };
+                // 1. Hozzáadjuk lokálisan
+                var eredmeny = adatokKezelo.AsztalHozzaadasa(kapacitas);
                 
-                Label infoLabel = new Label()
+                if (eredmeny.Sikeres)
                 {
-                    Left = 20, Top = 90, Width = 300,
-                    Text = $"Az új asztal: Asztal {al.SzamolAsztalokSzama() + 1}",
-                    Font = new Font("Segoe UI", 9, FontStyle.Italic),
-                    ForeColor = Color.Gray
-                };
-                
-                Button okGomb = new Button() 
-                { 
-                    Text = "Hozzáadás", Left = 100, Width = 100, Top = 120, 
-                    DialogResult = DialogResult.OK,
-                    BackColor = Color.FromArgb(40, 167, 69),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat
-                };
-                
-                Button megseGomb = new Button() 
-                { 
-                    Text = "Mégse", Left = 210, Width = 100, Top = 120, 
-                    DialogResult = DialogResult.Cancel 
-                };
-
-                inputForm.Controls.Add(label);
-                inputForm.Controls.Add(numericKapacitas);
-                inputForm.Controls.Add(infoLabel);
-                inputForm.Controls.Add(okGomb);
-                inputForm.Controls.Add(megseGomb);
-                inputForm.AcceptButton = okGomb;
-                inputForm.CancelButton = megseGomb;
-
-                if (inputForm.ShowDialog() == DialogResult.OK)
-                {
-                    int kapacitas = (int)numericKapacitas.Value;
-                    var eredmeny = al.AsztalHozzaadasa(kapacitas);
+                    // 2. Mentjük az API-ba
+                    var apiEredmeny = await adatokKezelo.AsztalMenteseAPIba(kapacitas, 1);
                     
-                    if (eredmeny.Sikeres)
+                    if (apiEredmeny.Sikeres)
                     {
                         GridBeallitasa();
                         GridFrissitese();
                         ComboBoxokFrissitese();
-                        vanValtozas = true;
-                        labelStatus.Text = $"✅ Asztal {al.SzamolAsztalokSzama()} hozzáadva ({kapacitas} fő)";
+                        vanMentetlenValtozas = false;
+                        labelStatus.Text = "✅ Asztal hozzáadva és mentve az API-ba!";
                         labelStatus.ForeColor = Color.LightGreen;
                     }
                     else
                     {
-                        MessageBox.Show(eredmeny.Uzenet, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        vanMentetlenValtozas = true;
+                        labelStatus.Text = "⚠️ Asztal hozzáadva, de API mentés sikertelen!";
+                        labelStatus.ForeColor = Color.Orange;
                     }
+                }
+                else
+                {
+                    MessageBox.Show(eredmeny.Uzenet, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
+        // ============================================
+        // ASZTAL TÖRLÉSE
+        // ============================================
         /// <summary>
-        /// - Asztal törlés gomb
+        /// Asztal törlése (gomb kattintás)
         /// </summary>
-        private void btnAsztalTorol_Click(object sender, EventArgs e)
+        private async void btnAsztalTorol_Click(object sender, EventArgs e)
         {
             if (comboBoxAsztalTorlendo.SelectedIndex < 0)
             {
@@ -310,23 +470,39 @@ namespace AdminFelulet
 
             string kivalasztott = comboBoxAsztalTorlendo.SelectedItem.ToString();
             DialogResult megerosites = MessageBox.Show(
-                $"Biztosan törölni szeretnéd a következő asztalt?\n\n{kivalasztott}\n\nEz a művelet nem vonható vissza!",
+                "Biztosan törölni szeretnéd a következő asztalt?\n\n" + kivalasztott + "\n\nEz a művelet nem vonható vissza!",
                 "Törlés megerősítése",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
 
             if (megerosites == DialogResult.Yes)
             {
-                var eredmeny = al.AsztalEltavolitasa(comboBoxAsztalTorlendo.SelectedIndex);
+                int asztalIndex = comboBoxAsztalTorlendo.SelectedIndex;
+                int asztalId = asztalIndex + 1; // Az ID 1-től kezdődik
+                
+                // 1. Töröljük lokálisan
+                var eredmeny = adatokKezelo.AsztalEltavolitasa(asztalIndex);
                 
                 if (eredmeny.Sikeres)
                 {
-                    GridBeallitasa();
-                    GridFrissitese();
-                    ComboBoxokFrissitese();
-                    vanValtozas = true;
-                    labelStatus.Text = $"✅ {kivalasztott} törölve";
-                    labelStatus.ForeColor = Color.LightGreen;
+                    // 2. Töröljük az API-ból
+                    var apiEredmeny = await adatokKezelo.AsztalTorleseAPIbol(asztalId);
+                    
+                    if (apiEredmeny.Sikeres)
+                    {
+                        GridBeallitasa();
+                        GridFrissitese();
+                        ComboBoxokFrissitese();
+                        vanMentetlenValtozas = false;
+                        labelStatus.Text = "✅ Asztal törölve az API-ból!";
+                        labelStatus.ForeColor = Color.LightGreen;
+                    }
+                    else
+                    {
+                        vanMentetlenValtozas = true;
+                        labelStatus.Text = "⚠️ Asztal törölve, de API törlés sikertelen!";
+                        labelStatus.ForeColor = Color.Orange;
+                    }
                 }
                 else
                 {
@@ -335,109 +511,163 @@ namespace AdminFelulet
             }
         }
 
+        // ============================================
+        // IDŐPONT HOZZÁADÁSA
+        // ============================================
         /// <summary>
-        /// + Időpont gomb - új időpont hozzáadása
+        /// Új időpont hozzáadása (gomb kattintás)
+        /// Szabadon beírhatjuk az időpontot
         /// </summary>
-        private void btnIdopontHozzaad_Click(object sender, EventArgs e)
+        private async void btnIdopontHozzaad_Click(object sender, EventArgs e)
         {
-            // Már létező időpontok
-            List<string> letezoIdopontok = al.adatok.Select(a => a.ido).ToList();
+            // Ablak létrehozása időpont beírásához
+            Form inputAblak = new Form();
+            inputAblak.Width = 400;
+            inputAblak.Height = 200;
+            inputAblak.Text = "Új időpont hozzáadása";
+            inputAblak.StartPosition = FormStartPosition.CenterParent;
+            inputAblak.FormBorderStyle = FormBorderStyle.FixedDialog;
+            inputAblak.MaximizeBox = false;
+            inputAblak.MinimizeBox = false;
+
+            Label label = new Label();
+            label.Left = 20;
+            label.Top = 20;
+            label.Width = 360;
+            label.Text = "Add meg az időpontot (pl: 9:00-10:00):";
+            label.Font = new Font("Segoe UI", 10);
             
-            // Választható időpontok (amelyek még nincsenek)
-            List<string> valaszthatoIdopontok = elhetoIdopontok
-                .Where(ido => !letezoIdopontok.Contains(ido))
-                .ToList();
+            TextBox textBoxIdopont = new TextBox();
+            textBoxIdopont.Left = 20;
+            textBoxIdopont.Top = 50;
+            textBoxIdopont.Width = 340;
+            textBoxIdopont.Height = 30;
+            textBoxIdopont.Font = new Font("Segoe UI", 11);
+            textBoxIdopont.PlaceholderText = "9:00-10:00";
+            
+            Label infoLabel = new Label();
+            infoLabel.Left = 20;
+            infoLabel.Top = 90;
+            infoLabel.Width = 360;
+            infoLabel.Text = "Formátum: ÓÓ:PP-ÓÓ:PP (pl: 9:00-10:00)";
+            infoLabel.Font = new Font("Segoe UI", 9, FontStyle.Italic);
+            infoLabel.ForeColor = Color.Gray;
+            
+            Button okGomb = new Button();
+            okGomb.Text = "Hozzáadás";
+            okGomb.Left = 120;
+            okGomb.Width = 100;
+            okGomb.Top = 120;
+            okGomb.DialogResult = DialogResult.OK;
+            okGomb.BackColor = Color.FromArgb(40, 167, 69);
+            okGomb.ForeColor = Color.White;
+            okGomb.FlatStyle = FlatStyle.Flat;
+            
+            Button megseGomb = new Button();
+            megseGomb.Text = "Mégse";
+            megseGomb.Left = 230;
+            megseGomb.Width = 100;
+            megseGomb.Top = 120;
+            megseGomb.DialogResult = DialogResult.Cancel;
 
-            if (valaszthatoIdopontok.Count == 0)
+            inputAblak.Controls.Add(label);
+            inputAblak.Controls.Add(textBoxIdopont);
+            inputAblak.Controls.Add(infoLabel);
+            inputAblak.Controls.Add(okGomb);
+            inputAblak.Controls.Add(megseGomb);
+            inputAblak.AcceptButton = okGomb;
+            inputAblak.CancelButton = megseGomb;
+
+            if (inputAblak.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show("Minden lehetséges időpont már hozzá van adva!", 
-                    "Nincs több időpont", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            using (Form inputForm = new Form())
-            {
-                inputForm.Width = 350;
-                inputForm.Height = 200;
-                inputForm.Text = "Új időpont hozzáadása";
-                inputForm.StartPosition = FormStartPosition.CenterParent;
-                inputForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-                inputForm.MaximizeBox = false;
-                inputForm.MinimizeBox = false;
-
-                Label label = new Label() 
-                { 
-                    Left = 20, Top = 20, Width = 300, 
-                    Text = "Válassz egy időpontot:",
-                    Font = new Font("Segoe UI", 10)
-                };
+                string ujIdopont = textBoxIdopont.Text.Trim();
                 
-                ComboBox comboIdopont = new ComboBox() 
-                { 
-                    Left = 20, Top = 50, Width = 290,
-                    DropDownStyle = ComboBoxStyle.DropDownList,
-                    Font = new Font("Segoe UI", 11)
-                };
-                comboIdopont.Items.AddRange(valaszthatoIdopontok.ToArray());
-                if (comboIdopont.Items.Count > 0)
-                    comboIdopont.SelectedIndex = 0;
-                
-                Label infoLabel = new Label()
+                // Ellenőrizzük, hogy nem üres
+                if (string.IsNullOrEmpty(ujIdopont))
                 {
-                    Left = 20, Top = 85, Width = 300,
-                    Text = $"Elérhető időpontok száma: {valaszthatoIdopontok.Count}",
-                    Font = new Font("Segoe UI", 9, FontStyle.Italic),
-                    ForeColor = Color.Gray
-                };
+                    MessageBox.Show("Az időpont nem lehet üres!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 
-                Button okGomb = new Button() 
-                { 
-                    Text = "Hozzáadás", Left = 100, Width = 100, Top = 120, 
-                    DialogResult = DialogResult.OK,
-                    BackColor = Color.FromArgb(40, 167, 69),
-                    ForeColor = Color.White,
-                    FlatStyle = FlatStyle.Flat
-                };
-                
-                Button megseGomb = new Button() 
-                { 
-                    Text = "Mégse", Left = 210, Width = 100, Top = 120, 
-                    DialogResult = DialogResult.Cancel 
-                };
-
-                inputForm.Controls.Add(label);
-                inputForm.Controls.Add(comboIdopont);
-                inputForm.Controls.Add(infoLabel);
-                inputForm.Controls.Add(okGomb);
-                inputForm.Controls.Add(megseGomb);
-                inputForm.AcceptButton = okGomb;
-                inputForm.CancelButton = megseGomb;
-
-                if (inputForm.ShowDialog() == DialogResult.OK && comboIdopont.SelectedItem != null)
+                // Ellenőrizzük, hogy nincs-e már ilyen időpont
+                bool marVan = false;
+                foreach (var idopont in adatokKezelo.adatok)
                 {
-                    string ujIdopont = comboIdopont.SelectedItem.ToString();
-                    var eredmeny = al.IdopontHozzaadasa(ujIdopont);
-                    
-                    if (eredmeny.Sikeres)
+                    if (idopont.ido == ujIdopont)
                     {
-                        GridFrissitese();
-                        ComboBoxokFrissitese();
-                        vanValtozas = true;
-                        labelStatus.Text = $"✅ Időpont hozzáadva: {ujIdopont}";
-                        labelStatus.ForeColor = Color.LightGreen;
+                        marVan = true;
+                        break;
                     }
-                    else
+                }
+                
+                if (marVan)
+                {
+                    MessageBox.Show("Ez az időpont már létezik!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                // 1. Hozzáadjuk lokálisan
+                var eredmeny = adatokKezelo.IdopontHozzaadasa(ujIdopont);
+                
+                if (eredmeny.Sikeres)
+                {
+                    // 2. Mentjük az API-ba
+                    // Az időpontot dátum-idő formátumban kell menteni
+                    // Egyszerűsítve: mai dátum + időpont kezdete
+                    string[] reszek = ujIdopont.Split('-');
+                    if (reszek.Length == 2)
                     {
-                        MessageBox.Show(eredmeny.Uzenet, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        string kezdoIdo = reszek[0].Trim();
+                        string[] kezdoReszek = kezdoIdo.Split(':');
+                        if (kezdoReszek.Length == 2)
+                        {
+                            try
+                            {
+                                int ora = int.Parse(kezdoReszek[0]);
+                                int perc = int.Parse(kezdoReszek[1]);
+                                DateTime idopontDatum = DateTime.Now.Date.AddHours(ora).AddMinutes(perc);
+                                
+                                IdopontDto ujIdopontDto = new IdopontDto();
+                                ujIdopontDto.FoglalasNapIdo = idopontDatum;
+                                
+                                var apiEredmeny = await adatokKezelo.IdopontMenteseAPIba(ujIdopontDto);
+                                
+                                if (apiEredmeny.Sikeres)
+                                {
+                                    GridFrissitese();
+                                    ComboBoxokFrissitese();
+                                    vanMentetlenValtozas = false;
+                                    labelStatus.Text = "✅ Időpont hozzáadva és mentve az API-ba!";
+                                    labelStatus.ForeColor = Color.LightGreen;
+                                }
+                                else
+                                {
+                                    vanMentetlenValtozas = true;
+                                    labelStatus.Text = "⚠️ Időpont hozzáadva, de API mentés sikertelen!";
+                                    labelStatus.ForeColor = Color.Orange;
+                                }
+                            }
+                            catch
+                            {
+                                MessageBox.Show("Hibás időpont formátum! Használd: ÓÓ:PP-ÓÓ:PP", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
                     }
+                }
+                else
+                {
+                    MessageBox.Show(eredmeny.Uzenet, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
+        // ============================================
+        // IDŐPONT TÖRLÉSE
+        // ============================================
         /// <summary>
-        /// - Időpont törlés gomb
+        /// Időpont törlése (gomb kattintás)
         /// </summary>
-        private void btnIdopontTorol_Click(object sender, EventArgs e)
+        private async void btnIdopontTorol_Click(object sender, EventArgs e)
         {
             if (comboBoxIdopontTorlendo.SelectedIndex < 0)
             {
@@ -448,22 +678,38 @@ namespace AdminFelulet
 
             string kivalasztott = comboBoxIdopontTorlendo.SelectedItem.ToString();
             DialogResult megerosites = MessageBox.Show(
-                $"Biztosan törölni szeretnéd a következő időpontot?\n\n{kivalasztott}\n\nEz a művelet nem vonható vissza!",
+                "Biztosan törölni szeretnéd a következő időpontot?\n\n" + kivalasztott + "\n\nEz a művelet nem vonható vissza!",
                 "Törlés megerősítése",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
 
             if (megerosites == DialogResult.Yes)
             {
-                var eredmeny = al.IdopontEltavolitasa(comboBoxIdopontTorlendo.SelectedIndex);
+                int idopontIndex = comboBoxIdopontTorlendo.SelectedIndex;
+                int idopontId = idopontIndex + 1; // Egyszerűsítve
+                
+                // 1. Töröljük lokálisan
+                var eredmeny = adatokKezelo.IdopontEltavolitasa(idopontIndex);
                 
                 if (eredmeny.Sikeres)
                 {
-                    GridFrissitese();
-                    ComboBoxokFrissitese();
-                    vanValtozas = true;
-                    labelStatus.Text = $"✅ Időpont törölve: {kivalasztott}";
-                    labelStatus.ForeColor = Color.LightGreen;
+                    // 2. Töröljük az API-ból
+                    var apiEredmeny = await adatokKezelo.IdopontTorleseAPIbol(idopontId);
+                    
+                    if (apiEredmeny.Sikeres)
+                    {
+                        GridFrissitese();
+                        ComboBoxokFrissitese();
+                        vanMentetlenValtozas = false;
+                        labelStatus.Text = "✅ Időpont törölve az API-ból!";
+                        labelStatus.ForeColor = Color.LightGreen;
+                    }
+                    else
+                    {
+                        vanMentetlenValtozas = true;
+                        labelStatus.Text = "⚠️ Időpont törölve, de API törlés sikertelen!";
+                        labelStatus.ForeColor = Color.Orange;
+                    }
                 }
                 else
                 {
@@ -472,12 +718,15 @@ namespace AdminFelulet
             }
         }
 
+        // ============================================
+        // MENTÉS ÉS FRISSÍTÉS
+        // ============================================
         /// <summary>
         /// Mentés gomb - adatok mentése az API-ba
         /// </summary>
         private async void btnMentes_Click(object sender, EventArgs e)
         {
-            if (!vanValtozas)
+            if (!vanMentetlenValtozas)
             {
                 MessageBox.Show("Nincs mentendő változás!", 
                     "Mentés", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -498,32 +747,41 @@ namespace AdminFelulet
                     labelStatus.ForeColor = Color.Orange;
                     btnMentes.Enabled = false;
 
-                    // Asztalok mentése az API-ba
+                    // 1. Asztalok mentése az API-ba
                     int sikeresAsztalok = 0;
-                    for (int i = 0; i < al.asztalKapacitasok.Count; i++)
+                    for (int i = 0; i < adatokKezelo.asztalKapacitasok.Count; i++)
                     {
-                        var eredmeny = await al.AsztalFrissiteseAPIban(i + 1, al.asztalKapacitasok[i], 1);
+                        int asztalId = i + 1;
+                        int kapacitas = adatokKezelo.asztalKapacitasok[i];
+                        var eredmeny = await adatokKezelo.AsztalFrissiteseAPIban(asztalId, kapacitas, 1);
                         if (eredmeny.Sikeres)
                         {
                             sikeresAsztalok++;
                         }
                     }
 
-                    // Foglalások mentése (később implementálható részletesebben)
-                    // Jelenleg az asztal állapotokat mentjük
+                    // 2. Foglalások állapotának mentése (a grid-ben lévő állapotok alapján)
+                    string maiDatum = DateTime.Now.ToString("yyyy-MM-dd");
+                    var foglalasEredmeny = await adatokKezelo.FoglalasokAllapotanakMenteseAPIba(maiDatum);
 
-                    vanValtozas = false;
-                    labelStatus.Text = $"✅ Mentés sikeres! ({sikeresAsztalok} asztal frissítve)";
+                    vanMentetlenValtozas = false;
+                    labelStatus.Text = "✅ Mentés sikeres!";
                     labelStatus.ForeColor = Color.LightGreen;
                     
-                    MessageBox.Show($"Adatok sikeresen mentve!\n\nFrissített asztalok: {sikeresAsztalok}", 
-                        "Mentés sikeres", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string uzenet = "Adatok sikeresen mentve!\n\n";
+                    uzenet += "Frissített asztalok: " + sikeresAsztalok + "\n";
+                    if (foglalasEredmeny.Sikeres)
+                    {
+                        uzenet += foglalasEredmeny.Uzenet;
+                    }
+                    
+                    MessageBox.Show(uzenet, "Mentés sikeres", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
                     labelStatus.Text = "❌ Mentési hiba!";
                     labelStatus.ForeColor = Color.Red;
-                    MessageBox.Show($"Hiba történt a mentés során:\n{ex.Message}\n\nEllenőrizd, hogy a Backend fut-e!", 
+                    MessageBox.Show("Hiba történt a mentés során:\n" + ex.Message + "\n\nEllenőrizd, hogy a Backend fut-e!", 
                         "Mentési hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 finally
@@ -538,7 +796,7 @@ namespace AdminFelulet
         /// </summary>
         private async void btnFrissites_Click(object sender, EventArgs e)
         {
-            if (vanValtozas)
+            if (vanMentetlenValtozas)
             {
                 DialogResult megerosites = MessageBox.Show(
                     "Mentetlen változásaid vannak!\n\nBiztosan szeretnéd újratölteni az adatokat az API-ból?\nA változásaid elvesznek!",
@@ -550,51 +808,16 @@ namespace AdminFelulet
                     return;
             }
 
-            await AdatokBetoltese();
+            await AdatokBetolteseAPIbol();
             MessageBox.Show("Adatok frissítve!", "Frissítés", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        /// <summary>
-        /// TESZT EXPORT gomb - adatok kiiratása fájlba (IDEIGLENES - TÖRÖLHETŐ!)
-        /// </summary>
-        private void btnTesztExport_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                // Teszt kiiratás meghívása
-                TEMP_TesztKiiratas_TOROLHETO.MindentKiir(al);
-                
-                string mappa = System.IO.Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                    "DelibabTeszt");
-                
-                MessageBox.Show(
-                    $"Teszt export sikeres!\n\nA fájlok ide kerültek:\n{mappa}\n\n" +
-                    "Létrehozott fájlok:\n" +
-                    "• asztalok_*.txt\n" +
-                    "• idopontok_es_foglaltsag_*.txt\n" +
-                    "• api_export_*.json\n" +
-                    "• OSSZEFOGLALO_*.txt",
-                    "Teszt Export",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
-                // Mappa megnyitása
-                System.Diagnostics.Process.Start("explorer.exe", mappa);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Hiba a teszt export során:\n{ex.Message}",
-                    "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Form bezáráskor figyelmeztetés mentetlen változásokra
-        /// </summary>
+        // ============================================
+        // FORM BEZÁRÁSA
+        // ============================================
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (vanValtozas)
+            if (vanMentetlenValtozas)
             {
                 DialogResult eredmeny = MessageBox.Show(
                     "Mentetlen változásaid vannak!\n\nSzeretned menteni kilépés előtt?",

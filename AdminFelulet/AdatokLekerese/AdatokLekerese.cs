@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,7 +54,10 @@ namespace AdatokElerese
                 
                 if (asztalok == null || asztalok.Count == 0)
                 {
-                    UtolsoHiba = "Nem sikerült asztalokat lekérni az API-ból";
+                    // Ha nincs asztal az API-ból, töröljük az összes adatot
+                    asztalKapacitasok.Clear();
+                    adatok.Clear(); // Töröljük az időpontokat is, mert nincs asztal
+                    UtolsoHiba = "Nincs asztal az API-ból";
                     return MuveletEredmeny.Hiba(UtolsoHiba);
                 }
 
@@ -65,20 +68,106 @@ namespace AdatokElerese
                     asztalKapacitasok.Add(asztal.HelyekSzama);
                 }
 
-                // Adatok frissítése - minden időponthoz frissítjük az asztalok számát
+                // Időpontok frissítése - minden időponthoz frissítjük az asztalok számát
+                // Csak akkor, ha vannak időpontok
                 foreach (var idopont in adatok)
                 {
-                    while (idopont.asztal.Count < asztalok.Count)
+                    // Töröljük a régi asztalokat
+                    idopont.asztal.Clear();
+                    // Hozzáadjuk az új asztalokat (alapértelmezetten elérhető)
+                    for (int i = 0; i < asztalok.Count; i++)
                     {
-                        idopont.asztal.Add(true); // Alapértelmezetten elérhető
+                        idopont.asztal.Add(true);
                     }
                 }
 
-                return MuveletEredmeny.Siker($"Sikeresen lekértünk {asztalok.Count} asztalt az API-ból", asztalok);
+                return MuveletEredmeny.Siker("Sikeresen lekértünk " + asztalok.Count + " asztalt az API-ból", asztalok);
             }
             catch (Exception ex)
             {
-                UtolsoHiba = $"Hiba az asztalok lekérésekor: {ex.Message}";
+                // Hiba esetén töröljük az összes adatot, hogy ne legyen régi adat
+                asztalKapacitasok.Clear();
+                adatok.Clear();
+                UtolsoHiba = "Hiba az asztalok lekérésekor: " + ex.Message;
+                return MuveletEredmeny.Hiba(UtolsoHiba);
+            }
+        }
+
+        /// <summary>
+        /// Időpontok lekérése a Backend API-ból
+        /// </summary>
+        public async Task<MuveletEredmeny> IdopontokLekereseAPIbol()
+        {
+            try
+            {
+                var idopontok = await _apiService.GetIdopontokAsync();
+                
+                if (idopontok == null || idopontok.Count == 0)
+                {
+                    UtolsoHiba = "Nem sikerült időpontokat lekérni az API-ból";
+                    return MuveletEredmeny.Hiba(UtolsoHiba);
+                }
+
+                // Időpontok frissítése az API adatokból
+                adatok.Clear();
+                
+                // Összegyűjtjük az összes időpontot (nem csak a mai napra)
+                List<IdopontDto> osszesIdopont = new List<IdopontDto>();
+                foreach (var idopontDto in idopontok)
+                {
+                    osszesIdopont.Add(idopontDto);
+                }
+
+                // Rendezzük idő szerint (egyszerű buborék rendezés)
+                for (int i = 0; i < osszesIdopont.Count - 1; i++)
+                {
+                    for (int j = i + 1; j < osszesIdopont.Count; j++)
+                    {
+                        if (osszesIdopont[i].FoglalasNapIdo > osszesIdopont[j].FoglalasNapIdo)
+                        {
+                            IdopontDto temp = osszesIdopont[i];
+                            osszesIdopont[i] = osszesIdopont[j];
+                            osszesIdopont[j] = temp;
+                        }
+                    }
+                }
+
+                // Minden időponthoz létrehozunk egy bejegyzést
+                foreach (var idopontDto in osszesIdopont)
+                {
+                    // Időpont formátum: "HH:mm-HH:mm"
+                    string idopontString = idopontDto.FoglalasNapIdo.ToString("HH:mm");
+                    // Hozzáadjuk a következő órát is (egyszerűsítve)
+                    int kovetkezoOra = idopontDto.FoglalasNapIdo.Hour + 1;
+                    string kovetkezoOraString = kovetkezoOra.ToString("00") + ":00";
+                    string idopontTeljes = idopontString + "-" + kovetkezoOraString;
+
+                    AdatokFeldolgozasa ujIdopont = new AdatokFeldolgozasa();
+                    ujIdopont.ido = idopontTeljes;
+                    
+                    // Minden asztalhoz hozzáadjuk (alapértelmezetten elérhető)
+                    for (int i = 0; i < asztalKapacitasok.Count; i++)
+                    {
+                        ujIdopont.asztal.Add(true);
+                    }
+                    
+                    adatok.Add(ujIdopont);
+                }
+
+                // Ha nincs időpont az API-ban, üres listát adunk vissza (nem beégetett adatokat)
+                if (adatok.Count == 0)
+                {
+                    // Üres lista - nincs időpont az adatbázisban
+                    return MuveletEredmeny.Siker("Nincs időpont az API-ban - üres lista", new List<IdopontDto>());
+                }
+
+                return MuveletEredmeny.Siker("Sikeresen lekértünk " + adatok.Count + " időpontot az API-ból", idopontok);
+            }
+            catch (Exception ex)
+            {
+                // Hiba esetén töröljük az időpontokat, hogy ne legyen régi adat
+                adatok.Clear();
+                UtolsoHiba = "Hiba az időpontok lekérésekor: " + ex.Message;
                 return MuveletEredmeny.Hiba(UtolsoHiba);
             }
         }
@@ -362,90 +451,179 @@ namespace AdatokElerese
             }
         }
 
+        /// <summary>
+        /// Új időpont mentése az API-ba
+        /// </summary>
+        public async Task<MuveletEredmeny> IdopontMenteseAPIba(IdopontDto idopont)
+        {
+            try
+            {
+                var eredmeny = await _apiService.CreateIdopontAsync(idopont);
+                
+                if (eredmeny != null)
+                {
+                    return MuveletEredmeny.Siker($"Időpont sikeresen mentve az API-ba (ID: {eredmeny.IdopontId})", eredmeny);
+                }
+                
+                return MuveletEredmeny.Hiba("Nem sikerült az időpontot menteni az API-ba");
+            }
+            catch (Exception ex)
+            {
+                UtolsoHiba = $"Hiba az időpont mentésekor: {ex.Message}";
+                return MuveletEredmeny.Hiba(UtolsoHiba);
+            }
+        }
+
+        /// <summary>
+        /// Időpont törlése az API-ból
+        /// </summary>
+        public async Task<MuveletEredmeny> IdopontTorleseAPIbol(int id)
+        {
+            try
+            {
+                var sikeres = await _apiService.DeleteIdopontAsync(id);
+                
+                if (sikeres)
+                {
+                    return MuveletEredmeny.Siker($"Időpont sikeresen törölve az API-ból (ID: {id})", id);
+                }
+                
+                return MuveletEredmeny.Hiba("Nem sikerült az időpontot törölni az API-ból");
+            }
+            catch (Exception ex)
+            {
+                UtolsoHiba = $"Hiba az időpont törlésekor: {ex.Message}";
+                return MuveletEredmeny.Hiba(UtolsoHiba);
+            }
+        }
+
+        /// <summary>
+        /// Foglalások állapotának mentése az API-ba (a grid-ben lévő állapotok alapján)
+        /// </summary>
+        public async Task<MuveletEredmeny> FoglalasokAllapotanakMenteseAPIba(string datum)
+        {
+            try
+            {
+                // 1. Lekérjük a jelenlegi foglalásokat az adatbázisból
+                var foglalasok = await _apiService.GetFoglalasokByDatumAsync(datum);
+                
+                // 2. Parse-oljuk a dátumot
+                DateTime datumObj = DateTime.Parse(datum);
+                
+                // 3. Összegyűjtjük, hogy melyik asztal-időpont kombinációkhoz van foglalás
+                Dictionary<string, FoglalasDto> letezoFoglalasok = new Dictionary<string, FoglalasDto>();
+                foreach (var foglalas in foglalasok)
+                {
+                    // Kulcs: asztalId_idopont
+                    string kulcs = $"{foglalas.AsztalId}_{foglalas.FoglalasDatum:HH:mm}";
+                    letezoFoglalasok[kulcs] = foglalas;
+                }
+                
+                int letrehozott = 0;
+                int torolt = 0;
+                
+                // 4. Végigmegyünk a grid adatokon
+                foreach (var idopont in adatok)
+                {
+                    // Parse-oljuk az időpontot (pl. "9:00-10:00")
+                    string[] reszek = idopont.ido.Split('-');
+                    if (reszek.Length == 2)
+                    {
+                        string kezdoIdo = reszek[0].Trim();
+                        string[] kezdoReszek = kezdoIdo.Split(':');
+                        if (kezdoReszek.Length == 2)
+                        {
+                            int ora = int.Parse(kezdoReszek[0]);
+                            int perc = int.Parse(kezdoReszek[1]);
+                            DateTime idopontDatum = datumObj.Date.AddHours(ora).AddMinutes(perc);
+                            
+                            // Végigmegyünk az asztalokon
+                            for (int asztalIndex = 0; asztalIndex < idopont.asztal.Count; asztalIndex++)
+                            {
+                                int asztalId = asztalIndex + 1;
+                                bool elerheto = idopont.asztal[asztalIndex];
+                                string kulcs = $"{asztalId}_{idopontDatum:HH:mm}";
+                                
+                                if (!elerheto) // Foglalt
+                                {
+                                    // Ha nincs foglalás, létrehozunk egyet
+                                    if (!letezoFoglalasok.ContainsKey(kulcs))
+                                    {
+                                        var ujFoglalas = new FoglalasDto
+                                        {
+                                            UserId = 1, // Alapértelmezett user (admin)
+                                            AsztalId = asztalId,
+                                            FoglalasDatum = idopontDatum,
+                                            EtkezesId = 1, // Alapértelmezett
+                                            MegjegyzesId = null
+                                        };
+                                        
+                                        var eredmeny = await _apiService.CreateFoglalasAsync(ujFoglalas);
+                                        if (eredmeny != null)
+                                        {
+                                            letrehozott++;
+                                        }
+                                    }
+                                }
+                                else // Szabad
+                                {
+                                    // Ha van foglalás, töröljük
+                                    if (letezoFoglalasok.ContainsKey(kulcs))
+                                    {
+                                        var foglalas = letezoFoglalasok[kulcs];
+                                        var sikeres = await _apiService.DeleteFoglalasAsync(foglalas.Id);
+                                        if (sikeres)
+                                        {
+                                            torolt++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                return MuveletEredmeny.Siker($"Foglalások állapota mentve: {letrehozott} létrehozva, {torolt} törölve", null);
+            }
+            catch (Exception ex)
+            {
+                UtolsoHiba = $"Hiba a foglalások állapotának mentésekor: {ex.Message}";
+                return MuveletEredmeny.Hiba(UtolsoHiba);
+            }
+        }
+
         #endregion
 
 
-        public void Fajlbeolvasas()
-        {
-            StreamReader f = new StreamReader("teszt_adatok");
-            f.ReadLine();
-            while (!f.EndOfStream)
-            {
-                AdatokFeldolgozasa s = new AdatokFeldolgozasa(f.ReadLine());
-                adatok.Add(s);
-            }
-            f.Close();
-        }
+        
         /// <summary>
-        /// Alapértelmezett adatok létrehozása teszteléshez - pontosan mint a képben
+        /// Alapértelmezett adatok létrehozása - NEM HASZNÁL BEÉGETETT ADATOKAT!
+        /// Ez a metódus üres, mert csak az API-ból érkező adatokkal dolgozunk.
         /// </summary>
         public void AlapAdatokLetrehozasa()
         {
-            if (adatok.Count > 0)
-                return; // Ha már vannak adatok, nem csinálunk semmit
-
-            // Időpontok pontosan mint a képben (9 sor)
-            string[] idopontok = { 
-                "9:00-10:00", 
-                "10:30-11:30", 
-                "12:00-13:00", 
-                "13:30-14:30", 
-                "15:00-16:00",
-                "16:30-17:30",
-                "18:00-19:00",
-                "19:30-20:30",
-                "21:00-22:00"
-            };
-            
-            // Alapértelmezett asztal kapacitások (mint a képben: asztal1_4, asztal2_4, asztal3_4, asztal4_4, asztal5_6, asztal6_6, asztal7_8, asztal8_8)
-            if (asztalKapacitasok.Count == 0)
-            {
-                asztalKapacitasok.AddRange(new int[] { 4, 4, 4, 4, 6, 6, 8, 8 });
-            }
-            
-            // Minden időponthoz létrehozunk egy bejegyzést
-            foreach (string ido in idopontok)
-            {
-                AdatokFeldolgozasa ujIdopont = new AdatokFeldolgozasa();
-                ujIdopont.ido = ido;
-                
-                // Alapértelmezetten 8 asztal (mint a képben), mindegyik elérhető (true = zöld)
-                for (int i = 0; i < 8; i++)
-                {
-                    ujIdopont.asztal.Add(true);
-                }
-                
-                adatok.Add(ujIdopont);
-            }
+            // Üres metódus - nem hozunk létre beégetett adatokat
+            // Minden adat az API-ból jön
+            return;
         }
 
         /// <summary>
-        /// Megszámolja, hány asztal van az adatokban
+        /// Megszámolja, hány asztal van - CSAK AZ API-BÓL ÉRKEZŐ ADATOKBÓL!
         /// </summary>
         public int SzamolAsztalokSzama()
         {
-            if (adatok.Count == 0)
-                return 8; // Alapértelmezett érték (mint a képben)
-            
-            // Megkeressük a legtöbb asztalt tartalmazó időpontot
-            int maxAsztal = 0;
-            foreach (var idopont in adatok)
-            {
-                if (idopont.asztal.Count > maxAsztal)
-                {
-                    maxAsztal = idopont.asztal.Count;
-                }
-            }
-            
-            return maxAsztal > 0 ? maxAsztal : 8;
+            // CSAK az asztalKapacitasok listát használjuk, mert az az API-ból jön
+            // NEM az adatok listát, mert az régi adatokat tartalmazhat
+            return asztalKapacitasok.Count;
         }
 
         /// <summary>
-        /// Új asztal hozzáadása minden időponthoz (kapacitás nélkül - alapértelmezett 4)
+        /// Új asztal hozzáadása minden időponthoz - NEM HASZNÁL ALAPÉRTELMEZETT ÉRTÉKET!
+        /// Ez a metódus nem használható, mert nincs alapértelmezett kapacitás.
         /// </summary>
         public MuveletEredmeny AsztalHozzaadasa()
         {
-            return AsztalHozzaadasa(4); // Alapértelmezett kapacitás: 4
+            return MuveletEredmeny.Hiba("A kapacitást meg kell adni! Használd az AsztalHozzaadasa(kapacitas) metódust.");
         }
 
         /// <summary>
@@ -661,27 +839,6 @@ namespace AdatokElerese
         }
 
         // Régi metódusok (API kapcsolatokhoz - később használjuk)
-        private void FoglalasValtoztatas()
-        {
-            for (int i = 0; i < adatok.Count; i++)
-            {
-                for (int j = 0; j < adatok[i].asztal.Count; j++)
-                {
-                    Eldontes(adatok[i].asztal[j]);
-                }
-            }
-        }
-
-        private bool Eldontes(bool adat)
-        {
-            if (adat == false)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        
     }
 }

@@ -32,7 +32,6 @@ namespace AdminFelulet
             this.panelHeader = new System.Windows.Forms.Panel();
             this.labelCim = new System.Windows.Forms.Label();
             this.labelStatus = new System.Windows.Forms.Label();
-            this.btnTesztExport = new System.Windows.Forms.Button();
             this.panelGombok = new System.Windows.Forms.Panel();
             this.groupBoxAsztal = new System.Windows.Forms.GroupBox();
             this.btnAsztalHozzaad = new System.Windows.Forms.Button();
@@ -60,7 +59,6 @@ namespace AdminFelulet
             // 
             this.panelHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
             this.panelHeader.Controls.Add(this.labelCim);
-            this.panelHeader.Controls.Add(this.btnTesztExport);
             this.panelHeader.Controls.Add(this.labelStatus);
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelHeader.Location = new System.Drawing.Point(0, 0);
@@ -90,20 +88,6 @@ namespace AdminFelulet
             this.labelStatus.TabIndex = 1;
             this.labelStatus.Text = "Betöltés...";
             this.labelStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // btnTesztExport - IDEIGLENES TESZT GOMB (TÖRÖLHETŐ!)
-            // 
-            this.btnTesztExport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
-            this.btnTesztExport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTesztExport.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.btnTesztExport.ForeColor = System.Drawing.Color.Black;
-            this.btnTesztExport.Location = new System.Drawing.Point(450, 15);
-            this.btnTesztExport.Name = "btnTesztExport";
-            this.btnTesztExport.Size = new System.Drawing.Size(130, 30);
-            this.btnTesztExport.TabIndex = 2;
-            this.btnTesztExport.Text = "📄 TESZT EXPORT";
-            this.btnTesztExport.UseVisualStyleBackColor = false;
-            this.btnTesztExport.Click += new System.EventHandler(this.btnTesztExport_Click);
             // 
             // panelGombok
             // 
@@ -329,7 +313,5 @@ namespace AdminFelulet
         private System.Windows.Forms.Button btnFrissites;
         private System.Windows.Forms.Panel panelGrid;
         private System.Windows.Forms.DataGridView dataGridView1;
-        // IDEIGLENES - TÖRÖLHETŐ!
-        private System.Windows.Forms.Button btnTesztExport;
     }
 }
