@@ -597,17 +597,6 @@ namespace AdatokElerese
 
         
         /// <summary>
-        /// Alapértelmezett adatok létrehozása - NEM HASZNÁL BEÉGETETT ADATOKAT!
-        /// Ez a metódus üres, mert csak az API-ból érkező adatokkal dolgozunk.
-        /// </summary>
-        public void AlapAdatokLetrehozasa()
-        {
-            // Üres metódus - nem hozunk létre beégetett adatokat
-            // Minden adat az API-ból jön
-            return;
-        }
-
-        /// <summary>
         /// Megszámolja, hány asztal van - CSAK AZ API-BÓL ÉRKEZŐ ADATOKBÓL!
         /// </summary>
         public int SzamolAsztalokSzama()

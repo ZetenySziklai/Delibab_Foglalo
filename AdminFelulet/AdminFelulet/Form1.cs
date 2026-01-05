@@ -52,15 +52,17 @@ namespace AdminFelulet
                 
                 if (!asztalEredmeny.Sikeres)
                 {
-                    // Ha nem sikerült, üres táblát mutatunk és részletes hibaüzenetet
+                    // Ha nem sikerült, NEM töltünk be semmilyen adatot
+                    // Csak hibaüzenetet mutatunk
                     string hibaUzenet = "API nem elérhető: " + adatokKezelo.UtolsoHiba;
                     labelStatus.Text = "❌ " + hibaUzenet;
                     labelStatus.ForeColor = Color.Red;
                     
-                    // Üres táblázat
-                    GridBeallitasa();
-                    GridFrissitese();
-                    ComboBoxokFrissitese();
+                    // Üres táblázat (nincs oszlop, nincs sor)
+                    dataGridView1.Columns.Clear();
+                    dataGridView1.Rows.Clear();
+                    comboBoxAsztalTorlendo.Items.Clear();
+                    comboBoxIdopontTorlendo.Items.Clear();
                     vanMentetlenValtozas = false;
                     
                     // Részletes hibaüzenet
@@ -71,7 +73,8 @@ namespace AdminFelulet
                         "1. Fut-e a Backend? (http://localhost:8000)\n" +
                         "2. Fut-e a MySQL? (XAMPP)\n" +
                         "3. Létre van-e hozva az 'asztalfoglalas' adatbázis?\n\n" +
-                        "Az alkalmazás üres táblázattal folytatja.",
+                        "Az alkalmazás üres táblázattal folytatja.\n" +
+                        "Nincs helyi adat - minden adat az API-ból jön.",
                         "API nem elérhető",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
@@ -115,15 +118,17 @@ namespace AdminFelulet
                 adatokKezelo.adatok.Clear();
                 adatokKezelo.asztalKapacitasok.Clear();
                 
-                // Hiba esetén üres táblát mutatunk és részletes hibaüzenetet
+                // Hiba esetén NEM töltünk be semmilyen adatot
+                // Csak hibaüzenetet mutatunk
                 string hibaUzenet = "API hiba: " + ex.Message;
                 labelStatus.Text = "❌ " + hibaUzenet;
                 labelStatus.ForeColor = Color.Red;
                 
-                // Üres táblázat
-                GridBeallitasa();
-                GridFrissitese();
-                ComboBoxokFrissitese();
+                // Üres táblázat (nincs oszlop, nincs sor)
+                dataGridView1.Columns.Clear();
+                dataGridView1.Rows.Clear();
+                comboBoxAsztalTorlendo.Items.Clear();
+                comboBoxIdopontTorlendo.Items.Clear();
                 vanMentetlenValtozas = false;
                 
                 // Részletes hibaüzenet
@@ -134,7 +139,8 @@ namespace AdminFelulet
                     "1. Fut-e a Backend? (http://localhost:8000)\n" +
                     "2. Fut-e a MySQL? (XAMPP)\n" +
                     "3. Létre van-e hozva az 'asztalfoglalas' adatbázis?\n\n" +
-                    "Az alkalmazás üres táblázattal folytatja.",
+                    "Az alkalmazás üres táblázattal folytatja.\n" +
+                    "Nincs helyi adat - minden adat az API-ból jön.",
                     "API hiba",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
