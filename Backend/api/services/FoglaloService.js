@@ -22,8 +22,17 @@ class FoglaloService {
 
     async createFoglalo(data){
         // Validálás
-        if (!data.vezeteknev || !data.keresztnev || !data.email || !data.telefonszam) {
+        if (!data || !data.vezeteknev || !data.keresztnev || !data.email || !data.telefonszam) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
+        }
+        
+        // Vezetéknév és keresztnév: csak betűk (magyar ékezetes betűkkel)
+        const nameRegex = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+$/;
+        if (!nameRegex.test(data.vezeteknev)) {
+            throw new BadRequestError("A vezetéknév csak betűket tartalmazhat");
+        }
+        if (!nameRegex.test(data.keresztnev)) {
+            throw new BadRequestError("A keresztnév csak betűket tartalmazhat");
         }
         
         if (!data.email.includes('@')) {
@@ -55,6 +64,15 @@ class FoglaloService {
             if (existing && existing.length > 0 && existing[0].foglalo_id !== parseInt(id)) {
                 throw new BadRequestError("Ez az email cím már használatban van");
             }
+        }
+        
+        // Vezetéknév és keresztnév: csak betűk (magyar ékezetes betűkkel)
+        const nameRegex = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+$/;
+        if (data.vezeteknev && !nameRegex.test(data.vezeteknev)) {
+            throw new BadRequestError("A vezetéknév csak betűket tartalmazhat");
+        }
+        if (data.keresztnev && !nameRegex.test(data.keresztnev)) {
+            throw new BadRequestError("A keresztnév csak betűket tartalmazhat");
         }
         
         return await this.foglaloRepository.updateFoglalo(id, data);
