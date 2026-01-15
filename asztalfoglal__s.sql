@@ -11,116 +11,188 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Adatbázis: `asztalfoglalás`
+-- Adatbázis: `asztalfoglalas`
 --
+CREATE DATABASE IF NOT EXISTS `asztalfoglalas` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `asztalfoglalas`;
 
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `foglaló`
+-- Tábla szerkezet ehhez a táblához `Foglalo`
 --
 
-//foglalas legyen, tobb a tobbhoz legyen (user-asztal kozt) vagy egy a tobbhoz
-CREATE TABLE `foglaló` (
-  `vezetéknév` varchar(255) NOT NULL,
-  `keresztnév` varchar(255) NOT NULL,
-  `telefonszám` varchar(255) NOT NULL,
+CREATE TABLE `Foglalo` (
+  `foglalo_id` int(11) NOT NULL AUTO_INCREMENT,
+  `vezeteknev` varchar(255) NOT NULL,
+  `keresztnev` varchar(255) NOT NULL,
+  `telefonszam` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `megjegyzés` varchar(255) NOT NULL,
-  `foglalo_id` int(255) NOT NULL,
-  `idopont_id` int(11) NOT NULL,
-  `vendeg_id` int(11) NOT NULL,
-  `etkezes_id` int(11) NOT NULL
+  `megjegyzes` varchar(255) NOT NULL,
+  PRIMARY KEY (`foglalo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `időpont`
+-- Tábla szerkezet ehhez a táblához `users`
 --
 
-//faszsag
-CREATE TABLE `időpont` (
-  `foglalás_nap_idő` datetime NOT NULL,
-  `időpont_id` int(255) NOT NULL
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `vezeteknev` varchar(255) NOT NULL,
+  `keresztnev` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `telefonszam` varchar(20) NOT NULL,
+  `regisztracio_datuma` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tábla szerkezet ehhez a táblához `vendégek_száma`
+-- Tábla szerkezet ehhez a táblához `asztal_allapot`
 --
 
-//ez csere user, asztal, megjegyzes, foglalo, social ossze koto( pl googleal jelentkezik be, szemelyzet)
-CREATE TABLE `vendégek_száma` (
-  `felnőtt` int(11) NOT NULL,
+CREATE TABLE `asztal_allapot` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nev` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `asztal_allapot` (`id`, `nev`) VALUES
+(1, 'Szabad'),
+(2, 'Foglalt'),
+(3, 'Takarítás alatt');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `asztal`
+--
+
+CREATE TABLE `asztal` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `helyek_szama` int(11) NOT NULL,
+  `asztal_allapot_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `asztal_allapot_id` (`asztal_allapot_id`),
+  CONSTRAINT `asztal_ibfk_1` FOREIGN KEY (`asztal_allapot_id`) REFERENCES `asztal_allapot` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `etkezes_tipusa`
+--
+
+CREATE TABLE `etkezes_tipusa` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nev` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `etkezes_tipusa` (`id`, `nev`) VALUES
+(1, 'Reggeli'),
+(2, 'Ebéd'),
+(3, 'Vacsora');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `megjegyzes`
+--
+
+CREATE TABLE `megjegyzes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `szoveg` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `foglalas`
+--
+
+CREATE TABLE `foglalas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `asztal_id` int(11) NOT NULL,
+  `foglalas_datum` datetime NOT NULL,
+  `etkezes_id` int(11) NOT NULL,
+  `megjegyzes_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `asztal_id` (`asztal_id`),
+  KEY `etkezes_id` (`etkezes_id`),
+  KEY `megjegyzes_id` (`megjegyzes_id`),
+  CONSTRAINT `foglalas_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `foglalas_ibfk_2` FOREIGN KEY (`asztal_id`) REFERENCES `asztal` (`id`),
+  CONSTRAINT `foglalas_ibfk_3` FOREIGN KEY (`etkezes_id`) REFERENCES `etkezes_tipusa` (`id`),
+  CONSTRAINT `foglalas_ibfk_4` FOREIGN KEY (`megjegyzes_id`) REFERENCES `megjegyzes` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `allergen`
+--
+
+CREATE TABLE `allergen` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nev` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `allergeninfo`
+--
+
+CREATE TABLE `allergeninfo` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `allergen_id` int(11) NOT NULL,
+  `foglalas_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `allergen_id` (`allergen_id`),
+  KEY `foglalas_id` (`foglalas_id`),
+  CONSTRAINT `allergeninfo_ibfk_1` FOREIGN KEY (`allergen_id`) REFERENCES `allergen` (`id`),
+  CONSTRAINT `allergeninfo_ibfk_2` FOREIGN KEY (`foglalas_id`) REFERENCES `foglalas` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `Idopont`
+--
+
+CREATE TABLE `Idopont` (
+  `idopont_id` int(11) NOT NULL AUTO_INCREMENT,
+  `foglalas_nap_ido` datetime NOT NULL,
+  PRIMARY KEY (`idopont_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `VendegekSzama`
+--
+
+CREATE TABLE `VendegekSzama` (
+  `vendeg_id` int(11) NOT NULL AUTO_INCREMENT,
+  `felnott` int(11) NOT NULL,
   `gyerek` int(11) NOT NULL,
-  `vendeg_id` int(255) NOT NULL
+  PRIMARY KEY (`vendeg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Tábla szerkezet ehhez a táblához `étkezés_típusa`
---
-
-// ezt esweetleg tovabb okoskodni
-CREATE TABLE `étkezés_típusa` (
-  `reggeli` tinyint(1) NOT NULL,
-  `ebéd` tinyint(1) NOT NULL,
-  `vacsora` tinyint(1) NOT NULL,
-  `etkezes_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Indexek a kiírt táblákhoz
---
-
---
--- A tábla indexei `foglaló`
---
-ALTER TABLE `foglaló`
-  ADD PRIMARY KEY (`foglalo_id`),
-  ADD KEY `idopont_id` (`idopont_id`),
-  ADD KEY `vendeg_id` (`vendeg_id`),
-  ADD KEY `etkezes_id` (`etkezes_id`);
-
---
--- A tábla indexei `időpont`
---
-ALTER TABLE `időpont`
-  ADD PRIMARY KEY (`időpont_id`);
-
---
--- A tábla indexei `vendégek_száma`
---
-ALTER TABLE `vendégek_száma`
-  ADD PRIMARY KEY (`vendeg_id`);
-
---
--- A tábla indexei `étkezés_típusa`
---
-ALTER TABLE `étkezés_típusa`
-  ADD PRIMARY KEY (`etkezes_id`);
-
---
--- Megkötések a kiírt táblákhoz
---
-
---
--- Megkötések a táblához `foglaló`
---
-ALTER TABLE `foglaló`
-  ADD CONSTRAINT `foglaló_ibfk_1` FOREIGN KEY (`idopont_id`) REFERENCES `időpont` (`időpont_id`),
-  ADD CONSTRAINT `foglaló_ibfk_2` FOREIGN KEY (`vendeg_id`) REFERENCES `vendégek_száma` (`vendeg_id`),
-  ADD CONSTRAINT `foglaló_ibfk_3` FOREIGN KEY (`etkezes_id`) REFERENCES `étkezés_típusa` (`etkezes_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

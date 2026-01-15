@@ -9,42 +9,35 @@ class FoglaloRepository{
     
     async getFoglalo(){
         // Egyszerű lekérdezés include nélkül, hogy elkerüljük a hiányzó asszociációs hibákat
-        const results = await this.Foglalo.findAll({ raw: true });
-        return results;
+        return await this.Foglalo.findAll();
     }
 
     async getFoglaloByEmail(email){
-        const results = await this.Foglalo.findAll({ where: { email: email }, raw: true });
-        return results;
+        return await this.Foglalo.findAll({ where: { email: email }});
     }
 
     async getFoglaloByPhone(telefonszam){
         // Normalizáljuk a telefonszámot (eltávolítjuk a szóközöket és kötőjeleket)
         const phoneNormalized = String(telefonszam).replace(/[\s-]/g, "");
-        const results = await this.Foglalo.findAll({
-            where: { telefonszam: phoneNormalized },
-            raw: true
+        return await this.Foglalo.findAll({
+            where: { telefonszam: phoneNormalized }
         });
-        return results;
     }
 
     async getFoglaloWithDetails(){
-        const results = await this.Foglalo.findAll({
-            order: [['foglalo_id', 'DESC']],
-            raw: true
+        return await this.Foglalo.findAll({
+            order: [['foglalo_id', 'DESC']]
         });
-        return results;
     }
 
     async createFoglalo(data){
         const created = await this.Foglalo.create(data);
-        return created.toJSON();
+        return created;
     }
 
     async updateFoglalo(id, data){
         await this.Foglalo.update(data, { where: { foglalo_id: id } });
-        const updated = await this.Foglalo.findOne({ where: { foglalo_id: id }, raw: true });
-        return updated;
+        return await this.Foglalo.findOne({ where: { foglalo_id: id } });
     }
 
     // DELETE művelet - foglaló törlése
@@ -71,12 +64,10 @@ class FoglaloRepository{
 
     // Összetett lekérdezés - foglalások időpont szerint csoportosítva
     async getFoglalokByDateRange(startDate, endDate){
-        const results = await this.Foglalo.findAll({
+        return await this.Foglalo.findAll({
             attributes: ['foglalo_id','vezeteknev','keresztnev','email'],
-            order: [['foglalo_id', 'ASC']],
-            raw: true
+            order: [['foglalo_id', 'ASC']]
         });
-        return results;
     }
 
     // Aggregáció - legtöbb foglalással rendelkező személyek

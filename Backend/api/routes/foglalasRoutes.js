@@ -4,6 +4,7 @@ const foglalasController = require("../controllers/FoglalasController");
 
 // Logikus funkciók (előbb kell lenniük, mint a paraméteres útvonalaknak)
 router.get("/foglalt-idopontok/list", foglalasController.getFoglaltIdopontok);
+router.get("/reserved-times", foglalasController.getAllReservedTimesByDate);
 router.get("/datum/list", foglalasController.getFoglalasByDatum);
 router.get("/user/:userId", foglalasController.getFoglalasByUser);
 

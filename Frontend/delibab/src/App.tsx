@@ -8,28 +8,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'foglalo'>('home')
 
   if (currentPage === 'foglalo') {
-    return (
-      <>
-        <FoglaloOldal />
-        <button
-          onClick={() => setCurrentPage('home')}
-          style={{
-            position: 'fixed',
-            top: '20px',
-            right: '20px',
-            padding: '10px 20px',
-            background: 'rgb(65, 37, 0)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
-            zIndex: 1000,
-          }}
-        >
-          Vissza
-        </button>
-      </>
-    )
+    return <FoglaloOldal onBack={() => setCurrentPage('home')} />
   }
 
   return (
