@@ -87,13 +87,6 @@ class FoglalasService {
         return await this.foglalasRepository.getFoglaltIdopontok(datum, asztalId);
     }
 
-    async getAllReservedTimesByDate(datum){
-        if (!datum) {
-            throw new BadRequestError("Dátum kötelező");
-        }
-        return await this.foglalasRepository.getAllReservedTimesByDate(datum);
-    }
-
     async getFoglalasByDatum(datum){
         if (!datum) {
             throw new BadRequestError("Dátum kötelező");

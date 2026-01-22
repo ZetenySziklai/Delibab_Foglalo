@@ -72,16 +72,6 @@ exports.getFoglaltIdopontok = async(req,res,next) =>{
   }
 }
 
-exports.getAllReservedTimesByDate = async(req,res,next) =>{
-  try {
-    const { datum } = req.query;
-    const reservedTimes = await foglalasService.getAllReservedTimesByDate(datum);
-    res.status(200).json(reservedTimes);
-  } catch (error) {
-    next(error);
-  }
-}
-
 exports.getFoglalasByDatum = async(req,res,next) =>{
   try {
     const { datum } = req.query;

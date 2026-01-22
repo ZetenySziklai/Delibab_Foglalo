@@ -86,27 +86,6 @@ class FoglalasRepository{
         return foglalasok;
     }
 
-    async getAllReservedTimesByDate(datum){
-        const { Op } = require('sequelize');
-        
-        // Lekérjük az összes foglalást az adott napra
-        const foglalasok = await this.Foglalas.findAll({
-            where: {
-                foglalas_datum: {
-                    [Op.gte]: new Date(datum + ' 00:00:00'),
-                    [Op.lt]: new Date(new Date(datum).setDate(new Date(datum).getDate() + 1))
-                }
-            },
-            attributes: ['foglalas_datum']
-        });
-        
-        // Visszaadjuk csak az időpontokat (pl. "12:00")
-        return foglalasok.map(f => {
-            const d = new Date(f.foglalas_datum);
-            return d.toTimeString().slice(0, 5); // "12:00"
-        });
-    }
-
     async getFoglalasByDatum(datum){
         const { Op } = require('sequelize');
         

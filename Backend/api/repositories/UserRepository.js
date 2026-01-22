@@ -8,10 +8,6 @@ class UserRepository{
         return await this.User.findAll();
     }
 
-    async getUserByEmail(email){
-        return await this.User.findOne({ where: { email: email } });
-    }
-
     async getUserById(id){
         return await this.User.findByPk(id);
     }
@@ -32,3 +28,4 @@ class UserRepository{
 }
 
 module.exports = UserRepository;
+

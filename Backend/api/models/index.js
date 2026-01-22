@@ -8,6 +8,8 @@ module.exports = (sequelize) => {
     const Allergen = require("./Allergen")(sequelize);
     const Allergeninfo = require("./Allergeninfo")(sequelize);
     const Foglalo = require("./Foglalo")(sequelize);
+    const Idopont = require("./Idopont")(sequelize);
+    const VendegekSzama = require("./VendegekSzama")(sequelize);
 
     // User N-<>-M Asztal = Foglalas tábla
     User.hasMany(Foglalas, {
@@ -63,6 +65,23 @@ module.exports = (sequelize) => {
         foreignKey: "foglalas_id"
     });
 
+    // Foglalo kapcsolatok
+    Idopont.hasMany(Foglalo, {
+        foreignKey: "idopont_id",
+        as: "Foglalos"
+    });
+    Foglalo.belongsTo(Idopont, {
+        foreignKey: "idopont_id"
+    });
+
+    VendegekSzama.hasMany(Foglalo, {
+        foreignKey: "vendeg_id",
+        as: "Foglalos"
+    });
+    Foglalo.belongsTo(VendegekSzama, {
+        foreignKey: "vendeg_id"
+    });
+
     return {
         User,
         Asztal,
@@ -72,7 +91,9 @@ module.exports = (sequelize) => {
         Megjegyzes,
         Allergen,
         Allergeninfo,
-        Foglalo
+        Foglalo,
+        Idopont,
+        VendegekSzama
     };
 }
 

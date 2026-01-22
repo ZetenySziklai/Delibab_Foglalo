@@ -30,7 +30,23 @@ module.exports = (sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false
-            },          
+            },
+            idopont_id: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'Idopont',
+                    key: 'idopont_id'
+                }
+            },
+            vendeg_id: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'VendegekSzama',
+                    key: 'vendeg_id'
+                }
+            }          
         },
         {
             sequelize,
