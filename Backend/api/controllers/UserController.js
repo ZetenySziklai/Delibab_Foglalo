@@ -58,3 +58,54 @@ exports.deleteUser = async(req,res,next) =>{
   }
 }
 
+exports.getUserByEmail = async(req,res,next) =>{
+  try {
+    const { email } = req.params;
+    const user = await userService.getUserByEmail(email);
+    if(!user || user.length === 0){
+      throw new NotFoundError("Felhasználó nem található");
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.getUserCountByEmail = async(req,res,next) =>{
+  try {
+    const result = await userService.getUserCountByEmail();
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.getTopUsers = async(req,res,next) =>{
+  try {
+    const { limit } = req.query;
+    const result = await userService.getTopUsers(limit);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.getUsersByDateRange = async(req,res,next) =>{
+  try {
+    const { startDate, endDate } = req.query;
+    const result = await userService.getUsersByDateRange(startDate, endDate);
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+exports.getUsersByEtkezesType = async(req,res,next) =>{
+  try {
+    const result = await userService.getUsersByEtkezesType();
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+

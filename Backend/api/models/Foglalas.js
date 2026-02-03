@@ -11,26 +11,35 @@ module.exports = (sequelize) => {
                 autoIncrement: true,
                 allowNull: false
             },
-            user_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            asztal_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
             foglalas_datum: {
                 type: DataTypes.DATE,
                 allowNull: false
             },
-            etkezes_id: {
+            megjegyzes: {
+                type: DataTypes.INTEGER,
+                allowNull: true
+            },
+            felnott: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            megjegyzes_id: {
+            gyerek: {
                 type: DataTypes.INTEGER,
-                allowNull: true
-            }
+                allowNull: false
+            },
+            // user_id: {
+            //     type: DataTypes.INTEGER,
+            //     allowNull: false
+            // },
+            // asztal_id: {
+            //     type: DataTypes.INTEGER,
+            //     allowNull: false
+            // },
+            
+            // etkezes_id: {
+            //     type: DataTypes.INTEGER,
+            //     allowNull: false
+            // },
         },
         {
             sequelize,
