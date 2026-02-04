@@ -8,17 +8,22 @@
       color: white;
       display: flex;
       flex-direction: column;  
-      align-items: center;
-      padding-top: 250px;
+      justify-content: center; /* Függőleges középre igazítás */
+      align-items: center; 
+      padding-top: 0; /* Eltávolítva a felesleges felső padding */
       z-index: 1000;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.5);
   }
+
 
   .navigacio a {
       text-decoration: none;
       color: white;
-      padding: 3px 0;
+      padding: 5px 0;
       margin: 2px 0;
       transition: color 0.3s;
+      width: 100%;
+      text-align: center;
   }
 
   .navigacio a:hover {
@@ -26,8 +31,11 @@
   }
 
   .navigacio p {
-      margin: 30px 0 15px 0;
+      margin: 0 0 20px 0;
       font-size: 18px;  
+      display: flex;
+      justify-content: center;
+      align-items: center;
   }
 
   .navigacio p:hover {
@@ -46,6 +54,7 @@
           justify-content: center;
           align-items: center;
           padding-top: 0;
+          box-shadow: 0 2px 10px rgba(0,0,0,0.5);
       }
 
       .navigacio p {
@@ -55,6 +64,7 @@
       .navigacio a {
           padding: 10px 15px;
           margin: 5px;
+          width: auto;
           border-radius: 4px;
           background: rgba(255, 255, 255, 0.1);
       }

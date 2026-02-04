@@ -29,8 +29,10 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [reservedTimes, setReservedTimes] = useState<any[]>([]);
-  const [isLoadingTimes, setIsLoadingTimes] = useState(false);  // Dátum generálás (következő 14 nap)
+  const [reservedTimes, setReservedTimes] = useState<string[]>([]);
+  const [isLoadingTimes, setIsLoadingTimes] = useState(false);
+
+  // Dátum generálás (következő 14 nap)
   const getNextDays = () => {
     const days = [];
     for (let i = 0; i < 14; i++) {
@@ -117,7 +119,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
           <div className="step-container fade-in">
             <h2>Hány főre szeretnél foglalni?</h2>
             <div className="guest-selector">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
                 <button 
                   key={num} 
                   className={`guest-btn ${guests === num ? 'active' : ''}`}
@@ -126,6 +128,12 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
                   {num}
                 </button>
               ))}
+              <button 
+                className={`guest-btn ${guests > 8 ? 'active' : ''}`}
+                onClick={() => { setGuests(9); setStep(2); }}
+              >
+                8+
+              </button>
             </div>
           </div>
         );
@@ -177,28 +185,21 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
             </div>
             <div className="time-grid">
               {timeSlots.map(slot => {
-                const reservedInfo = reservedTimes.find((rt: any) => rt.idopont === slot);
-                const currentTotal = reservedInfo ? reservedInfo.osszes_fo : 0;
-                const remainingSpots = 10 - currentTotal;
-                const isFull = remainingSpots < guests;
-                
+                const isReserved = reservedTimes.includes(slot);
                 return (
                   <button 
                     key={slot} 
-                    className={`time-btn ${time === slot ? 'active' : ''} ${isFull ? 'disabled' : ''}`}
+                    className={`time-btn ${time === slot ? 'active' : ''} ${isReserved ? 'disabled' : ''}`}
                     onClick={() => { 
-                      if (!isFull) {
+                      if (!isReserved) {
                         setTime(slot); 
                         setStep(4); 
                       }
                     }}
-                    disabled={isFull}
-                    title={isFull ? "Erre az időpontra már nincs elég hely" : `Szabad helyek: ${remainingSpots}`}
+                    disabled={isReserved}
+                    title={isReserved ? "Ez az időpont már foglalt" : ""}
                   >
-                    <span className="time-text">{slot}</span>
-                    {remainingSpots < 10 && remainingSpots > 0 && (
-                      <span className="spots-left">{remainingSpots} hely</span>
-                    )}
+                    {slot}
                   </button>
                 );
               })}

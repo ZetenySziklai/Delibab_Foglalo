@@ -6,10 +6,27 @@
   body {
       margin: 0;
       font-family: Arial, sans-serif;
-    overflow-x: hidden;
+      overflow-x: hidden;
+      background-color: #1a1106; /* Alap háttérszín a villódzás ellen */
+  }
+
+  /* Fő konténer, ami kettéválasztja a nézetet */
+  .app-layout {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+  }
+
+  main {
+    flex: 1;
+    margin-left: 220px; /* A navbar szélessége */
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
   }
 
   h1  {
+
     font-size: 2.5rem;
     font-weight: 600;
     letter-spacing: 1px;
@@ -18,33 +35,20 @@
 
   /* Responsive navbar and layout */
   @media (max-width: 768px) {
+    .app-layout {
+      flex-direction: column;
+    }
+
     main {
       margin-left: 0;
-      padding: 10px;
+      padding: 0;
     }
 
-    .navigacio {
-      position: relative !important;
-      width: 100% !important;
-      height: auto !important;
-      padding: 10px 0 !important;
-      flex-direction: row !important;
-      flex-wrap: wrap !important;
-      justify-content: center !important;
-    }
-
-    .navigacio p {
-      margin: 10px 0 !important;
-    }
-
-    .navigacio a {
-      padding: 10px 15px !important;
-      margin: 5px !important;
-    }
 
     .ikon {
       height: 80px !important;
     }
+
 
     h1 {
       font-size: 1.8rem !important;
@@ -59,6 +63,8 @@
       padding: 20px !important;
     }
   }
+
+
 
   @media (max-width: 480px) {
     h1 {
@@ -108,8 +114,10 @@
   }
 
   .ikon{
-    height: 200px;
+    height: 150px;
+    margin-bottom: 20px;
   }
+
 
 
   /* use min-height so sections can grow on small screens and don't force overflow */
@@ -123,16 +131,48 @@
 
 /* menü */
   #menu {  
-  background: url("/kepek/menu_bg.jpg");
-  color: white;
+  position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-    
+  flex-direction: column; 
+  justify-content: center;  
+  align-items: center; 
+  padding: 40px 100px;
+  text-align: center;     
+  overflow: hidden;
+  z-index: 1; 
+  }
+
+  #menu::before {
+    background: url("/kepek/menu_bg.jpg");
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(1.5px);
+
+    transform: scale(1.1);
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+
+
+
+  @media (max-width: 768px) {
+    #menu {
+      padding: 30px 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    #menu {
+      padding: 20px 10px;
+    }
   }
 
 
@@ -147,8 +187,9 @@
   padding: 40px 100px;
   text-align: center;     
   overflow: hidden;
-  z-index: -1; 
+  z-index: 1; 
 }
+
 
 @media (max-width: 768px) {
   #gasztronomia {
@@ -170,13 +211,18 @@
   left: 0;
   width: 100%;
   height: 100%;
-  filter: blur(3px);
+  filter: blur(1.5px);
+
   transform: scale(1.1);
   z-index: -1;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
+
+
+
 
 #gasztronomia h1,
 #gasztronomia p {
@@ -198,18 +244,50 @@
 
 /* kapcsolat */
 #kapcsolat {
-  background: url("/kepek/kapcsolat_bg.jpg");
-  color: white;
+  position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-repeat: no-repeat;
+  flex-direction: column; 
+  justify-content: center;  
+  align-items: center; 
+  padding: 40px 100px;
+  text-align: center;     
+  overflow: hidden;
+  z-index: 1; 
+}
+
+#kapcsolat::before {
+  background: url("/kepek/kapcsolat_bg.jpg");
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: blur(1.5px);
+
+  transform: scale(1.1);
+  z-index: -1;
   background-size: cover;
   background-position: center;
-  
-  
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
+
+
+
+
+@media (max-width: 768px) {
+  #kapcsolat {
+    padding: 30px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  #kapcsolat {
+    padding: 20px 10px;
+  }
+}
+
 
 /* containerek */
 .container {
@@ -249,6 +327,148 @@
 .btn:hover {
   background-color: #593700;
 }
+
+/* Auth styles */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: url("/kepek/menu_bg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+.auth-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Sötétítés a jobb olvashatóságért */
+  z-index: 0;
+}
+
+.auth-container {
+  background: #2a1b0a;
+  padding: 40px;
+  border-radius: 15px;
+  border: 1px solid #734f20;
+  width: 100%;
+  max-width: 400px;
+  color: white;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  animation: authFadeIn 0.6s ease-out forwards;
+}
+
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.back-btn {
+  margin-top: 20px !important;
+  position: relative;
+  z-index: 1;
+  background-color: transparent;
+  border: 1px solid #734f20;
+}
+
+.back-btn:hover {
+  background-color: rgba(115, 79, 32, 0.2);
+}
+
+
+.auth-overlay {
+  display: none; /* Már nem használjuk */
+}
+
+
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 25px 20px;
+  }
+  
+  .auth-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-group input {
+    padding: 12px; /* Nagyobb érintési felület mobilra */
+  }
+}
+
+
+.auth-container h2 {
+  margin-top: 0;
+  text-align: center;
+  border-bottom: 2px solid #734f20;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #734f20;
+  background: #1a1106;
+  color: white;
+  box-sizing: border-box;
+}
+
+.auth-container button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background: #734f20;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.auth-container button[type="submit"]:hover {
+  background: #593700;
+}
+
+.auth-container p {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.auth-container p button {
+  background: none;
+  border: none;
+  color: #734f20;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+}
+
 
 
 
