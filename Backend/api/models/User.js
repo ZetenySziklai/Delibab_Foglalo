@@ -12,15 +12,15 @@ module.exports = (sequelize) => {
                 allowNull: false
             },
             vezeteknev: {
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(50),
                 allowNull: false
             },
             keresztnev: {
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(50),
                 allowNull: false
             },
             email: {
-                type: DataTypes.STRING,
+                type: DataTypes.STRING(50),
                 allowNull: false
             },
             telefonszam: {

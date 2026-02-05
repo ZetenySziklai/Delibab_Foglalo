@@ -1,8 +1,8 @@
 const { Sequelize } = require("sequelize");
-const db = require("../api/db");
-const { DbError } = require("../api/errors");
+const db = require("../../../api/db");
+const { DbError } = require("../../../api/errors");
 
-const FoglalasRepository = require("../api/repositories/FoglalasRepository");
+const FoglalasRepository = require("../../../api/repositories/FoglalasRepository");
 
 const foglalasRepository = new FoglalasRepository(db);
 
@@ -10,7 +10,7 @@ describe("Repository tests", () =>
 {
     describe("FoglalasRepository", () => 
     {
-        let user1, user2, asztal1, asztal2, asztalAllapot, etkezesTipusa1, etkezesTipusa2, megjegyzes1;
+        let user1, user2, asztal1, asztal2, asztalAllapot, etkezesTipusa1, etkezesTipusa2;
 
         beforeAll(async () => 
         {
@@ -46,39 +46,39 @@ describe("Repository tests", () =>
             etkezesTipusa1 = await db.EtkezesTipusa.create({ nev: "Ebéd" });
             etkezesTipusa2 = await db.EtkezesTipusa.create({ nev: "Vacsora" });
 
-            megjegyzes1 = await db.Megjegyzes.create({ szoveg: "Test megjegyzés" });
-
-            // Létrehozunk foglalásokat
-            await db.Foglalas.bulkCreate([
+            // Létrehozunk foglalásokat (felnott és gyerek kötelező mezők)
+            const created = await db.Foglalas.bulkCreate([
                 { 
-                    id: 1,
                     user_id: user1.id,
                     asztal_id: asztal1.id,
-                    foglalas_datum: new Date("2024-01-15 12:00:00"),
+                    foglalas_datum: new Date("2024-01-15T12:00:00"),
                     etkezes_id: etkezesTipusa1.id,
-                    megjegyzes_id: megjegyzes1.id
+                    megjegyzes: "Test megjegyzés",
+                    felnott: 2,
+                    gyerek: 0
                 },
                 { 
-                    id: 2,
                     user_id: user2.id,
                     asztal_id: asztal2.id,
-                    foglalas_datum: new Date("2024-01-15 13:00:00"),
-                    etkezes_id: etkezesTipusa1.id
+                    foglalas_datum: new Date("2024-01-15T13:00:00"),
+                    etkezes_id: etkezesTipusa1.id,
+                    felnott: 4,
+                    gyerek: 1
                 },
                 { 
-                    id: 3,
                     user_id: user1.id,
                     asztal_id: asztal1.id,
-                    foglalas_datum: new Date("2024-01-16 18:00:00"),
-                    etkezes_id: etkezesTipusa2.id
+                    foglalas_datum: new Date("2024-01-16T18:00:00"),
+                    etkezes_id: etkezesTipusa2.id,
+                    felnott: 2,
+                    gyerek: 0
                 },
-            ]);
+            ], { validate: false });
         });
 
         afterAll(async () => 
         {
             await db.Foglalas.destroy({ where: {} });
-            await db.Megjegyzes.destroy({ where: {} });
             await db.EtkezesTipusa.destroy({ where: {} });
             await db.Asztal.destroy({ where: {} });
             await db.AsztalAllapot.destroy({ where: {} });
@@ -131,8 +131,10 @@ describe("Repository tests", () =>
                 const foglalas = { 
                     user_id: user2.id,
                     asztal_id: asztal2.id,
-                    foglalas_datum: new Date("2024-01-17 19:00:00"),
-                    etkezes_id: etkezesTipusa2.id
+                    foglalas_datum: new Date("2024-01-17T19:00:00"),
+                    etkezes_id: etkezesTipusa2.id,
+                    felnott: 3,
+                    gyerek: 0
                 };
 
                 await foglalasRepository.createFoglalas(foglalas);
@@ -142,7 +144,7 @@ describe("Repository tests", () =>
                 const foundFoglalas = foglalasok.find(item => 
                     item.user_id === user2.id && 
                     item.asztal_id === asztal2.id &&
-                    new Date(item.foglalas_datum).getTime() === new Date("2024-01-17 19:00:00").getTime()
+                    new Date(item.foglalas_datum).getTime() === new Date("2024-01-17T19:00:00").getTime()
                 );
 
                 expect(foundFoglalas).toBeDefined();
@@ -195,26 +197,6 @@ describe("Repository tests", () =>
             test("should return empty array when no foglalas found", async () => 
             {
                 const result = await foglalasRepository.getFoglaltIdopontok("2024-01-20", asztal1.id);
-
-                expect(result).toBeDefined();
-                expect(result.length).toBe(0);
-            });
-        });
-
-        describe("getAllReservedTimesByDate method tests", () => 
-        {
-            test("should return all reserved times by date", async () => 
-            {
-                const result = await foglalasRepository.getAllReservedTimesByDate("2024-01-15");
-
-                expect(result).toBeDefined();
-                expect(Array.isArray(result)).toBe(true);
-                expect(result.length).toBeGreaterThan(0);
-            });
-
-            test("should return empty array when no foglalas found for date", async () => 
-            {
-                const result = await foglalasRepository.getAllReservedTimesByDate("2024-01-20");
 
                 expect(result).toBeDefined();
                 expect(result.length).toBe(0);

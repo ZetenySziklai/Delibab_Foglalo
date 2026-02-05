@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
                 allowNull: false
             },
             megjegyzes: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING(255),
                 allowNull: true
             },
             felnott: {
@@ -27,19 +27,7 @@ module.exports = (sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            // user_id: {
-            //     type: DataTypes.INTEGER,
-            //     allowNull: false
-            // },
-            // asztal_id: {
-            //     type: DataTypes.INTEGER,
-            //     allowNull: false
-            // },
-            
-            // etkezes_id: {
-            //     type: DataTypes.INTEGER,
-            //     allowNull: false
-            // },
+            // user_id, asztal_id, etkezes_id - az index.js asszociációk adják hozzá
         },
         {
             sequelize,

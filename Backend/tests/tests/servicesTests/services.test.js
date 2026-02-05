@@ -1,55 +1,55 @@
-const { BadRequestError } = require("../api/errors");
+const { BadRequestError } = require("../../../api/errors");
 
-const { foglaloService } = require("../api/services")({});
+const db = require("../../../api/db");
+const { userService } = require("../../../api/services")(db);
 
 describe("Service tests", () => 
 {
-    describe("FoglaloService", () => 
+    describe("UserService", () => 
     {
         beforeAll(() => 
         {
-            foglaloService.foglaloRepository.getFoglalo = jest.fn().mockReturnValue(true);
-            foglaloService.foglaloRepository.createFoglalo = jest.fn().mockReturnValue(true);
-            foglaloService.foglaloRepository.getFoglaloByEmail = jest.fn().mockReturnValue([]);
-            foglaloService.foglaloRepository.getFoglaloByPhone = jest.fn().mockReturnValue([]);
+            userService.userRepository.getUser = jest.fn().mockReturnValue(true);
+            userService.userRepository.createUser = jest.fn().mockReturnValue(true);
+            userService.userRepository.getUserByEmail = jest.fn().mockReturnValue([]);
+            userService.userRepository.getUserByPhone = jest.fn().mockReturnValue([]);
         });
 
-        describe("getFoglalo", () => 
+        describe("getUser", () => 
         {
-            test("should return all the foglalok", async () => 
+            test("should return all the users", async () => 
             {
-                const result = await foglaloService.getFoglalo();
+                const result = await userService.getUser();
 
                 expect(result).toBeTruthy();
             });
         });
 
-        describe("createFoglalo", () => 
+        describe("createUser", () => 
         {
-            test("should create a new foglalo", async () => 
+            test("should create a new user", async () => 
             {
-                const foglaloData =
+                const userData =
                 {
                     vezeteknev: "Kovács",
                     keresztnev: "János",
                     email: "kovacs.janos@example.com",
-                    telefonszam: "0612345678",
-                    megjegyzes: "Test megjegyzés"
+                    telefonszam: "0612345678"
                 };
 
-                const result = await foglaloService.createFoglalo(foglaloData);
+                const result = await userService.createUser(userData);
 
                 expect(result).toBeTruthy();
             });
 
             test("should throw BadRequestError given that there is no data", async () => 
             {
-                await expect(foglaloService.createFoglalo(null)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(null)).rejects.toThrow(BadRequestError);
             });
 
             test("should throw BadRequestError given that required fields are missing", async () => 
             {
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács",
                     // keresztnev hiányzik
@@ -57,177 +57,170 @@ describe("Service tests", () =>
                     telefonszam: "0612345678"
                 };
 
-                await expect(foglaloService.createFoglalo(foglalo)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(user)).rejects.toThrow(BadRequestError);
             });
 
             test("should throw BadRequestError when vezeteknev contains numbers", async () => 
             {
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács123",
                     keresztnev: "János",
                     email: "kovacs@example.com",
-                    telefonszam: "0612345678",
-                    megjegyzes: "Test"
+                    telefonszam: "0612345678"
                 };
 
-                await expect(foglaloService.createFoglalo(foglalo)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(user)).rejects.toThrow(BadRequestError);
             });
 
             test("should throw BadRequestError when keresztnev contains numbers", async () => 
             {
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács",
                     keresztnev: "János456",
                     email: "kovacs@example.com",
-                    telefonszam: "0612345678",
-                    megjegyzes: "Test"
+                    telefonszam: "0612345678"
                 };
 
-                await expect(foglaloService.createFoglalo(foglalo)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(user)).rejects.toThrow(BadRequestError);
             });
 
             test("should throw BadRequestError when email is invalid", async () => 
             {
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács",
                     keresztnev: "János",
                     email: "invalid-email",
-                    telefonszam: "0612345678",
-                    megjegyzes: "Test"
+                    telefonszam: "0612345678"
                 };
 
-                await expect(foglaloService.createFoglalo(foglalo)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(user)).rejects.toThrow(BadRequestError);
             });
 
             test("should throw BadRequestError when phone number is invalid", async () => 
             {
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács",
                     keresztnev: "János",
                     email: "kovacs@example.com",
-                    telefonszam: "123",
-                    megjegyzes: "Test"
+                    telefonszam: "123"
                 };
 
-                await expect(foglaloService.createFoglalo(foglalo)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(user)).rejects.toThrow(BadRequestError);
             });
 
-            test("should throw BadRequestError when foglalo already exists with same email", async () => 
+            test("should throw BadRequestError when user already exists with same email", async () => 
             {
-                foglaloService.foglaloRepository.getFoglaloByEmail = jest.fn().mockReturnValue([{ foglalo_id: 1 }]);
+                userService.userRepository.getUserByEmail = jest.fn().mockReturnValue([{ id: 1 }]);
 
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács",
                     keresztnev: "János",
                     email: "kovacs@example.com",
-                    telefonszam: "0612345678",
-                    megjegyzes: "Test"
+                    telefonszam: "0612345678"
                 };
 
-                await expect(foglaloService.createFoglalo(foglalo)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(user)).rejects.toThrow(BadRequestError);
             });
 
-            test("should throw BadRequestError when foglalo already exists with same phone", async () => 
+            test("should throw BadRequestError when user already exists with same phone", async () => 
             {
-                foglaloService.foglaloRepository.getFoglaloByEmail = jest.fn().mockReturnValue([]);
-                foglaloService.foglaloRepository.getFoglaloByPhone = jest.fn().mockReturnValue([{ foglalo_id: 1 }]);
+                userService.userRepository.getUserByEmail = jest.fn().mockReturnValue([]);
+                userService.userRepository.getUserByPhone = jest.fn().mockReturnValue([{ id: 1 }]);
 
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács",
                     keresztnev: "János",
                     email: "kovacs@example.com",
-                    telefonszam: "0612345678",
-                    megjegyzes: "Test"
+                    telefonszam: "0612345678"
                 };
 
-                await expect(foglaloService.createFoglalo(foglalo)).rejects.toThrow(BadRequestError);
+                await expect(userService.createUser(user)).rejects.toThrow(BadRequestError);
             });
 
             test("should accept valid magyar ékezetes characters in names", async () => 
             {
-                foglaloService.foglaloRepository.getFoglaloByEmail = jest.fn().mockReturnValue([]);
-                foglaloService.foglaloRepository.getFoglaloByPhone = jest.fn().mockReturnValue([]);
+                userService.userRepository.getUserByEmail = jest.fn().mockReturnValue([]);
+                userService.userRepository.getUserByPhone = jest.fn().mockReturnValue([]);
 
-                const foglalo = 
+                const user = 
                 {
                     vezeteknev: "Kovács",
                     keresztnev: "Ágnes",
                     email: "kovacs.agnes@example.com",
-                    telefonszam: "0612345678",
-                    megjegyzes: "Test"
+                    telefonszam: "0612345678"
                 };
 
-                const result = await foglaloService.createFoglalo(foglalo);
+                const result = await userService.createUser(user);
                 expect(result).toBeTruthy();
             });
         });
 
-        describe("getFoglaloByEmail", () => 
+        describe("getUserByEmail", () => 
         {
             test("should throw BadRequestError when email is invalid", async () => 
             {
-                await expect(foglaloService.getFoglaloByEmail("invalid-email")).rejects.toThrow(BadRequestError);
+                await expect(userService.getUserByEmail("invalid-email")).rejects.toThrow(BadRequestError);
             });
 
-            test("should return foglalo when email is valid", async () => 
+            test("should return user when email is valid", async () => 
             {
-                foglaloService.foglaloRepository.getFoglaloByEmail = jest.fn().mockReturnValue([{ foglalo_id: 1 }]);
+                userService.userRepository.getUserByEmail = jest.fn().mockReturnValue([{ id: 1 }]);
 
-                const result = await foglaloService.getFoglaloByEmail("test@example.com");
+                const result = await userService.getUserByEmail("test@example.com");
                 expect(result).toBeTruthy();
             });
         });
 
-        describe("updateFoglalo", () => 
+        describe("updateUser", () => 
         {
             test("should throw BadRequestError when vezeteknev contains numbers", async () => 
             {
-                foglaloService.foglaloRepository.getFoglaloByEmail = jest.fn().mockReturnValue([]);
+                userService.userRepository.getUserByEmail = jest.fn().mockReturnValue([]);
 
                 const data = 
                 {
                     vezeteknev: "Kovács123"
                 };
 
-                await expect(foglaloService.updateFoglalo(1, data)).rejects.toThrow(BadRequestError);
+                await expect(userService.updateUser(1, data)).rejects.toThrow(BadRequestError);
             });
 
-            test("should throw BadRequestError when email already exists for another foglalo", async () => 
+            test("should throw BadRequestError when email already exists for another user", async () => 
             {
-                foglaloService.foglaloRepository.getFoglaloByEmail = jest.fn().mockReturnValue([{ foglalo_id: 2 }]);
-                foglaloService.foglaloRepository.updateFoglalo = jest.fn().mockReturnValue(true);
+                userService.userRepository.getUserByEmail = jest.fn().mockReturnValue([{ id: 2 }]);
+                userService.userRepository.updateUser = jest.fn().mockReturnValue(true);
 
                 const data = 
                 {
                     email: "existing@example.com"
                 };
 
-                await expect(foglaloService.updateFoglalo(1, data)).rejects.toThrow(BadRequestError);
+                await expect(userService.updateUser(1, data)).rejects.toThrow(BadRequestError);
             });
         });
 
-        describe("getFoglalokByDateRange", () => 
+        describe("getUsersByDateRange", () => 
         {
             test("should throw BadRequestError when startDate or endDate is missing", async () => 
             {
-                await expect(foglaloService.getFoglalokByDateRange(null, "2024-01-01")).rejects.toThrow(BadRequestError);
-                await expect(foglaloService.getFoglalokByDateRange("2024-01-01", null)).rejects.toThrow(BadRequestError);
+                await expect(userService.getUsersByDateRange(null, "2024-01-01")).rejects.toThrow(BadRequestError);
+                await expect(userService.getUsersByDateRange("2024-01-01", null)).rejects.toThrow(BadRequestError);
             });
 
             test("should throw BadRequestError when startDate is after endDate", async () => 
             {
-                await expect(foglaloService.getFoglalokByDateRange("2024-12-31", "2024-01-01")).rejects.toThrow(BadRequestError);
+                await expect(userService.getUsersByDateRange("2024-12-31", "2024-01-01")).rejects.toThrow(BadRequestError);
             });
 
             test("should throw BadRequestError when dates are invalid", async () => 
             {
-                await expect(foglaloService.getFoglalokByDateRange("invalid", "2024-01-01")).rejects.toThrow(BadRequestError);
+                await expect(userService.getUsersByDateRange("invalid", "2024-01-01")).rejects.toThrow(BadRequestError);
             });
         });
     });

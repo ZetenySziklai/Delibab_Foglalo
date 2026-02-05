@@ -1,8 +1,8 @@
 const { Sequelize } = require("sequelize");
-const db = require("../api/db");
-const { DbError } = require("../api/errors");
+const db = require("../../../api/db");
+const { DbError } = require("../../../api/errors");
 
-const AsztalAllapotRepository = require("../api/repositories/AsztalAllapotRepository");
+const AsztalAllapotRepository = require("../../../api/repositories/AsztalAllapotRepository");
 
 const asztalAllapotRepository = new AsztalAllapotRepository(db);
 

@@ -1,6 +1,7 @@
 module.exports = {
     testEnvironment: 'node',
     testMatch: ['**/tests/**/*.test.js'],
+    maxWorkers: 1, // Soros futtatás - megosztott SQLite :memory: adatbázis miatt
     collectCoverageFrom: [
         'api/**/*.js',
         '!api/db/**',
@@ -10,6 +11,6 @@ module.exports = {
     ],
     coverageDirectory: 'coverage',
     verbose: true,
-    setupFiles: ['<rootDir>/tests/setup.js']
+    setupFiles: ['<rootDir>/tests/tests/setup.js']
 };
 

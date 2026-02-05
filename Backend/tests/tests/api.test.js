@@ -1,8 +1,8 @@
 const request = require("supertest");
 
-const app = require("../app");
+const app = require("../../app");
 
-const db = require("../api/db");
+const db = require("../../api/db");
 
 describe("API Tests", () => 
 {
@@ -11,172 +11,147 @@ describe("API Tests", () =>
         await db.sequelize.sync();
     });
 
-    describe("/api/foglalok", () => 
+    describe("/api/users", () => 
     {
-        const foglalok = 
+        const users = 
         [
             { 
                 vezeteknev: "Kovács", 
                 keresztnev: "János", 
                 email: "kovacs.janos@example.com",
-                telefonszam: "0612345678",
-                megjegyzes: "Test megjegyzés 1"
+                telefonszam: "0612345678"
             },  
             { 
                 vezeteknev: "Nagy", 
                 keresztnev: "Mária", 
                 email: "nagy.maria@example.com",
-                telefonszam: "0623456789",
-                megjegyzes: "Test megjegyzés 2"
+                telefonszam: "0623456789"
             },  
             { 
                 vezeteknev: "Szabó", 
                 keresztnev: "Péter", 
                 email: "szabo.peter@example.com",
-                telefonszam: "0634567890",
-                megjegyzes: "Test megjegyzés 3"
+                telefonszam: "0634567890"
             },  
         ];
 
-        let createdFoglalok;
+        let createdUsers;
 
         beforeEach(async () => 
         {
             // Töröljük az összes adatot, hogy tiszta legyen az adatbázis
-            await db.Foglalo.destroy({ where: {} });
-            // Létrehozzuk a foglalókat és eltároljuk az ID-kat
-            createdFoglalok = await db.Foglalo.bulkCreate(foglalok);
+            await db.User.destroy({ where: {} });
+            // Létrehozzuk a felhasználókat és eltároljuk az ID-kat
+            createdUsers = await db.User.bulkCreate(users);
         });
 
         afterEach(async () => 
         {
-            await db.Foglalo.destroy({ where: {} });
+            await db.User.destroy({ where: {} });
         });
 
         describe("GET", () => 
         {
-            test("should return all the foglalok", async () => 
+            test("should return all the users", async () => 
             {
-                const res = await request(app).get("/api/foglalok")
+                const res = await request(app).get("/api/users")
                 .set("Accept", "application/json");
 
                 expect(res.status).toBe(200);
 
                 expect(res.type).toMatch(/json/);
 
-                expect(res.body.length).toBeGreaterThanOrEqual(foglalok.length);
+                expect(res.body.length).toBeGreaterThanOrEqual(users.length);
             });
         });
 
         describe("POST", () => 
         {
-            test("should create a foglalo", async () => 
+            test("should create a user", async () => 
             {
-                // AAA
-                
-                //#region Arrange
-
-                const foglalo = { 
+                const user = { 
                     vezeteknev: "Tóth", 
                     keresztnev: "Anna", 
                     email: "toth.anna@example.com",
-                    telefonszam: "0645678901",
-                    megjegyzes: "Test megjegyzés 4"
+                    telefonszam: "0645678901"
                 };
-                
-                //#endregion
 
-                //#region Act
-
-                const res = await request(app).post("/api/foglalok").send(foglalo);
-
-                //#endregion
-
-                //#region Assert
+                const res = await request(app).post("/api/users").send(user);
 
                 expect(res.status).toBe(201);
                 expect(res.type).toMatch(/json/);
-                expect(res.body.vezeteknev).toEqual(foglalo.vezeteknev);
-                expect(res.body.keresztnev).toEqual(foglalo.keresztnev);
-                expect(res.body.email).toEqual(foglalo.email);
+                expect(res.body.vezeteknev).toEqual(user.vezeteknev);
+                expect(res.body.keresztnev).toEqual(user.keresztnev);
+                expect(res.body.email).toEqual(user.email);
 
-                const foundFoglalo = await db.Foglalo.findOne(
+                const foundUser = await db.User.findOne(
                 {
-                    where:
-                    {
-                        email: "toth.anna@example.com",
-                    }
+                    where: { email: "toth.anna@example.com" }
                 });
 
-                expect(foundFoglalo).toBeDefined();
-                expect(foundFoglalo.vezeteknev).toEqual("Tóth");
-                expect(foundFoglalo.keresztnev).toEqual("Anna");
-
-                //#endregion
-
+                expect(foundUser).toBeDefined();
+                expect(foundUser.vezeteknev).toEqual("Tóth");
+                expect(foundUser.keresztnev).toEqual("Anna");
             });
 
             test("should return 400 when required fields are missing", async () => 
             {
-                const foglalo = { 
+                const user = { 
                     vezeteknev: "Tóth",
-                    // keresztnev hiányzik
                     email: "toth@example.com",
                     telefonszam: "0645678901"
                 };
 
-                const res = await request(app).post("/api/foglalok").send(foglalo);
+                const res = await request(app).post("/api/users").send(user);
 
                 expect(res.status).toBe(400);
             });
 
             test("should return 400 when vezeteknev contains numbers", async () => 
             {
-                const foglalo = { 
+                const user = { 
                     vezeteknev: "Tóth123", 
                     keresztnev: "Anna", 
                     email: "toth@example.com",
-                    telefonszam: "0645678901",
-                    megjegyzes: "Test"
+                    telefonszam: "0645678901"
                 };
 
-                const res = await request(app).post("/api/foglalok").send(foglalo);
+                const res = await request(app).post("/api/users").send(user);
 
                 expect(res.status).toBe(400);
             });
 
             test("should return 400 when email is invalid", async () => 
             {
-                const foglalo = { 
+                const user = { 
                     vezeteknev: "Tóth", 
                     keresztnev: "Anna", 
                     email: "invalid-email",
-                    telefonszam: "0645678901",
-                    megjegyzes: "Test"
+                    telefonszam: "0645678901"
                 };
 
-                const res = await request(app).post("/api/foglalok").send(foglalo);
+                const res = await request(app).post("/api/users").send(user);
 
                 expect(res.status).toBe(400);
             });
         });
 
-        describe("GET /email/:email", () => 
+        describe("GET /:id", () => 
         {
-            test("should return foglalo by email", async () => 
+            test("should return user by id", async () => 
             {
-                const res = await request(app).get("/api/foglalok/email/kovacs.janos@example.com")
+                const userId = createdUsers[0].id;
+                const res = await request(app).get(`/api/users/${userId}`)
                 .set("Accept", "application/json");
 
                 expect(res.status).toBe(200);
                 expect(res.type).toMatch(/json/);
-                expect(res.body.length).toBeGreaterThan(0);
-                expect(res.body[0].email).toEqual("kovacs.janos@example.com");
+                expect(res.body.email).toEqual("kovacs.janos@example.com");
             });
 
-            test("should return 404 when email not found", async () => 
+            test("should return 404 when user not found", async () => 
             {
-                const res = await request(app).get("/api/foglalok/email/nonexistent@example.com")
+                const res = await request(app).get("/api/users/99999")
                 .set("Accept", "application/json");
 
                 expect(res.status).toBe(404);
@@ -185,15 +160,11 @@ describe("API Tests", () =>
 
         describe("PUT /:id", () => 
         {
-            test("should update a foglalo", async () => 
+            test("should update a user", async () => 
             {
-                const updateData = {
-                    keresztnev: "Jánosné"
-                };
-
-                // Használjuk az első létrehozott foglaló ID-ját
-                const foglaloId = createdFoglalok[0].foglalo_id;
-                const res = await request(app).put(`/api/foglalok/${foglaloId}`).send(updateData);
+                const updateData = { keresztnev: "Jánosné" };
+                const userId = createdUsers[0].id;
+                const res = await request(app).put(`/api/users/${userId}`).send(updateData);
 
                 expect(res.status).toBe(200);
                 expect(res.type).toMatch(/json/);
@@ -202,13 +173,9 @@ describe("API Tests", () =>
 
             test("should return 400 when vezeteknev contains numbers", async () => 
             {
-                const updateData = {
-                    vezeteknev: "Kovács123"
-                };
-
-                // Használjuk az első létrehozott foglaló ID-ját
-                const foglaloId = createdFoglalok[0].foglalo_id;
-                const res = await request(app).put(`/api/foglalok/${foglaloId}`).send(updateData);
+                const updateData = { vezeteknev: "Kovács123" };
+                const userId = createdUsers[0].id;
+                const res = await request(app).put(`/api/users/${userId}`).send(updateData);
 
                 expect(res.status).toBe(400);
             });
@@ -216,24 +183,16 @@ describe("API Tests", () =>
 
         describe("DELETE /:id", () => 
         {
-            test("should delete foglalo", async () => 
+            test("should delete user", async () => 
             {
-                // Használjuk a második létrehozott foglaló ID-ját
-                const foglaloId = createdFoglalok[1].foglalo_id;
-                const res = await request(app).delete(`/api/foglalok/${foglaloId}`);
+                const userId = createdUsers[1].id;
+                const res = await request(app).delete(`/api/users/${userId}`);
 
-                const foundFoglalo = await db.Foglalo.findOne(
-                {
-                    where:
-                    {
-                        foglalo_id: foglaloId,
-                    }
-                });
+                const foundUser = await db.User.findOne({ where: { id: userId } });
 
                 expect(res.status).toBe(200);
                 expect(res.type).toMatch(/json/);
-
-                expect(foundFoglalo).toBeNull();
+                expect(foundUser).toBeNull();
             });
         });
     });

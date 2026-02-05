@@ -4,7 +4,6 @@ class FoglalasRepository{
         this.User = db.User;
         this.Asztal = db.Asztal;
         this.EtkezesTipusa = db.EtkezesTipusa;
-        this.Megjegyzes = db.Megjegyzes;
         this.sequelize = db.sequelize;
     }
     
@@ -22,10 +21,6 @@ class FoglalasRepository{
                 {
                     model: this.EtkezesTipusa,
                     attributes: ["nev"]
-                },
-                {
-                    model: this.Megjegyzes,
-                    attributes: ["szoveg"]
                 }
             ]
         });
@@ -49,10 +44,6 @@ class FoglalasRepository{
                 {
                     model: this.EtkezesTipusa,
                     attributes: ["nev"]
-                },
-                {
-                    model: this.Megjegyzes,
-                    attributes: ["szoveg"]
                 }
             ]
         });
@@ -108,10 +99,6 @@ class FoglalasRepository{
                 {
                     model: this.EtkezesTipusa,
                     attributes: ["nev"]
-                },
-                {
-                    model: this.Megjegyzes,
-                    attributes: ["szoveg"]
                 }
             ]
         });
@@ -132,10 +119,6 @@ class FoglalasRepository{
                 {
                     model: this.EtkezesTipusa,
                     attributes: ["nev"]
-                },
-                {
-                    model: this.Megjegyzes,
-                    attributes: ["szoveg"]
                 }
             ]
         });

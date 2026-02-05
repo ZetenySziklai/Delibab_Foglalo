@@ -65,7 +65,15 @@ class FoglalasService {
             throw new BadRequestError("Az asztal már foglalt ezen az időponton");
         }
 
-        return await this.foglalasRepository.createFoglalas(data);
+        // Foglalás létrehozása
+        const foglalas = await this.foglalasRepository.createFoglalas(data);
+
+        // Asztal állapotának frissítése "foglalt"-ra (1)
+        await this.asztalRepository.updateAsztal(data.asztal_id, {
+            asztal_allapot_id: 1
+        });
+
+        return foglalas;
     }
 
     async getFoglalasById(id){
