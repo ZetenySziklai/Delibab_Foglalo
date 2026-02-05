@@ -418,17 +418,17 @@
   padding-bottom: 10px;
 }
 
-.form-group {
+.auth-container .form-group {
   margin-bottom: 15px;
   text-align: left;
 }
 
-.form-group label {
+.auth-container .form-group label {
   display: block;
   margin-bottom: 5px;
 }
 
-.form-group input {
+.auth-container .form-group input {
   width: 100%;
   padding: 10px;
   border-radius: 5px;

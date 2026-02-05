@@ -11,10 +11,7 @@ const Navbar: React.FC<NavbarProps> = ({ onFoglalasClick, onLoginClick, onHomeCl
     return (
         <nav>
             <div className="navigacio">
-                <p 
-                  style={{ cursor: 'pointer' }} 
-                  onClick={onHomeClick}
-                >
+                <p>
                   <img src="/kepek/delibab_ikon.png" alt="etterem_icon" className="ikon" />
                 </p>
                 <a href="#menu" onClick={(e) => { if(onHomeClick) { onHomeClick(); } }}>Menü</a>

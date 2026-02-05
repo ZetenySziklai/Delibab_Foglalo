@@ -5,12 +5,28 @@ import Kartya from './components/kartya/kartya'
 import { FoglaloOldal } from './components/foglalo/foglalo';
 import Login from './components/Login';
 import Register from './components/Register';
+import Modal from './components/Modal';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'foglalo' | 'login' | 'register'>('home')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleFoglalasClick = () => {
+    if (!isLoggedIn) {
+      setIsModalOpen(true);
+    } else {
+      setCurrentPage('foglalo');
+    }
+  }
+
+  const handleModalConfirm = () => {
+    setIsModalOpen(false);
+    setCurrentPage('login');
+  }
 
   if (currentPage === 'foglalo') {
-    return <FoglaloOldal onBack={() => setCurrentPage('home')} />
+    return <FoglaloOldal onBack={() => setCurrentPage('home')} isLoggedIn={isLoggedIn} onLoginClick={() => setCurrentPage('login')} />
   }
 
   const renderContent = () => {
@@ -18,7 +34,7 @@ function App() {
       case 'login':
         return (
           <section className="auth-page">
-            <Login onSwitch={() => setCurrentPage('register')} />
+            <Login onSwitch={() => setCurrentPage('register')} onLoginSuccess={() => { setIsLoggedIn(true); setCurrentPage('home'); }} />
             <button className="btn back-btn" onClick={() => setCurrentPage('home')}>Vissza a főoldalra</button>
           </section>
         );
@@ -53,7 +69,7 @@ function App() {
               id="kapcsolat"
               title="KAPCSOLAT"
               buttons={[
-                { href: '#', label: 'Foglalás', external: false, className: 'btn', onClick: () => setCurrentPage('foglalo') },
+                { href: '#', label: 'Foglalás', external: false, className: 'btn', onClick: handleFoglalasClick },
                 {
                   href: 'https://www.google.com/maps/place/D%C3%A9lib%C3%A1b+k%C3%A1v%C3%A9z%C3%B3+%C3%A9s+Street+Food/@47.171818,19.7966277,16z/data=!4m6!3m5!1s0x474170f67aa0a9f5:0x4576a795714e678c!8m2!3d47.1710083!4d19.7974191!16s%2Fg%2F1v0ljk2r?entry=ttu&g_ep=EgoyMDI1MTAwMS4wIKXMDSoASAFQAw%3D%3D',
                   label: 'Navigáció',
@@ -89,7 +105,7 @@ function App() {
   return (
     <div className="app-layout">
       <Navbar 
-        onFoglalasClick={() => setCurrentPage('foglalo')} 
+        onFoglalasClick={handleFoglalasClick} 
         onLoginClick={() => setCurrentPage('login')}
         onHomeClick={() => setCurrentPage('home')}
       />
@@ -98,6 +114,14 @@ function App() {
 
         {renderContent()}
       </main>
+
+      <Modal 
+        isOpen={isModalOpen}
+        title="Bejelentkezés szükséges"
+        message="A foglalás véglegesítéséhez kérjük, jelentkezz be a fiókodba!"
+        onConfirm={handleModalConfirm}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   )
 }

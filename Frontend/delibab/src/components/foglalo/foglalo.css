@@ -171,7 +171,7 @@
 /* Time Grid */
 .time-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 15px;
 }
 
@@ -264,6 +264,8 @@
   border-radius: 6px;
   font-size: 1rem;
   box-sizing: border-box;
+  background-color: #fff;
+  color: #333;
 }
 
 .form-group input:focus,
@@ -342,6 +344,25 @@
 /* Success Step */
 .success-step {
   text-align: center;
+}
+
+.auth-warning {
+  text-align: center;
+  padding: 40px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.auth-warning h2 {
+  color: rgb(65, 37, 0);
+  margin-bottom: 15px;
+}
+
+.auth-warning p {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
 }
 
 .success-icon {

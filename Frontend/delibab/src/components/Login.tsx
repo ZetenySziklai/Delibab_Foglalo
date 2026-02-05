@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Login: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
+const Login: React.FC<{ onSwitch: () => void; onLoginSuccess?: () => void }> = ({ onSwitch, onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -8,6 +8,8 @@ const Login: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     e.preventDefault();
     console.log('Login attempt:', { email, password });
     // Majd itt lesz a backend hívás
+    // Teszteléshez most sikeresnek vesszük:
+    if (onLoginSuccess) onLoginSuccess();
   };
 
   return (

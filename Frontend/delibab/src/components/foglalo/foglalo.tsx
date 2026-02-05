@@ -12,9 +12,11 @@ interface ContactForm {
 
 interface FoglaloOldalProps {
   onBack: () => void;
+  isLoggedIn: boolean;
+  onLoginClick: () => void;
 }
 
-export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
+export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, onLoginClick }) => {
   const [step, setStep] = useState(1);
   const [guests, setGuests] = useState(2);
   const [date, setDate] = useState('');
@@ -45,16 +47,24 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
 
   // Időpont generálás
   const timeSlots = [
-    '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', 
-    '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
-    '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00'
+    '09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00'
   ];
 
   const getMealType = (timeStr: string) => {
     const hour = parseInt(timeStr.split(':')[0], 10);
-    if (hour < 11) return 'Reggeli';
-    if (hour < 17) return 'Ebéd';
+    const minutes = parseInt(timeStr.split(':')[1], 10);
+    const totalMinutes = hour * 60 + minutes;
+
+    if (totalMinutes < 12 * 60) return 'Reggeli'; // 11:30-ig tartó sáv még reggeli
+    if (totalMinutes < 18 * 60) return 'Ebéd';
     return 'Vacsora';
+  };
+
+  const calculateEndTime = (startTime: string) => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours + 1, minutes);
+    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   };
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -181,11 +191,12 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
             <button className="back-btn" onClick={() => setStep(2)}>← Vissza</button>
             <h2>Mikor érkeztek?</h2>
             <div className="meal-times-info-small">
-               <p>☕ Reggeli: 11:00-ig | 🍽️ Ebéd: 11:00-17:00 | 🍷 Vacsora: 17:00-tól</p>
+               <p>☕ Reggeli: 11:30-ig | 🍽️ Ebéd: 12:00-18:00 | 🍷 Vacsora: 18:00-tól</p>
             </div>
             <div className="time-grid">
               {timeSlots.map(slot => {
                 const isReserved = reservedTimes.includes(slot);
+                const displayTime = `${slot}-${calculateEndTime(slot)}`;
                 return (
                   <button 
                     key={slot} 
@@ -199,7 +210,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
                     disabled={isReserved}
                     title={isReserved ? "Ez az időpont már foglalt" : ""}
                   >
-                    {slot}
+                    {displayTime}
                   </button>
                 );
               })}
@@ -341,9 +352,9 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack }) => {
           </div>
           <div className="info-block meal-times-sidebar">
              <h3>🍽️ Konyha</h3>
-             <p>Reggeli: 11:00-ig</p>
-             <p>Ebéd: 11:00 - 17:00</p>
-             <p>Vacsora: 17:00-tól</p>
+             <p>Reggeli: 08:00 - 11:30</p>
+             <p>Ebéd: 12:00 - 18:00</p>
+             <p>Vacsora: 18:00 - 22:00</p>
           </div>
         </div>
       </div>
