@@ -46,34 +46,25 @@ describe("Repository tests", () =>
             etkezesTipusa1 = await db.EtkezesTipusa.create({ nev: "Ebéd" });
             etkezesTipusa2 = await db.EtkezesTipusa.create({ nev: "Vacsora" });
 
-            // Létrehozunk foglalásokat (felnott és gyerek kötelező mezők)
-            const created = await db.Foglalas.bulkCreate([
-                { 
-                    user_id: user1.id,
-                    asztal_id: asztal1.id,
-                    foglalas_datum: new Date("2024-01-15T12:00:00"),
-                    etkezes_id: etkezesTipusa1.id,
-                    megjegyzes: "Test megjegyzés",
-                    felnott: 2,
-                    gyerek: 0
-                },
-                { 
-                    user_id: user2.id,
-                    asztal_id: asztal2.id,
-                    foglalas_datum: new Date("2024-01-15T13:00:00"),
-                    etkezes_id: etkezesTipusa1.id,
-                    felnott: 4,
-                    gyerek: 1
-                },
-                { 
-                    user_id: user1.id,
-                    asztal_id: asztal1.id,
-                    foglalas_datum: new Date("2024-01-16T18:00:00"),
-                    etkezes_id: etkezesTipusa2.id,
-                    felnott: 2,
-                    gyerek: 0
-                },
-            ], { validate: false });
+            // Létrehozunk foglalásokat (felnott és gyerek kötelező mezők).
+            // Fontos: a (user_id, asztal_id) párok legyenek egyediek, mert a
+            // Sequelize a kapcsolat miatt egyedi indexet hoz létre erre a két mezőre.
+            const foglalasData = [
+                { user_id: user1.id, asztal_id: asztal1.id, foglalas_datum: "2024-01-15 12:00:00", etkezes_id: etkezesTipusa1.id, megjegyzes: "Test megjegyzés", felnott: 2, gyerek: 0 },
+                { user_id: user2.id, asztal_id: asztal2.id, foglalas_datum: "2024-01-15 13:00:00", etkezes_id: etkezesTipusa1.id, felnott: 4, gyerek: 1 },
+                // Eredetileg itt is (user1, asztal1) volt, ami ütközött az egyedi index-szel.
+                // Áttesszük egy másik asztalra, hogy a (user_id, asztal_id) kombináció egyedi maradjon.
+                { user_id: user1.id, asztal_id: asztal2.id, foglalas_datum: "2024-01-16 18:00:00", etkezes_id: etkezesTipusa2.id, felnott: 2, gyerek: 0 },
+            ];
+            try {
+                for (const data of foglalasData) {
+                    await db.Foglalas.create(data);
+                }
+            } catch (err) {
+                console.error("Foglalas create HIBA:", err.message);
+                if (err.parent) console.error("SQLite:", err.parent.message);
+                throw err;
+            }
         });
 
         afterAll(async () => 
@@ -129,9 +120,11 @@ describe("Repository tests", () =>
             test("should create a foglalas in the database", async () => 
             {
                 const foglalas = { 
+                    // Olyan (user, asztal) kombinációt használjunk, ami még nem szerepel a seed adatokban,
+                    // hogy ne ütközzön az egyedi indexszel.
                     user_id: user2.id,
-                    asztal_id: asztal2.id,
-                    foglalas_datum: new Date("2024-01-17T19:00:00"),
+                    asztal_id: asztal1.id,
+                    foglalas_datum: "2024-01-17 19:00:00",
                     etkezes_id: etkezesTipusa2.id,
                     felnott: 3,
                     gyerek: 0
@@ -142,9 +135,9 @@ describe("Repository tests", () =>
                 const foglalasok = await foglalasRepository.getFoglalas();
 
                 const foundFoglalas = foglalasok.find(item => 
-                    item.user_id === user2.id && 
-                    item.asztal_id === asztal2.id &&
-                    new Date(item.foglalas_datum).getTime() === new Date("2024-01-17T19:00:00").getTime()
+                    item.user_id === foglalas.user_id && 
+                    item.asztal_id === foglalas.asztal_id &&
+                    new Date(item.foglalas_datum).getTime() === new Date(foglalas.foglalas_datum).getTime()
                 );
 
                 expect(foundFoglalas).toBeDefined();

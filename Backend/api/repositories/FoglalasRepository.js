@@ -71,7 +71,8 @@ class FoglalasRepository{
                     [Op.lt]: new Date(new Date(datum).setDate(new Date(datum).getDate() + 1))
                 }
             },
-            attributes: ['id', 'foglalas_datum', 'user_id']
+            // Az asztal_id-t is visszaadjuk, hogy a tesztben ellenőrizhető legyen
+            attributes: ['id', 'foglalas_datum', 'user_id', 'asztal_id']
         });
         
         return foglalasok;
