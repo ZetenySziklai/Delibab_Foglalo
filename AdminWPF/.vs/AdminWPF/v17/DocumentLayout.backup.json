@@ -1,0 +1,277 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\ujidopontablak.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\ujidopontablak.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\adatoklekerese.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\adatoklekerese.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\adatokfeldolgozasa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\adatokfeldolgozasa.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\models\\idopontdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\models\\idopontdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\services\\apiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\services\\apiservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\ujasztalablak.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\ujasztalablak.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\muveleteredmeny.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\muveleteredmeny.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\ujidopontablak.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\ujidopontablak.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\models\\foglalasdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\models\\foglalasdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\models\\asztaldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\models\\asztaldto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\ujasztalablak.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\ujasztalablak.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\adminwpf.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\adminwpf.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|c:\\users\\sziklai.zeteny\\desktop\\\u00FAj mappa\\adminwpf_oldal\\adminfelulet(2)\\adminwpf\\adminwpf\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{9BE05BBA-EDB0-4243-B9CA-499856FE377E}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UjIdopontAblak.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjIdopontAblak.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\UjIdopontAblak.xaml.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjIdopontAblak.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\UjIdopontAblak.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T07:28:49.4Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UjAsztalAblak.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjAsztalAblak.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\UjAsztalAblak.xaml.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjAsztalAblak.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\UjAsztalAblak.xaml.cs",
+              "ViewState": "AgIAACwAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T07:28:28.715Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\App.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\App.xaml.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\App.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\App.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-23T07:28:11.847Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ApiService.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Services\\ApiService.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Services\\ApiService.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Services\\ApiService.cs",
+              "RelativeToolTip": "AdminWPF\\Services\\ApiService.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAEAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:42:36.087Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "IdopontDto.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Models\\IdopontDto.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Models\\IdopontDto.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Models\\IdopontDto.cs",
+              "RelativeToolTip": "AdminWPF\\Models\\IdopontDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:42:34.293Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "AdminWPF.csproj",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\AdminWPF.csproj",
+              "RelativeDocumentMoniker": "AdminWPF\\AdminWPF.csproj",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\AdminWPF.csproj",
+              "RelativeToolTip": "AdminWPF\\AdminWPF.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-01-11T16:37:51.1Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AdatokLekerese.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\AdatokLekerese.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\AdatokLekerese.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\AdatokLekerese.cs",
+              "RelativeToolTip": "AdminWPF\\AdatokLekerese.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAgwDkAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:37:44.918Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AdatokFeldolgozasa.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\AdatokFeldolgozasa.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\AdatokFeldolgozasa.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\AdatokFeldolgozasa.cs",
+              "RelativeToolTip": "AdminWPF\\AdatokFeldolgozasa.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:37:41.733Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAKIBAAAAAAAAAAAwwHMAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:14:46.677Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "FoglalasDto.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Models\\FoglalasDto.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Models\\FoglalasDto.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Models\\FoglalasDto.cs",
+              "RelativeToolTip": "AdminWPF\\Models\\FoglalasDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:42:32.852Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UjIdopontAblak.xaml",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjIdopontAblak.xaml",
+              "RelativeDocumentMoniker": "AdminWPF\\UjIdopontAblak.xaml",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjIdopontAblak.xaml",
+              "RelativeToolTip": "AdminWPF\\UjIdopontAblak.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-22T19:38:45.906Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MuveletEredmeny.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\MuveletEredmeny.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\MuveletEredmeny.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\MuveletEredmeny.cs",
+              "RelativeToolTip": "AdminWPF\\MuveletEredmeny.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:36:48.404Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\App.xaml",
+              "RelativeDocumentMoniker": "AdminWPF\\App.xaml",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\App.xaml",
+              "RelativeToolTip": "AdminWPF\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-16T07:38:43.421Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "UjAsztalAblak.xaml",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjAsztalAblak.xaml",
+              "RelativeDocumentMoniker": "AdminWPF\\UjAsztalAblak.xaml",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\UjAsztalAblak.xaml",
+              "RelativeToolTip": "AdminWPF\\UjAsztalAblak.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-22T19:38:36.143Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "AsztalDto.cs",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Models\\AsztalDto.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Models\\AsztalDto.cs",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\Models\\AsztalDto.cs",
+              "RelativeToolTip": "AdminWPF\\Models\\AsztalDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-11T16:42:31.76Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\sziklai.zeteny\\Desktop\\\u00DAj mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\MainWindow.xaml",
+              "RelativeToolTip": "AdminWPF\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-01-11T16:14:47.11Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

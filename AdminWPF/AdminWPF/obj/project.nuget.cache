@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "h22lBG6/lNI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\sziklai.zeteny\\Desktop\\Új mappa\\AdminWPF_oldal\\AdminFelulet(2)\\AdminWPF\\AdminWPF\\AdminWPF.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sziklai.zeteny\\.nuget\\packages\\system.net.http.json\\8.0.0\\system.net.http.json.8.0.0.nupkg.sha512",
+    "C:\\Users\\sziklai.zeteny\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "C:\\Users\\sziklai.zeteny\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
