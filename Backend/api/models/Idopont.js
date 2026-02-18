@@ -1,9 +1,9 @@
 const {Model, DataTypes} = require("sequelize");
 
 module.exports = (sequelize) => {
-    class EtkezesTipusa extends Model {};
+    class Idopont extends Model {};
 
-    EtkezesTipusa.init(
+    Idopont.init(
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -11,23 +11,23 @@ module.exports = (sequelize) => {
                 autoIncrement: true,
                 allowNull: false
             },
-            nev: {
-                type: DataTypes.STRING(50),
+            kezdet: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            veg:{
+                type: DataTypes.INTEGER,
                 allowNull: false
             }
         },
         {
             sequelize,
-            modelName: "EtkezesTipusa",
-            tableName: "etkezes_tipusa",
+            modelName: "Idopont",
+            tableName: "idopont",
             createdAt: false,
             updatedAt: false,
             freezeTableName: true,
         }
     );
-    return EtkezesTipusa;
+    return Idopont;
 }
-
-
-
-

@@ -1,21 +1,21 @@
-const UserRepository = require("./UserRepository");
+const UserRepository = require("./FelhasznaloRepository");
 const AsztalRepository = require("./AsztalRepository");
 const FoglalasRepository = require("./FoglalasRepository");
-const AsztalAllapotRepository = require("./AsztalAllapotRepository");
-const EtkezesTipusaRepository = require("./EtkezesTipusaRepository");
+const FoglalasiAdatokRepository = require("./FoglalasiAdatokRepository");
+const IdopontRepository = require("./IdopontRepository");
 
 module.exports = (db) =>{
     const userRepository = new UserRepository(db);
     const asztalRepository = new AsztalRepository(db);
     const foglalasRepository = new FoglalasRepository(db);
-    const asztalAllapotRepository = new AsztalAllapotRepository(db);
-    const etkezesTipusaRepository = new EtkezesTipusaRepository(db);
+    const foglalasiAdatokRepository = new FoglalasiAdatokRepository(db);
+    const idopontRepository = new IdopontRepository(db);
 
     return {
         userRepository,
         asztalRepository,
         foglalasRepository,
-        asztalAllapotRepository,
-        etkezesTipusaRepository
+        foglalasiAdatokRepository,
+        idopontRepository
     };
 }

@@ -15,12 +15,10 @@ class AsztalService {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
 
-        // Helyek száma pozitív szám kell legyen
         if (isNaN(data.helyek_szama) || data.helyek_szama <= 0) {
             throw new BadRequestError("A helyek száma pozitív szám kell legyen");
         }
 
-        // Asztal állapot létezik-e
         const allapot = await this.asztalAllapotRepository.getAsztalAllapotById(data.asztal_allapot_id);
         if (!allapot) {
             throw new NotFoundError("Az asztal állapot nem létezik");

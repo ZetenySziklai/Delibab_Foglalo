@@ -41,37 +41,25 @@ class AsztalRepository{
     async getSzabadAsztalok(datum, idopont, helyekSzama){
         const { Op } = require('sequelize');
         
-        // Foglalt asztalok lekérése az adott dátumra és időpontra
         const foglaltAsztalok = await this.Foglalas.findAll({
-            where: {
-                foglalas_datum: new Date(datum + ' ' + idopont)
-            },
+            where: { foglalas_datum: new Date(datum + ' ' + idopont) },
             attributes: ['asztal_id'],
             raw: true
         });
 
         const foglaltAsztalIds = foglaltAsztalok.map(f => f.asztal_id);
-
-        // Szabad asztalok lekérése (nincs foglalásuk és elég helyük van)
         const whereCondition = {
-            asztal_allapot_id: 1, // Feltételezzük, hogy 1 = szabad
-            helyek_szama: {
-                [Op.gte]: helyekSzama || 1
-            }
+            asztal_allapot_id: 1,
+            helyek_szama: { [Op.gte]: helyekSzama || 1 }
         };
 
         if (foglaltAsztalIds.length > 0) {
-            whereCondition.id = {
-                [Op.notIn]: foglaltAsztalIds
-            };
+            whereCondition.id = { [Op.notIn]: foglaltAsztalIds };
         }
 
         return await this.Asztal.findAll({
             where: whereCondition,
-            include: [{
-                model: this.AsztalAllapot,
-                attributes: ["nev"]
-            }]
+            include: [{ model: this.AsztalAllapot, attributes: ["nev"] }]
         });
     }
 }

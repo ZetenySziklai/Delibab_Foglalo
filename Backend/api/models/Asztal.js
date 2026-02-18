@@ -15,10 +15,6 @@ module.exports = (sequelize) => {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            // asztal_allapot_id: {
-            //     type: DataTypes.INTEGER,
-            //     allowNull: false
-            // }
         },
         {
             sequelize,

@@ -13,65 +13,45 @@ class FoglalasService {
     }
 
     async createFoglalas(data){
-        // Kötelező mezők ellenőrzése
         if (!data.user_id || !data.asztal_id || !data.foglalas_datum || !data.etkezes_id) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
 
-        // Felhasználó létezik-e
         const user = await this.userRepository.getUserById(data.user_id);
         if (!user) {
             throw new NotFoundError("A megadott felhasználó nem létezik");
         }
 
-        // Asztal létezik-e
         const asztal = await this.asztalRepository.getAsztalById(data.asztal_id);
         if (!asztal) {
             throw new NotFoundError("A megadott asztal nem létezik");
         }
 
-        // Étkezés típus létezik-e
         const etkezes = await this.etkezesTipusaRepository.getEtkezesTipusaById(data.etkezes_id);
         if (!etkezes) {
             throw new NotFoundError("A megadott étkezés típus nem létezik");
         }
 
-        // Dátum validáció - nem lehet múltban
         const foglalasDatum = new Date(data.foglalas_datum);
-        if (isNaN(foglalasDatum.getTime())) {
-            throw new BadRequestError("Érvénytelen dátum formátum");
+        if (isNaN(foglalasDatum.getTime()) || foglalasDatum < new Date()) {
+            throw new BadRequestError("Érvénytelen vagy múltbeli dátum");
         }
 
-        const most = new Date();
-        if (foglalasDatum < most) {
-            throw new BadRequestError("A foglalás dátuma nem lehet a múltban");
-        }
-
-        // Duplikált foglalás ellenőrzése - ugyanaz az asztal, ugyanaz az időpont
         const datumResz = data.foglalas_datum.split(' ')[0];
-        const foglaltIdopontok = await this.foglalasRepository.getFoglaltIdopontok(
-            datumResz, 
-            data.asztal_id
-        );
+        const foglaltIdopontok = await this.foglalasRepository.getFoglaltIdopontok(datumResz, data.asztal_id);
         const foglaltDatum = new Date(data.foglalas_datum);
+        
         const vanDuplikatum = foglaltIdopontok.some(foglalas => {
-            const idopontDatum = new Date(foglalas.foglalas_datum);
-            // 1 órán belüli különbség = duplikátum
-            const kulonbseg = Math.abs(idopontDatum.getTime() - foglaltDatum.getTime());
-            return kulonbseg < 3600000; // 1 óra = 3600000 ms
+            const kulonbseg = Math.abs(new Date(foglalas.foglalas_datum).getTime() - foglaltDatum.getTime());
+            return kulonbseg < 3600000;
         });
         
         if (vanDuplikatum) {
             throw new BadRequestError("Az asztal már foglalt ezen az időponton");
         }
 
-        // Foglalás létrehozása
         const foglalas = await this.foglalasRepository.createFoglalas(data);
-
-        // Asztal állapotának frissítése "foglalt"-ra (1)
-        await this.asztalRepository.updateAsztal(data.asztal_id, {
-            asztal_allapot_id: 1
-        });
+        await this.asztalRepository.updateAsztal(data.asztal_id, { asztal_allapot_id: 1 });
 
         return foglalas;
     }

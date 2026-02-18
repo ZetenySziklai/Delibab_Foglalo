@@ -33,13 +33,11 @@ class UserRepository{
     }
 
     async getUserByPhone(telefonszam){
-        // Normalizáljuk a telefonszámot (eltávolítjuk a szóközöket és kötőjeleket)
         const phoneNormalized = String(telefonszam).replace(/[\s-]/g, "");
-        const results = await this.User.findAll({
+        return await this.User.findAll({
             where: { telefonszam: phoneNormalized },
             raw: true
         });
-        return results;
     }
 
     async getUserWithDetails(){

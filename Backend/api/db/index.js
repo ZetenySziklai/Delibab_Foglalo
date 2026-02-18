@@ -3,11 +3,11 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const dialect = process.env.DB_DIALECT || 'mysql';
 const dialectOptions = {};
 
-// MySQL-specifikus beállítások csak MySQL esetén
+
+
+//specialis karakterek kezelese (kiveheto) 
 if (dialect === 'mysql') {
   dialectOptions.charset = 'utf8mb4';
-  // A collate opciót nem támogatja a MySQL2 driver a kapcsolati szinten
-  // A collation automatikusan beállításra kerül a charset alapján
 }
 
 const sequelize = new Sequelize(
@@ -19,7 +19,8 @@ const sequelize = new Sequelize(
     dialect: dialect,
     port: process.env.DB_PORT,
     logging: false,
-    storage: dialect === 'sqlite' ? process.env.DB_NAME : undefined,
+    //storage: dialect === 'sqlite' ? process.env.DB_NAME : undefined,
+    // ez kell a felso dialecthez
     dialectOptions: Object.keys(dialectOptions).length > 0 ? dialectOptions : undefined
   }
 );
@@ -32,7 +33,8 @@ const db = {
   ...models,
 };
 
-// Csak akkor futtassuk az automatikus sync-et, ha nem tesztekben vagyunk
+
+// ennek nezzek utanna elvileg testhez kell
 if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
   (async () =>{
     try {
@@ -41,7 +43,6 @@ if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
       console.log("DataBase sync OK");
     } catch (error) {
       console.error('Failed sync to DataBase', error);
-      // Ne dobjunk hibát, hogy a tesztek ne akadjanak el
       if (process.env.NODE_ENV === 'production') {
         throw error;
       }

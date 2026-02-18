@@ -10,24 +10,7 @@ module.exports = (sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false
-            },
-            foglalas_datum: {
-                type: DataTypes.DATE,
-                allowNull: false
-            },
-            megjegyzes: {
-                type: DataTypes.STRING(255),
-                allowNull: true
-            },
-            felnott: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            gyerek: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            // user_id, asztal_id, etkezes_id - az index.js asszociációk adják hozzá
+            }
         },
         {
             sequelize,

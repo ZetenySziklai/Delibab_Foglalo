@@ -7,7 +7,6 @@ function notFoundError(req, res, next)
 
 function showError(error, req, res, next)
 {
-    // Ha az error már egy AppError példány, használjuk a statusCode-ját
     if (error instanceof AppError) {
         return res.status(error.statusCode).json({
             code: error.statusCode,
@@ -17,7 +16,6 @@ function showError(error, req, res, next)
         });
     }
 
-    // Ha van status property (régi formátum), használjuk azt
     if (error.status) {
         return res.status(error.status).json({
             code: error.status,
@@ -25,7 +23,6 @@ function showError(error, req, res, next)
         });
     }
 
-    // Egyébként 500-as hiba
     res.status(500).json({
         code: 500,
         msg: error.message || "Internal Server Error"

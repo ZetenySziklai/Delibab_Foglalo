@@ -18,34 +18,26 @@ class UserService {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
         
-        // Vezetéknév és keresztnév: csak betűk (magyar ékezetes betűkkel)
         const nameRegex = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+$/;
-        if (!nameRegex.test(data.vezeteknev)) {
-            throw new BadRequestError("A vezetéknév csak betűket tartalmazhat");
-        }
-        if (!nameRegex.test(data.keresztnev)) {
-            throw new BadRequestError("A keresztnév csak betűket tartalmazhat");
+        if (!nameRegex.test(data.vezeteknev) || !nameRegex.test(data.keresztnev)) {
+            throw new BadRequestError("A név csak betűket tartalmazhat");
         }
         
         if (!data.email.includes('@')) {
             throw new BadRequestError("Érvényes email címet adjon meg");
         }
 
-        // Telefonszám: csak számok (+ előjel és szóköz/-, 7-15 számjegy)
         const phoneNormalized = String(data.telefonszam).replace(/[\s-]/g, "");
         if (!/^\+?\d{7,15}$/.test(phoneNormalized)) {
             throw new BadRequestError("A telefonszám csak szám lehet (7-15 számjegy)");
         }
 
-        // Duplikáció tiltása: ugyanaz az email vagy telefonszám már szerepel
         const existingByEmail = await this.userRepository.getUserByEmail(data.email);
-        // Normalizált telefonszámot használunk a duplikáció ellenőrzéshez
         const existingByPhone = await this.userRepository.getUserByPhone(phoneNormalized);
-        if ((existingByEmail && existingByEmail.length > 0) || (existingByPhone && existingByPhone.length > 0)) {
+        if (existingByEmail?.length > 0 || existingByPhone?.length > 0) {
             throw new BadRequestError("Ezzel az emaillel vagy telefonszámmal már van felhasználó");
         }
 
-        // Normalizált telefonszámot mentjük az adatbázisba
         data.telefonszam = phoneNormalized;
         return await this.userRepository.createUser(data);
     }
@@ -53,18 +45,15 @@ class UserService {
     async updateUser(id, data){
         if (data.email) {
             const existing = await this.userRepository.getUserByEmail(data.email);
-            if (existing && existing.length > 0 && existing[0].id !== parseInt(id)) {
+            if (existing?.length > 0 && existing[0].id !== parseInt(id)) {
                 throw new BadRequestError("Ez az email cím már használatban van");
             }
         }
         
-        // Vezetéknév és keresztnév: csak betűk (magyar ékezetes betűkkel)
         const nameRegex = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+$/;
-        if (data.vezeteknev && !nameRegex.test(data.vezeteknev)) {
-            throw new BadRequestError("A vezetéknév csak betűket tartalmazhat");
-        }
-        if (data.keresztnev && !nameRegex.test(data.keresztnev)) {
-            throw new BadRequestError("A keresztnév csak betűket tartalmazhat");
+        if ((data.vezeteknev && !nameRegex.test(data.vezeteknev)) || 
+            (data.keresztnev && !nameRegex.test(data.keresztnev))) {
+            throw new BadRequestError("A név csak betűket tartalmazhat");
         }
         
         return await this.userRepository.updateUser(id, data);
@@ -101,12 +90,8 @@ class UserService {
         const start = new Date(startDate);
         const end = new Date(endDate);
         
-        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        if (isNaN(start.getTime()) || isNaN(end.getTime()) || start > end) {
             throw new BadRequestError("Érvényes dátumokat adjon meg");
-        }
-        
-        if (start > end) {
-            throw new BadRequestError("A kezdő dátum nem lehet későbbi, mint a végdátum");
         }
         
         return await this.userRepository.getUsersByDateRange(startDate, endDate);
