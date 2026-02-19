@@ -31,6 +31,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.DATE,
                 allowNull: false,
                 defaultValue: DataTypes.NOW
+            },
+            jelszo: {
+                type: DataTypes.STRING(50),
+                allowNull: false
             }
         },
         {
