@@ -1,73 +1,28 @@
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.exe
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.deps.json
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.runtimeconfig.json
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.dll
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.pdb
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.g.cs
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\App.g.cs
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.cache
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.lref
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.baml
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.g.resources
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfoInputs.cache
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfo.cs
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.csproj.CoreCompileInputs.cache
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.sourcelink.json
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.dll
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\refint\AdminWPF.dll
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.pdb
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.genruntimeconfig.cache
-C:\Users\zeten\Downloads\vizsgaremekrepo\Delibab_Foglalo\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\ref\AdminWPF.dll
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.exe
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.deps.json
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.runtimeconfig.json
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.dll
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.pdb
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.g.cs
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\App.g.cs
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.cache
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.lref
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.baml
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.g.resources
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfoInputs.cache
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfo.cs
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.csproj.CoreCompileInputs.cache
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.sourcelink.json
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.dll
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\refint\AdminWPF.dll
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.pdb
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.genruntimeconfig.cache
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\ref\AdminWPF.dll
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.exe
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.deps.json
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.runtimeconfig.json
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.dll
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.pdb
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.g.cs
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\App.g.cs
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.cache
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.lref
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.baml
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.g.resources
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfoInputs.cache
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfo.cs
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.csproj.CoreCompileInputs.cache
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.sourcelink.json
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.dll
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\refint\AdminWPF.dll
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.pdb
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.genruntimeconfig.cache
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\ref\AdminWPF.dll
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjAsztalAblak.baml
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjIdopontAblak.baml
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjAsztalAblak.g.cs
-C:\Users\zeten\OneDrive\Asztali gép\adminWPF\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjIdopontAblak.g.cs
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjAsztalAblak.baml
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjIdopontAblak.baml
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjAsztalAblak.g.cs
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\UjIdopontAblak.g.cs
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\LoginWindow.baml
-C:\Users\sziklai.zeteny\Desktop\Új mappa\AdminWPF_oldal\AdminFelulet(2)\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\LoginWindow.g.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.exe
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.deps.json
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.runtimeconfig.json
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.dll
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\bin\Debug\net8.0-windows\AdminWPF.pdb
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\AsztalLetrehozasWindow.baml
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\AsztalTorlasWindow.baml
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\IdopontLetrehozasWindow.baml
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\IdopontTorlasWindow.baml
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\AsztalLetrehozasWindow.g.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\AsztalTorlasWindow.g.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\IdopontLetrehozasWindow.g.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\IdopontTorlasWindow.g.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.cache
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF_MarkupCompile.lref
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.g.resources
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfoInputs.cache
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.AssemblyInfo.cs
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.csproj.CoreCompileInputs.cache
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.dll
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\refint\AdminWPF.dll
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.pdb
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.genruntimeconfig.cache
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\ref\AdminWPF.dll

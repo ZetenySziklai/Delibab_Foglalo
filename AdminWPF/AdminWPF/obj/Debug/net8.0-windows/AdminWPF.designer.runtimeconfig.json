@@ -12,8 +12,8 @@
       }
     ],
     "additionalProbingPaths": [
-      "C:\\Users\\sziklai.zeteny\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\sziklai.zeteny\\.nuget\\packages",
+      "C:\\Users\\zeten\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\zeten\\.nuget\\packages",
       "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
     ],
     "configProperties": {

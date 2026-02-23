@@ -1,688 +1,341 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using AdminWPF.Models;
+using AdminWPF.Services;
+using AdminWPF.Windows;
 
 namespace AdminWPF
 {
-    /// <summary>
-    /// AdminOldal - Fő ablak kezelése
-    /// </summary>
     public partial class MainWindow : Window
     {
-        // Ez az osztály kezeli az adatokat (asztalok, időpontok, foglalások)
-        private AdatokLekerese adatokKezelo;
+        private readonly HttpClient _httpClient = new HttpClient
+        {
+            BaseAddress = new Uri("http://localhost:8000")
+        };
 
-        // Ez jelzi, hogy van-e mentetlen változás
-        private bool vanMentetlenValtozas = false;
+        private AsztalService   _asztalService;
+        private IdopontService  _idopontService;
+        private FoglalasService _foglalasService;
 
-        // Konstruktor - itt inicializáljuk az adatkezelőt
+        private List<Asztal>   _asztalok   = new();
+        private List<Idopont>  _idopontok  = new();
+        private List<Foglalas> _foglalasok = new();
+
+        private readonly List<RacsCella> _valtozasok = new();
+
         public MainWindow()
         {
             InitializeComponent();
-            adatokKezelo = new AdatokLekerese();
-            this.Loaded += Window_Loaded;
+            _asztalService   = new AsztalService(_httpClient);
+            _idopontService  = new IdopontService(_httpClient);
+            _foglalasService = new FoglalasService(_httpClient);
+            Loaded += async (_, _) => await AdatokBetoltese();
         }
 
-        // Window betöltésekor automatikusan betöltjük az adatokat az API-ból
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        // ─────────────────────────────────────────────
+        //  ADATOK BETÖLTÉSE
+        // ─────────────────────────────────────────────
+        private async Task AdatokBetoltese()
         {
-            await AdatokBetolteseAPIbol();
-        }
+            labelStatus.Content    = "Betöltés...";
+            btnMentes.IsEnabled    = false;
+            btnFrissites.IsEnabled = false;
 
-        // ============================================
-        // ADATOK BETÖLTÉSE AZ API-BÓL
-        // ============================================
-        /// <summary>
-        /// Betölti az adatokat az API-ból (asztalok, időpontok, foglalások)
-        /// Ha nincs adat vagy az API nem elérhető, üres táblát mutat
-        /// </summary>
-        private async System.Threading.Tasks.Task AdatokBetolteseAPIbol()
-        {
-            // Először töröljük az összes adatot, hogy biztosan ne legyen beégetett adat
-            adatokKezelo.adatok.Clear();
-            adatokKezelo.asztalKapacitasok.Clear();
-            adatokKezelo.asztalIds.Clear();
-            adatokKezelo.idopontIds.Clear();
-            adatokKezelo.foglalasok.Clear();
-            adatokKezelo.toroltFoglalasIds.Clear();
-            
             try
             {
-                UpdateStatus("⏳ Adatok betöltése az API-ból...", Colors.Orange);
+                _asztalok   = await _asztalService.GetAsztalokAsync();
+                _idopontok  = await _idopontService.GetIdopontokAsync();
+                _foglalasok = await _foglalasService.GetFoglalasokAsync();
+                _valtozasok.Clear();
 
-                // 1. LÉPÉS: Asztalok lekérése az API-ból
-                var asztalEredmeny = await adatokKezelo.AsztalokLekereseAPIbol();
-                
-                if (!asztalEredmeny.Sikeres)
-                {
-                    // Ha nem sikerült (pl. API nem elérhető), NEM töltünk be semmilyen adatot
-                    // Csak hibaüzenetet mutatunk
-                    string hibaUzenet = "API nem elérhető: " + adatokKezelo.UtolsoHiba;
-                    UpdateStatus("❌ " + hibaUzenet, Colors.Red);
-                    
-                    // Üres táblázat
-                    dataGrid1.Columns.Clear();
-                    dataGrid1.ItemsSource = null;
-                    comboBoxAsztalTorlendo.Items.Clear();
-                    comboBoxIdopontTorlendo.Items.Clear();
-                    vanMentetlenValtozas = false;
-                    
-                    // Részletes hibaüzenet
-                    string reszletesHiba = "Az API nem elérhető!\n\n" +
-                        "Hiba részletek:\n" + adatokKezelo.UtolsoHiba + "\n\n" +
-                        "Ellenőrizd:\n" +
-                        "1. Fut-e a Backend? (npm run start vagy npm run dev)\n" +
-                        "   URL: http://localhost:8000/api/asztalok\n" +
-                        "2. Fut-e a MySQL? (XAMPP)\n" +
-                        "3. Létre van-e hozva az 'asztalfoglalas' adatbázis?\n" +
-                        "4. A backend fut-e a 8000-es porton?\n\n" +
-                        "Teszteld a böngészőben:\n" +
-                        "http://localhost:8000/api/asztalok\n\n" +
-                        "Az alkalmazás üres táblázattal folytatja.\n" +
-                        "Nincs helyi adat - minden adat az API-ból jön.";
-                    
-                    MessageBox.Show(
-                        reszletesHiba,
-                        "API nem elérhető",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
-                    return;
-                }
-                
-                // Ha nincs asztal az adatbázisban, ez NEM hiba - csak üres lista
-                if (adatokKezelo.asztalKapacitasok.Count == 0)
-                {
-                    UpdateStatus("ℹ️ Nincs asztal az adatbázisban - üres táblázat", Colors.Gray);
-                }
+                RacsEpitese();
 
-                // 2. LÉPÉS: Időpontok lekérése az API-ból
-                var idopontEredmeny = await adatokKezelo.IdopontokLekereseAPIbol();
-                
-                if (!idopontEredmeny.Sikeres)
-                {
-                    // Ha valódi hiba történt (nem csak üres lista)
-                    string hibaUzenet = "Hiba az időpontok lekérésekor: " + adatokKezelo.UtolsoHiba;
-                    UpdateStatus("⚠️ " + hibaUzenet, Colors.Orange);
-                }
-                else
-                {
-                    int idopontokSzama = adatokKezelo.adatok.Count;
-                    int asztalokSzama = adatokKezelo.asztalKapacitasok.Count;
-                    
-                    if (asztalokSzama == 0 && idopontokSzama == 0)
-                    {
-                        UpdateStatus("ℹ️ Nincsenek adatok az adatbázisban - üres táblázat", Colors.Gray);
-                    }
-                    else if (idopontokSzama == 0)
-                    {
-                        UpdateStatus("✅ Asztalok betöltve (" + asztalokSzama + " asztal), nincs időpont az adatbázisban", Colors.LightGreen);
-                    }
-                    else
-                    {
-                        UpdateStatus("✅ Adatok betöltve az API-ból (" + asztalokSzama + " asztal, " + idopontokSzama + " időpont)", Colors.LightGreen);
-                    }
-                }
-
-                // 3. LÉPÉS: Foglalások lekérése (mai napra)
-                string maiDatum = DateTime.Now.ToString("yyyy-MM-dd");
-                var foglalasEredmeny = await adatokKezelo.FoglalasokLekereseAPIbol(maiDatum);
-                
-                if (foglalasEredmeny.Sikeres)
-                {
-                    List<FoglalasDto> foglalasok = (List<FoglalasDto>)foglalasEredmeny.Eredmeny;
-                    if (foglalasok != null && foglalasok.Count > 0)
-                    {
-                        adatokKezelo.FrissitElerhetosegekFoglalasokAlapjan(foglalasok);
-                    }
-                }
+                labelStatus.Content =
+                    $"Betöltve – {_asztalok.Count} asztal, {_idopontok.Count} időpont, {_foglalasok.Count} foglalás";
             }
             catch (Exception ex)
             {
-                // Hiba esetén töröljük az összes adatot
-                adatokKezelo.adatok.Clear();
-                adatokKezelo.asztalKapacitasok.Clear();
-                adatokKezelo.asztalIds.Clear();
-                adatokKezelo.idopontIds.Clear();
-                adatokKezelo.foglalasok.Clear();
-                
-                // Hiba esetén NEM töltünk be semmilyen adatot
-                string hibaUzenet = "API hiba: " + ex.Message;
-                UpdateStatus("❌ " + hibaUzenet, Colors.Red);
-                
-                // Üres táblázat
-                dataGrid1.Columns.Clear();
-                dataGrid1.ItemsSource = null;
-                comboBoxAsztalTorlendo.Items.Clear();
-                comboBoxIdopontTorlendo.Items.Clear();
-                vanMentetlenValtozas = false;
-                
-                // Részletes hibaüzenet
-                string reszletesHiba = "Hiba történt az API elérésekor!\n\n" +
-                    "Hiba részletek:\n" + ex.Message + "\n\n";
-                
-                if (ex.InnerException != null)
-                {
-                    reszletesHiba += "Belső hiba: " + ex.InnerException.Message + "\n\n";
-                }
-                
-                reszletesHiba += "Ellenőrizd:\n" +
-                    "1. Fut-e a Backend? (npm run start vagy npm run dev)\n" +
-                    "   URL: http://localhost:8000/api/asztalok\n" +
-                    "2. Fut-e a MySQL? (XAMPP)\n" +
-                    "3. Létre van-e hozva az 'asztalfoglalas' adatbázis?\n" +
-                    "4. A backend fut-e a 8000-es porton?\n\n" +
-                    "Teszteld a böngészőben:\n" +
-                    "http://localhost:8000/api/asztalok\n\n" +
-                    "Az alkalmazás üres táblázattal folytatja.\n" +
-                    "Nincs helyi adat - minden adat az API-ból jön.";
-                
+                labelStatus.Content = "Hiba a betöltéskor!";
                 MessageBox.Show(
-                    reszletesHiba,
-                    "API hiba",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
+                    $"Nem sikerült az adatokat betölteni!\n\nURL: {_httpClient.BaseAddress}\n\nHiba: {ex.Message}",
+                    "Betöltési hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                btnMentes.IsEnabled    = true;
+                btnFrissites.IsEnabled = true;
+            }
+        }
+
+        // ─────────────────────────────────────────────
+        //  RÁCS ÉPÍTÉSE
+        //  Sorok    = időpontok  (Idopont)
+        //  Oszlopok = asztalok   (Asztal)
+        //  Zöld = szabad, Piros = foglalt
+        // ─────────────────────────────────────────────
+        private void RacsEpitese()
+        {
+            gridFoglalas.Children.Clear();
+            gridFoglalas.ColumnDefinitions.Clear();
+            gridFoglalas.RowDefinitions.Clear();
+
+            if (_asztalok.Count == 0 || _idopontok.Count == 0)
+            {
+                gridFoglalas.Children.Add(new TextBlock
+                {
+                    Text = $"Nincs megjeleníthető adat.\n" +
+                           $"Asztalok: {_asztalok.Count}  |  Időpontok: {_idopontok.Count}\n" +
+                           $"Adjon hozzá asztalokat és időpontokat!",
+                    FontFamily          = new FontFamily("Segoe UI"),
+                    FontSize            = 13,
+                    Foreground          = Brushes.Gray,
+                    TextAlignment       = System.Windows.TextAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment   = VerticalAlignment.Center,
+                    Margin              = new Thickness(20)
+                });
                 return;
             }
 
-            // Grid és ComboBox-ok frissítése
-            GridBeallitasa();
-            GridFrissitese();
-            ComboBoxokFrissitese();
-            vanMentetlenValtozas = false;
+            // Oszlopok: 1 fejléc + N asztal
+            gridFoglalas.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            foreach (var _ in _asztalok)
+                gridFoglalas.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(90) });
+
+            // Sorok: 1 fejléc + N időpont
+            gridFoglalas.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            foreach (var _ in _idopontok)
+                gridFoglalas.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            // Bal felső sarok
+            AddFejlecCella(0, 0, "Időpont \\ Asztal");
+
+            // Asztal fejlécek (0. sor)
+            for (int a = 0; a < _asztalok.Count; a++)
+                AddFejlecCella(0, a + 1, $"Asztal #{_asztalok[a].Id}\n({_asztalok[a].HelyekSzama} fő)");
+
+            // Időpont sorok + cellák
+            for (int i = 0; i < _idopontok.Count; i++)
+            {
+                var idopont = _idopontok[i];
+                int sor     = i + 1;
+
+                AddFejlecCella(sor, 0, idopont.ToString());
+
+                for (int a = 0; a < _asztalok.Count; a++)
+                {
+                    var asztal = _asztalok[a];
+
+                    // Foglalás: AsztalId + IdopontId egyezés alapján
+                    var meglevo = _foglalasok.FirstOrDefault(f =>
+                        f.AsztalId == asztal.Id && f.IdopontId == idopont.Id);
+
+                    bool foglalt    = meglevo != null;
+                    int? foglalasId = meglevo?.Id;
+
+                    var cellaAdat = new RacsCella
+                    {
+                        AsztalId      = asztal.Id,
+                        IdopontId     = idopont.Id,
+                        IdopontKezdet = idopont.Kezdet,
+                        Foglalt       = foglalt,
+                        FoglalasId    = foglalasId
+                    };
+
+                    var cella = new Border
+                    {
+                        Background = FoglaltSzin(foglalt),
+                        Margin     = new Thickness(1),
+                        Cursor     = Cursors.Hand,
+                        Tag        = cellaAdat
+                    };
+
+                    cella.Child = new TextBlock
+                    {
+                        Text                = foglalt ? "●" : "○",
+                        Foreground          = Brushes.White,
+                        FontSize            = 14,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment   = VerticalAlignment.Center,
+                        Margin              = new Thickness(0, 10, 0, 10)
+                    };
+
+                    cella.MouseLeftButtonUp += Cella_Kattintas;
+                    Grid.SetRow(cella, sor);
+                    Grid.SetColumn(cella, a + 1);
+                    gridFoglalas.Children.Add(cella);
+                }
+            }
         }
 
-        /// <summary>
-        /// Status label frissítése
-        /// </summary>
-        private void UpdateStatus(string text, Color color)
+        private void AddFejlecCella(int sor, int oszlop, string szoveg)
         {
-            Dispatcher.Invoke(() =>
+            var border = new Border
             {
-                labelStatus.Content = text;
-                labelStatus.Foreground = new SolidColorBrush(color);
+                Background = new SolidColorBrush(Color.FromRgb(45, 45, 48)),
+                Margin     = new Thickness(1)
+            };
+            border.Child = new TextBlock
+            {
+                Text                = szoveg,
+                Foreground          = Brushes.White,
+                FontFamily          = new FontFamily("Segoe UI"),
+                FontSize            = 9,
+                FontWeight          = FontWeights.Bold,
+                TextAlignment       = System.Windows.TextAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin              = new Thickness(6, 8, 6, 8)
+            };
+            Grid.SetRow(border, sor);
+            Grid.SetColumn(border, oszlop);
+            gridFoglalas.Children.Add(border);
+        }
+
+        private static SolidColorBrush FoglaltSzin(bool foglalt) =>
+            foglalt
+                ? new SolidColorBrush(Color.FromRgb(220, 53, 69))
+                : new SolidColorBrush(Color.FromRgb(40, 167, 69));
+
+        // ─────────────────────────────────────────────
+        //  CELLA KATTINTÁS
+        // ─────────────────────────────────────────────
+        private void Cella_Kattintas(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is not Border cella || cella.Tag is not RacsCella adat) return;
+
+            adat.Foglalt     = !adat.Foglalt;
+            cella.Background = FoglaltSzin(adat.Foglalt);
+
+            if (cella.Child is TextBlock tb)
+                tb.Text = adat.Foglalt ? "●" : "○";
+
+            _valtozasok.RemoveAll(v => v.AsztalId == adat.AsztalId && v.IdopontId == adat.IdopontId);
+            _valtozasok.Add(new RacsCella
+            {
+                AsztalId      = adat.AsztalId,
+                IdopontId     = adat.IdopontId,
+                IdopontKezdet = adat.IdopontKezdet,
+                Foglalt       = adat.Foglalt,
+                FoglalasId    = adat.FoglalasId
             });
         }
 
-        // ============================================
-        // GRID BEÁLLÍTÁSA ÉS FRISSÍTÉSE
-        // ============================================
-        /// <summary>
-        /// Beállítja a grid oszlopait (asztalok)
-        /// </summary>
-        private void GridBeallitasa()
-        {
-            // Töröljük a régi oszlopokat
-            dataGrid1.Columns.Clear();
-            
-            // Asztal oszlopok hozzáadása
-            int asztalokSzama = adatokKezelo.SzamolAsztalokSzama();
-            for (int i = 0; i < asztalokSzama; i++)
-            {
-                // Kapacitás lekérése
-                int kapacitas = 0;
-                if (i < adatokKezelo.asztalKapacitasok.Count)
-                {
-                    kapacitas = adatokKezelo.asztalKapacitasok[i];
-                }
-
-                // Új oszlop létrehozása
-                DataGridTextColumn oszlop = new DataGridTextColumn();
-                oszlop.Header = "Asztal " + (i + 1) + "\n(" + kapacitas + " fő)";
-                oszlop.Binding = new System.Windows.Data.Binding($"AsztalAllapotok[{i}]")
-                {
-                    Converter = new BoolToTextConverter()
-                };
-                oszlop.Width = new DataGridLength(100);
-                oszlop.IsReadOnly = true;
-                oszlop.ElementStyle = new Style(typeof(TextBlock))
-                {
-                    Setters =
-                    {
-                        new Setter(TextBlock.TextAlignmentProperty, TextAlignment.Center),
-                        new Setter(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center),
-                        new Setter(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center),
-                        new Setter(TextBlock.PaddingProperty, new Thickness(10))
-                    }
-                };
-                dataGrid1.Columns.Add(oszlop);
-            }
-        }
-
-        /// <summary>
-        /// Feltölti a grid-et az adatokkal
-        /// </summary>
-        private void GridFrissitese()
-        {
-            // Töröljük a régi sorokat
-            dataGrid1.ItemsSource = null;
-            
-            // Ha nincs időpont, üres táblát mutatunk
-            if (adatokKezelo.adatok.Count == 0)
-            {
-                return;
-            }
-            
-            // Grid adatforrás létrehozása
-            List<GridRowData> gridAdatok = new List<GridRowData>();
-            
-            // Minden időponthoz hozzáadunk egy sort
-            foreach (var idopont in adatokKezelo.adatok)
-            {
-                GridRowData sor = new GridRowData();
-                sor.Idopont = idopont.ido;
-                sor.AsztalAllapotok = new List<bool>(idopont.asztal);
-                
-                gridAdatok.Add(sor);
-            }
-            
-            dataGrid1.ItemsSource = gridAdatok;
-        }
-
-        /// <summary>
-        /// Frissíti a ComboBox-okat (asztal és időpont törléshez)
-        /// </summary>
-        private void ComboBoxokFrissitese()
-        {
-            // Asztal törlés ComboBox
-            comboBoxAsztalTorlendo.Items.Clear();
-            int asztalokSzama = adatokKezelo.SzamolAsztalokSzama();
-            for (int i = 0; i < asztalokSzama; i++)
-            {
-                int kapacitas = 0;
-                if (i < adatokKezelo.asztalKapacitasok.Count)
-                {
-                    kapacitas = adatokKezelo.asztalKapacitasok[i];
-                }
-                comboBoxAsztalTorlendo.Items.Add("Asztal " + (i + 1) + " (" + kapacitas + " fő)");
-            }
-
-            // Időpont törlés ComboBox
-            comboBoxIdopontTorlendo.Items.Clear();
-            foreach (var idopont in adatokKezelo.adatok)
-            {
-                comboBoxIdopontTorlendo.Items.Add(idopont.ido);
-            }
-        }
-
-        // ============================================
-        // CELLÁK KEZELÉSE
-        // ============================================
-        private void DataGrid1_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (dataGrid1.CurrentCell == null)
-                return;
-
-            var cella = dataGrid1.CurrentCell;
-            int oszlopIndex = cella.Column.DisplayIndex;
-            int sorIndex = dataGrid1.SelectedIndex;
-
-            if (sorIndex < 0 || sorIndex >= adatokKezelo.adatok.Count)
-                return;
-
-            if (oszlopIndex < 0 || oszlopIndex >= adatokKezelo.asztalIds.Count)
-                return;
-
-            var sorAdat = adatokKezelo.adatok[sorIndex];
-            
-            // Csak foglalt cellát lehet törölni (piros = false)
-            if (sorAdat.asztal[oszlopIndex] == true)
-            {
-                // Szabad cella - nincs mit törölni
-                return;
-            }
-
-            // Foglalt cella - töröljük a foglalást
-            int asztalId = adatokKezelo.asztalIds[oszlopIndex];
-            string idopontString = sorAdat.ido;
-
-            // Keresünk a foglalások között
-            // Az idopontString formátuma: "HH:mm-HH:mm" (pl. "9:00-10:00")
-            // A foglalás dátum/időpontja tartalmazza a teljes dátumot és időt
-            var torlendoFoglalas = adatokKezelo.foglalasok.FirstOrDefault(f =>
-            {
-                if (f.AsztalId != asztalId)
-                    return false;
-
-                // Időpont ellenőrzés - az idopontString első része (pl. "9:00")
-                string idopontKezdete = idopontString.Split('-')[0];
-                string foglalasIdo = f.FoglalasDatum.ToString("HH:mm");
-                
-                // Ellenőrizzük, hogy a foglalás időpontja egyezik-e
-                return foglalasIdo == idopontKezdete;
-            });
-
-            if (torlendoFoglalas != null)
-            {
-                // Megerősítés
-                var megerosites = MessageBox.Show(
-                    $"Biztosan törölni szeretnéd ezt a foglalást?\n\n" +
-                    $"Asztal: {comboBoxAsztalTorlendo.Items[oszlopIndex]}\n" +
-                    $"Időpont: {idopontString}",
-                    "Foglalás törlése",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (megerosites == MessageBoxResult.Yes)
-                {
-                    // Hozzáadjuk a törlendő foglalások listájához
-                    adatokKezelo.toroltFoglalasIds.Add(torlendoFoglalas.Id);
-                    
-                    // Töröljük a foglalást a listából
-                    adatokKezelo.foglalasok.Remove(torlendoFoglalas);
-                    
-                    // Frissítjük a cellát szabadra
-                    sorAdat.asztal[oszlopIndex] = true;
-                    
-                    // Frissítjük a grid-et
-                    GridFrissitese();
-                    
-                    // Jelöljük, hogy van mentetlen változás
-                    vanMentetlenValtozas = true;
-                    UpdateStatus("⚠️ Mentetlen változások vannak", Colors.Orange);
-                }
-            }
-        }
-
-        private void DataGrid1_LoadingRow(object sender, DataGridRowEventArgs e)
-        {
-            if (e.Row.Item is GridRowData rowData)
-            {
-                e.Row.Header = rowData.Idopont;
-                e.Row.Height = 35;
-                
-                // Cellák színének beállítása
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    for (int i = 0; i < dataGrid1.Columns.Count && i < rowData.AsztalAllapotok.Count; i++)
-                    {
-                        var column = dataGrid1.Columns[i];
-                        var cellContent = column.GetCellContent(e.Row);
-                        if (cellContent != null)
-                        {
-                            var cell = cellContent.Parent as DataGridCell;
-                            if (cell != null)
-                            {
-                                bool elerheto = rowData.AsztalAllapotok[i];
-                                Color cellColor = elerheto ? Color.FromRgb(40, 167, 69) : Color.FromRgb(220, 53, 69);
-                                cell.Background = new SolidColorBrush(cellColor);
-                                cell.Foreground = new SolidColorBrush(Colors.White);
-                            }
-                        }
-                    }
-                }), DispatcherPriority.Loaded);
-            }
-        }
-
-        // ============================================
-        // ASZTAL HOZZÁADÁSA
-        // ============================================
-        private async void BtnAsztalHozzaad_Click(object sender, RoutedEventArgs e)
-        {
-            UjAsztalAblak ablak = new UjAsztalAblak();
-            ablak.Owner = this;
-            
-            if (ablak.ShowDialog() == true && ablak.Sikeres)
-            {
-                // Sikeres hozzáadás után frissítjük az adatokat
-                await AdatokBetolteseAPIbol();
-                MessageBox.Show("Asztal sikeresen hozzáadva!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
-        // ============================================
-        // ASZTAL TÖRLÉSE
-        // ============================================
-        private async void BtnAsztalTorol_Click(object sender, RoutedEventArgs e)
-        {
-            if (comboBoxAsztalTorlendo.SelectedItem == null)
-            {
-                MessageBox.Show("Kérlek válassz ki egy asztalt a törléshez!", "Nincs kiválasztva", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            int kivalasztottIndex = comboBoxAsztalTorlendo.SelectedIndex;
-            
-            if (kivalasztottIndex < 0 || kivalasztottIndex >= adatokKezelo.asztalIds.Count)
-            {
-                MessageBox.Show("Hibás asztal kiválasztás!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            // Megerősítés
-            var megerosites = MessageBox.Show(
-                "Biztosan törölni szeretnéd ezt az asztalt?\n\n" + comboBoxAsztalTorlendo.SelectedItem.ToString(),
-                "Asztal törlése",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (megerosites != MessageBoxResult.Yes)
-                return;
-
-            try
-            {
-                int asztalId = adatokKezelo.asztalIds[kivalasztottIndex];
-                var apiService = new Services.ApiService();
-                bool sikeres = await apiService.DeleteAsztalAsync(asztalId);
-
-                if (sikeres)
-                {
-                    // Sikeres törlés után frissítjük az adatokat
-                    await AdatokBetolteseAPIbol();
-                    MessageBox.Show("Asztal sikeresen törölve!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Hiba történt az asztal törlésekor!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Hiba történt: " + ex.Message, "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        // ============================================
-        // IDŐPONT HOZZÁADÁSA
-        // ============================================
-        private async void BtnIdopontHozzaad_Click(object sender, RoutedEventArgs e)
-        {
-            UjIdopontAblak ablak = new UjIdopontAblak();
-            ablak.Owner = this;
-            
-            if (ablak.ShowDialog() == true && ablak.Sikeres)
-            {
-                // Sikeres hozzáadás után frissítjük az adatokat
-                await AdatokBetolteseAPIbol();
-                MessageBox.Show("Időpont sikeresen hozzáadva!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-
-        // ============================================
-        // IDŐPONT TÖRLÉSE
-        // ============================================
-        private async void BtnIdopontTorol_Click(object sender, RoutedEventArgs e)
-        {
-            if (comboBoxIdopontTorlendo.SelectedItem == null)
-            {
-                MessageBox.Show("Kérlek válassz ki egy időpontot a törléshez!", "Nincs kiválasztva", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            int kivalasztottIndex = comboBoxIdopontTorlendo.SelectedIndex;
-            
-            if (kivalasztottIndex < 0 || kivalasztottIndex >= adatokKezelo.idopontIds.Count)
-            {
-                MessageBox.Show("Hibás időpont kiválasztás!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            // Megerősítés
-            var megerosites = MessageBox.Show(
-                "Biztosan törölni szeretnéd ezt az időpontot?\n\n" + comboBoxIdopontTorlendo.SelectedItem.ToString(),
-                "Időpont törlése",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (megerosites != MessageBoxResult.Yes)
-                return;
-
-            try
-            {
-                int idopontId = adatokKezelo.idopontIds[kivalasztottIndex];
-                var apiService = new Services.ApiService();
-                bool sikeres = await apiService.DeleteIdopontAsync(idopontId);
-
-                if (sikeres)
-                {
-                    // Sikeres törlés után frissítjük az adatokat
-                    await AdatokBetolteseAPIbol();
-                    MessageBox.Show("Időpont sikeresen törölve!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Hiba történt az időpont törlésekor!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Hiba történt: " + ex.Message, "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        // ============================================
-        // MENTÉS ÉS FRISSÍTÉS
-        // ============================================
+        // ─────────────────────────────────────────────
+        //  MENTÉS
+        // ─────────────────────────────────────────────
         private async void BtnMentes_Click(object sender, RoutedEventArgs e)
         {
-            if (!vanMentetlenValtozas)
+            if (_valtozasok.Count == 0)
             {
-                MessageBox.Show("Nincs mentendő változás!", "Információ", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Nincs mentendő változás.", "Mentés",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            try
-            {
-                UpdateStatus("⏳ Mentés folyamatban...", Colors.Orange);
-                
-                var apiService = new Services.ApiService();
-                int toroltFoglalasok = 0;
-                int hibaSzamlalo = 0;
+            btnMentes.IsEnabled = false;
+            labelStatus.Content = "Mentés...";
+            int sikeres = 0, sikertelen = 0;
 
-                // Töröljük az API-ból a törölt foglalásokat
-                foreach (int foglalasId in adatokKezelo.toroltFoglalasIds)
+            foreach (var v in _valtozasok)
+            {
+                try
                 {
-                    bool sikeres = await apiService.DeleteFoglalasAsync(foglalasId);
-                    if (sikeres)
+                    if (v.Foglalt)
                     {
-                        toroltFoglalasok++;
+                        var uj = new FoglalasLetrehozas
+                        {
+                            FelhasznaloId = 1,
+                            AsztalId      = v.AsztalId,
+                            IdopontId     = v.IdopontId
+                        };
+                        bool ok = await _foglalasService.CreateFoglalasAsync(uj);
+                        if (ok) sikeres++; else sikertelen++;
                     }
                     else
                     {
-                        hibaSzamlalo++;
+                        if (v.FoglalasId.HasValue)
+                        {
+                            bool ok = await _foglalasService.DeleteFoglalasAsync(v.FoglalasId.Value);
+                            if (ok) sikeres++; else sikertelen++;
+                        }
+                        else sikeres++;
                     }
                 }
-
-                // Töröljük a törölt foglalások listáját
-                adatokKezelo.toroltFoglalasIds.Clear();
-
-                // Frissítjük az adatokat
-                await AdatokBetolteseAPIbol();
-                
-                vanMentetlenValtozas = false;
-                
-                string uzenet = $"Mentés sikeres!\n\nTörölt foglalások: {toroltFoglalasok}";
-                if (hibaSzamlalo > 0)
-                {
-                    uzenet += $"\nHibák száma: {hibaSzamlalo}";
-                }
-                
-                UpdateStatus("✅ Mentés sikeres", Colors.LightGreen);
-                MessageBox.Show(uzenet, "Mentés", MessageBoxButton.OK, MessageBoxImage.Information);
+                catch { sikertelen++; }
             }
-            catch (Exception ex)
+
+            await AdatokBetoltese();
+            btnMentes.IsEnabled = true;
+            labelStatus.Content = $"Mentve – {sikeres} sikeres, {sikertelen} sikertelen";
+
+            if (sikertelen > 0)
+                MessageBox.Show($"Mentés részben sikeres.\nSikeres: {sikeres} | Sikertelen: {sikertelen}",
+                    "Mentés", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        // ─────────────────────────────────────────────
+        //  FRISSÍTÉS
+        // ─────────────────────────────────────────────
+        private async void BtnFrissites_Click(object sender, RoutedEventArgs e) =>
+            await AdatokBetoltese();
+
+        // ─────────────────────────────────────────────
+        //  ASZTAL KEZELÉS
+        // ─────────────────────────────────────────────
+        private async void BtnAsztalHozzaad_Click(object sender, RoutedEventArgs e)
+        {
+            var ablak = new AsztalLetrehozasWindow { Owner = this };
+            if (ablak.ShowDialog() == true && ablak.Eredmeny != null)
             {
-                UpdateStatus("❌ Mentés hiba", Colors.Red);
-                MessageBox.Show("Hiba történt a mentés során: " + ex.Message, "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+                bool ok = await _asztalService.CreateAsztalAsync(ablak.Eredmeny);
+                if (ok) { await AdatokBetoltese(); MessageBox.Show("Asztal létrehozva!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information); }
+                else     MessageBox.Show("Nem sikerült létrehozni az asztalt!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private async void BtnFrissites_Click(object sender, RoutedEventArgs e)
+        private async void BtnAsztalTorol_Click(object sender, RoutedEventArgs e)
         {
-            if (vanMentetlenValtozas)
+            if (_asztalok.Count == 0) { MessageBox.Show("Nincs törölhető asztal!", "Figyelem", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
+            var ablak = new AsztalTorlasWindow(_asztalok) { Owner = this };
+            if (ablak.ShowDialog() == true && ablak.KivalasztottAsztal != null)
             {
-                var megerosites = MessageBox.Show(
-                    "Mentetlen változásaid vannak!\n\nBiztosan szeretnéd újratölteni az adatokat az API-ból?\nA változásaid elvesznek!",
-                    "Figyelmeztetés",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-
-                if (megerosites != MessageBoxResult.Yes)
-                    return;
+                bool ok = await _asztalService.DeleteAsztalAsync(ablak.KivalasztottAsztal.Id);
+                if (ok) { await AdatokBetoltese(); MessageBox.Show("Asztal törölve!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information); }
+                else     MessageBox.Show("Nem sikerült törölni az asztalt!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            await AdatokBetolteseAPIbol();
-            MessageBox.Show("Adatok frissítve!", "Frissítés", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        // ============================================
-        // WINDOW BEZÁRÁSA
-        // ============================================
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        // ─────────────────────────────────────────────
+        //  IDŐPONT KEZELÉS
+        // ─────────────────────────────────────────────
+        private async void BtnIdopontHozzaad_Click(object sender, RoutedEventArgs e)
         {
-            if (vanMentetlenValtozas)
+            var ablak = new IdopontLetrehozasWindow { Owner = this };
+            if (ablak.ShowDialog() == true && ablak.Eredmeny != null)
             {
-                var eredmeny = MessageBox.Show(
-                    "Mentetlen változásaid vannak!\n\nSzeretned menteni kilépés előtt?",
-                    "Mentetlen változások",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Warning);
-
-                if (eredmeny == MessageBoxResult.Yes)
-                {
-                    BtnMentes_Click(this, new RoutedEventArgs());
-                }
-                else if (eredmeny == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
-                }
+                bool ok = await _idopontService.CreateIdopontAsync(ablak.Eredmeny);
+                if (ok) { await AdatokBetoltese(); MessageBox.Show("Időpont létrehozva!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information); }
+                else     MessageBox.Show("Nem sikerült létrehozni az időpontot!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            base.OnClosing(e);
-        }
-    }
-
-    /// <summary>
-    /// Grid sor adat osztály
-    /// </summary>
-    public class GridRowData
-    {
-        public string Idopont { get; set; }
-        public List<bool> AsztalAllapotok { get; set; } = new List<bool>();
-    }
-
-    /// <summary>
-    /// Converter: bool -> "Szabad"/"Foglalt"
-    /// </summary>
-    public class BoolToTextConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is bool elerheto)
-            {
-                return elerheto ? "Szabad" : "Foglalt";
-            }
-            return "Szabad";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        private async void BtnIdopontTorol_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (_idopontok.Count == 0) { MessageBox.Show("Nincs törölhető időpont!", "Figyelem", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
+            var ablak = new IdopontTorlasWindow(_idopontok) { Owner = this };
+            if (ablak.ShowDialog() == true && ablak.KivalasztottIdopont != null)
+            {
+                bool ok = await _idopontService.DeleteIdopontAsync(ablak.KivalasztottIdopont.Id);
+                if (ok) { await AdatokBetoltese(); MessageBox.Show("Időpont törölve!", "Siker", MessageBoxButton.OK, MessageBoxImage.Information); }
+                else     MessageBox.Show("Nem sikerült törölni az időpontot!", "Hiba", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

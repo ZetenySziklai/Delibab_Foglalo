@@ -1,0 +1,72 @@
+<Window x:Class="AdminWPF.Windows.AsztalTorlasWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Asztal Törlése"
+        Height="200" Width="350"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#333"/>
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Content="Válasszon asztalt a törléshez:" Style="{StaticResource LabelStyle}" Margin="0,0,0,5"/>
+        <ComboBox x:Name="comboAsztalok"
+                  Grid.Row="1"
+                  FontFamily="Segoe UI"
+                  FontSize="11"
+                  Height="30"
+                  VerticalContentAlignment="Center"
+                  Padding="6,0"/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnMegse"
+                    Content="Mégse"
+                    Background="#6C757D"
+                    Style="{StaticResource ActionButton}"
+                    Width="90"
+                    Click="BtnMegse_Click"/>
+            <Button x:Name="btnTorol"
+                    Content="Törlés"
+                    Background="#DC3545"
+                    Style="{StaticResource ActionButton}"
+                    Width="100"
+                    Margin="10,0,0,0"
+                    Click="BtnTorol_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
