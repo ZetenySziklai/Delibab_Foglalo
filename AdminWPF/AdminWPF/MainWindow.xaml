@@ -86,39 +86,60 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header Panel -->
+        <!-- ═══ FEJLÉC ═══ -->
         <Border Grid.Row="0" Background="#2D2D30" Padding="20,0">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- Cím -->
                 <Label Grid.Column="0"
                        Content="🍽️ Délibáb Étterem - Admin"
-                       FontFamily="Segoe UI"
-                       FontSize="18"
-                       FontWeight="Bold"
-                       Foreground="White"
-                       VerticalAlignment="Center"/>
+                       FontFamily="Segoe UI" FontSize="18" FontWeight="Bold"
+                       Foreground="White" VerticalAlignment="Center"/>
 
+                <!-- ── VÁLTOZÁS TRACKER BADGE ── -->
+                <Border x:Name="badgeValtozas"
+                        Grid.Column="2"
+                        Background="#E67E22"
+                        CornerRadius="12"
+                        Padding="10,4"
+                        VerticalAlignment="Center"
+                        Margin="0,0,14,0"
+                        Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="✏ "
+                                   Foreground="White" FontSize="11"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock x:Name="txtBadgeSzam"
+                                   Foreground="White" FontSize="11" FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text=" mentetlen változás"
+                                   Foreground="White" FontSize="11"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Status label -->
                 <Label x:Name="labelStatus"
-                       Grid.Column="1"
+                       Grid.Column="3"
                        Content="Betöltés..."
-                       FontFamily="Segoe UI"
-                       FontSize="10"
+                       FontFamily="Segoe UI" FontSize="10"
                        Foreground="#D3D3D3"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Right"
-                       Margin="0,0,20,0"/>
+                       Margin="0,0,0,0"/>
             </Grid>
         </Border>
 
-        <!-- Buttons Panel -->
+        <!-- ═══ GOMBOK ═══ -->
         <Border Grid.Row="1" Background="#F0F0F0" Padding="10">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 
-                <!-- Asztal Kezelés Group -->
                 <GroupBox Header="🪑 Asztal kezelés"
                           Style="{StaticResource GroupBoxStyle}"
                           Width="260" Height="80">
@@ -137,7 +158,6 @@
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Időpont Kezelés Group -->
                 <GroupBox Header="🕐 Időpont kezelés"
                           Style="{StaticResource GroupBoxStyle}"
                           Width="280" Height="80">
@@ -156,7 +176,6 @@
                     </StackPanel>
                 </GroupBox>
 
-                <!-- Műveletek Group -->
                 <GroupBox Header="💾 Műveletek"
                           Style="{StaticResource GroupBoxStyle}"
                           Width="440" Height="80">
@@ -178,7 +197,7 @@
             </StackPanel>
         </Border>
 
-        <!-- Data Grid Panel -->
+        <!-- ═══ RÁCS ═══ -->
         <Border Grid.Row="2" Background="White" Padding="20">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Grid x:Name="gridFoglalas"/>

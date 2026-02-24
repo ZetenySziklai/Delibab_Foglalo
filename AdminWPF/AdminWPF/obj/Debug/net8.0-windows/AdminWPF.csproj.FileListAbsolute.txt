@@ -26,3 +26,5 @@ C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net
 C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.pdb
 C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\AdminWPF.genruntimeconfig.cache
 C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\ref\AdminWPF.dll
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\FoglalasAdatokWindow.baml
+C:\Users\zeten\OneDrive\Asztali gép\vizsgaremek\AdminWPF\AdminWPF\obj\Debug\net8.0-windows\Windows\FoglalasAdatokWindow.g.cs

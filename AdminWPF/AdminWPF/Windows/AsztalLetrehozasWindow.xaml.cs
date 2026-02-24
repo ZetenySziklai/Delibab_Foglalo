@@ -10,14 +10,15 @@ namespace AdminWPF.Windows
         public AsztalLetrehozasWindow()
         {
             InitializeComponent();
+            txtHelyekSzama.Focus();
         }
 
         private void BtnLetrehoz_Click(object sender, RoutedEventArgs e)
         {
             if (!int.TryParse(txtHelyekSzama.Text.Trim(), out int helyek) || helyek <= 0)
             {
-                MessageBox.Show("Érvényes helyek számát adjon meg! (pozitív egész szám)", "Hiba",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Érvényes férőhelyek számát adjon meg! (pozitív egész szám)",
+                    "Hiba", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
