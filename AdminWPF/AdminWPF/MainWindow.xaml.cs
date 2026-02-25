@@ -248,7 +248,7 @@ namespace AdminWPF
                 });
                 panel.Children.Add(new TextBlock
                 {
-                    Text                = $"🧑 {cellaAdat.Felnott}  🧒 {cellaAdat.Gyerek}",
+                    Text                = $"Felnőtt: {cellaAdat.Felnott}  Gyerek: {cellaAdat.Gyerek}",
                     Foreground          = Brushes.White,
                     FontSize            = 9,
                     HorizontalAlignment = HorizontalAlignment.Center
@@ -318,7 +318,7 @@ namespace AdminWPF
                 });
                 panel.Children.Add(new TextBlock
                 {
-                    Text                = $"🧑 {adat.Felnott}  🧒 {adat.Gyerek}",
+                    Text                = $"Felnőtt: {adat.Felnott}  Gyerek: {adat.Gyerek}",
                     Foreground          = Brushes.White,
                     FontSize            = 9,
                     HorizontalAlignment = HorizontalAlignment.Center
@@ -380,8 +380,14 @@ namespace AdminWPF
 
             if (!adat.Foglalt)
             {
-                // SZABAD → FOGLALT: felugró ablak
-                var ablak = new FoglalasAdatokWindow { Owner = this };
+                // SZABAD → FOGLALT: felugró ablak, asztal és időpont info átadásával
+                var asztal  = MegjelenithitoAsztalok().FirstOrDefault(a => a.Id == adat.AsztalId);
+                var idopont = MegjelenithitoIdopontok().FirstOrDefault(i => i.Id == adat.IdopontId);
+
+                string asztalInfo   = asztal  != null ? $"#{asztal.Id}  ({asztal.HelyekSzama} fő)" : $"#{adat.AsztalId}";
+                string idopontInfo  = idopont != null ? idopont.ToString() : $"#{adat.IdopontId}";
+
+                var ablak = new FoglalasAdatokWindow(adat.AsztalId, asztalInfo, idopontInfo) { Owner = this };
                 bool? eredmeny = ablak.ShowDialog();
                 if (eredmeny != true) return;
 

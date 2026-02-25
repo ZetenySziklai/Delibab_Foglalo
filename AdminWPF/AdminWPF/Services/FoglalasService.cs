@@ -46,11 +46,10 @@ namespace AdminWPF.Services
                 if (!foglalasResponse.IsSuccessStatusCode)
                 {
                     string hiba = await foglalasResponse.Content.ReadAsStringAsync();
-                    // BadRequestError esetén a backend JSON üzenetet ad vissza
                     try
                     {
                         var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
-                        return errObj?.message ?? $"Foglalás sikertelen ({foglalasResponse.StatusCode})";
+                        return errObj?.HibaSzoveg ?? $"Foglalás sikertelen ({foglalasResponse.StatusCode})";
                     }
                     catch
                     {
@@ -66,7 +65,7 @@ namespace AdminWPF.Services
                 adatok.FoglalaId       = ujFoglalas.Id;
                 adatok.FoglaiasDatum   = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-                var adatokResponse = await _httpClient.PostAsJsonAsync("/api/foglalasiAdatok", adatok);
+                var adatokResponse = await _httpClient.PostAsJsonAsync("/api/foglalasi-adatok", adatok);
 
                 if (!adatokResponse.IsSuccessStatusCode)
                 {
@@ -76,7 +75,7 @@ namespace AdminWPF.Services
                     try
                     {
                         var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
-                        return errObj?.message ?? $"Foglalási adatok mentése sikertelen ({adatokResponse.StatusCode})";
+                        return errObj?.HibaSzoveg ?? $"Foglalási adatok mentése sikertelen ({adatokResponse.StatusCode})";
                     }
                     catch
                     {
@@ -107,7 +106,7 @@ namespace AdminWPF.Services
                 try
                 {
                     var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
-                    return errObj?.message ?? $"Törlés sikertelen ({response.StatusCode})";
+                    return errObj?.HibaSzoveg ?? $"Törlés sikertelen ({response.StatusCode})";
                 }
                 catch
                 {
@@ -128,7 +127,12 @@ namespace AdminWPF.Services
         [JsonPropertyName("message")]
         public string? message { get; set; }
 
+        [JsonPropertyName("msg")]
+        public string? msg { get; set; }
+
         [JsonPropertyName("error")]
         public string? error { get; set; }
+
+        public string? HibaSzoveg => message ?? msg ?? error;
     }
 }

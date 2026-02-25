@@ -4,14 +4,16 @@ namespace AdminWPF.Windows
 {
     public partial class FoglalasAdatokWindow : Window
     {
-        public int FelhasznaloId { get; private set; }
-        public int Felnott      { get; private set; }
-        public int Gyerek       { get; private set; }
-        public string Megjegyzes { get; private set; } = "";
+        public int    FelhasznaloId { get; private set; }
+        public int    Felnott       { get; private set; }
+        public int    Gyerek        { get; private set; }
+        public string Megjegyzes    { get; private set; } = "";
 
-        public FoglalasAdatokWindow()
+        public FoglalasAdatokWindow(int asztalId, string asztalInfo, string idopontInfo)
         {
             InitializeComponent();
+            txtAsztalInfo.Text  = asztalInfo;
+            txtIdopontInfo.Text = idopontInfo;
         }
 
         private void BtnFoglal_Click(object sender, RoutedEventArgs e)

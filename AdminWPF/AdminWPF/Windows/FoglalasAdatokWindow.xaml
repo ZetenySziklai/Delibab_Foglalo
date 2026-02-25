@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Foglalás adatai"
-        Height="360" Width="370"
+        Height="420" Width="370"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#F5F5F5">
@@ -62,7 +62,25 @@
         <StackPanel>
             <TextBlock Text="Foglalás adatainak megadása"
                        FontFamily="Segoe UI" FontSize="14" FontWeight="Bold"
-                       Foreground="#2D2D30" Margin="0,0,0,4"/>
+                       Foreground="#2D2D30" Margin="0,0,0,8"/>
+
+            <!-- Asztal / Időpont info doboz -->
+            <Border Background="#E8F4FD" BorderBrush="#B8D4E8" BorderThickness="1" CornerRadius="4" Padding="10,8" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="🪑 Asztal:" FontFamily="Segoe UI" FontSize="11" FontWeight="SemiBold" Foreground="#1a6b9a" Margin="0,0,8,2"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="txtAsztalInfo" FontFamily="Segoe UI" FontSize="11" Foreground="#1a6b9a" Margin="0,0,0,2"/>
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="🕐 Időpont:" FontFamily="Segoe UI" FontSize="11" FontWeight="SemiBold" Foreground="#1a6b9a" Margin="0,0,8,0"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="txtIdopontInfo" FontFamily="Segoe UI" FontSize="11" Foreground="#1a6b9a"/>
+                </Grid>
+            </Border>
 
             <TextBlock Text="Felhasználó ID:" Style="{StaticResource FieldLabel}"/>
             <TextBox x:Name="txtFelhasznaloId" Style="{StaticResource FieldBox}" Text="1"/>
@@ -75,7 +93,7 @@
 
             <TextBlock Text="Megjegyzés (opcionális):" Style="{StaticResource FieldLabel}"/>
             <TextBox x:Name="txtMegjegyzes" Style="{StaticResource FieldBox}"
-                     Height="65" TextWrapping="Wrap" AcceptsReturn="True"
+                     Height="55" TextWrapping="Wrap" AcceptsReturn="True"
                      VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
 
