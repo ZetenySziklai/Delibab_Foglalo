@@ -2,7 +2,6 @@ class FoglalasiAdatokRepository{
     constructor(db){
         this.FoglalasiAdatok = db.FoglalasiAdatok;
         this.Foglalas = db.Foglalas;
-        this.sequelize = db.sequelize;
     }
     
     async getFoglalasiAdatok(){

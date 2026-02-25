@@ -10,7 +10,9 @@ module.exports = (sequelize) => {
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false
-            }
+            },
+            
+            
         },
         {
             sequelize,

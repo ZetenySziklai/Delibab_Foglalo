@@ -1,26 +1,20 @@
 class FoglalasRepository{
     constructor(db){
         this.Foglalas = db.Foglalas;
-        this.User = db.User;
+        this.Felhasznalo = db.Felhasznalo;
         this.Asztal = db.Asztal;
-        this.EtkezesTipusa = db.EtkezesTipusa;
-        this.sequelize = db.sequelize;
     }
     
     async getFoglalas(){
         return await this.Foglalas.findAll({
             include: [
                 {
-                    model: this.User,
+                    model: this.Felhasznalo,
                     attributes: ["vezeteknev", "keresztnev", "email", "telefonszam"]
                 },
                 {
                     model: this.Asztal,
                     attributes: ["helyek_szama"]
-                },
-                {
-                    model: this.EtkezesTipusa,
-                    attributes: ["nev"]
                 }
             ]
         });
@@ -34,16 +28,12 @@ class FoglalasRepository{
         return await this.Foglalas.findByPk(id, {
             include: [
                 {
-                    model: this.User,
+                    model: this.Felhasznalo,
                     attributes: ["vezeteknev", "keresztnev", "email", "telefonszam"]
                 },
                 {
                     model: this.Asztal,
                     attributes: ["helyek_szama"]
-                },
-                {
-                    model: this.EtkezesTipusa,
-                    attributes: ["nev"]
                 }
             ]
         });
@@ -90,16 +80,12 @@ class FoglalasRepository{
             },
             include: [
                 {
-                    model: this.User,
+                    model: this.Felhasznalo,
                     attributes: ["vezeteknev", "keresztnev", "email", "telefonszam"]
                 },
                 {
                     model: this.Asztal,
                     attributes: ["helyek_szama"]
-                },
-                {
-                    model: this.EtkezesTipusa,
-                    attributes: ["nev"]
                 }
             ]
         });
@@ -110,16 +96,12 @@ class FoglalasRepository{
             where: { user_id: userId },
             include: [
                 {
-                    model: this.User,
+                    model: this.Felhasznalo,
                     attributes: ["vezeteknev", "keresztnev", "email", "telefonszam"]
                 },
                 {
                     model: this.Asztal,
                     attributes: ["helyek_szama"]
-                },
-                {
-                    model: this.EtkezesTipusa,
-                    attributes: ["nev"]
                 }
             ]
         });

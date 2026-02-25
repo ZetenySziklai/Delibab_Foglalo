@@ -14,7 +14,7 @@ class UserService {
     }
 
     async createUser(data){
-        if (!data || !data.vezeteknev || !data.keresztnev || !data.email || !data.telefonszam) {
+        if (!data || !data.vezeteknev || !data.keresztnev || !data.email || !data.telefonszam || !data.jelszo) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
         

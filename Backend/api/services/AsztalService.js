@@ -3,7 +3,6 @@ const { BadRequestError, NotFoundError } = require("../errors");
 class AsztalService {
     constructor(db){
         this.asztalRepository = require("../repositories")(db).asztalRepository;
-        this.asztalAllapotRepository = require("../repositories")(db).asztalAllapotRepository;
     }
     
     async getAsztal(){
@@ -11,17 +10,12 @@ class AsztalService {
     }
 
     async createAsztal(data){
-        if (!data.helyek_szama || !data.asztal_allapot_id) {
+        if (!data.helyek_szama) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
 
         if (isNaN(data.helyek_szama) || data.helyek_szama <= 0) {
             throw new BadRequestError("A helyek száma pozitív szám kell legyen");
-        }
-
-        const allapot = await this.asztalAllapotRepository.getAsztalAllapotById(data.asztal_allapot_id);
-        if (!allapot) {
-            throw new NotFoundError("Az asztal állapot nem létezik");
         }
 
         return await this.asztalRepository.createAsztal(data);

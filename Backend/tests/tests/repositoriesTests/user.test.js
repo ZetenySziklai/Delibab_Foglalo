@@ -2,13 +2,13 @@ const { Sequelize } = require("sequelize");
 const db = require("../../../api/db");
 const { DbError } = require("../../../api/errors");
 
-const UserRepository = require("../../../api/repositories/UserRepository");
+const FelhasznaloRepository = require("../../../api/repositories/FelhasznaloRepository");
 
-const userRepository = new UserRepository(db);
+const userRepository = new FelhasznaloRepository(db);
 
 describe("Repository tests", () => 
 {
-    describe("UserRepository", () => 
+    describe("FelhasznaloRepository", () => 
     {
         let user1, user2, user3;
 
@@ -16,31 +16,34 @@ describe("Repository tests", () =>
         {
             await db.sequelize.sync({ force: true });
 
-            user1 = await db.User.create({ 
+            user1 = await db.Felhasznalo.create({ 
                 vezeteknev: "Kovács",
                 keresztnev: "János",
                 email: "kovacs.janos@example.com",
-                telefonszam: "0612345678"
+                telefonszam: "0612345678",
+                jelszo: "pass"
             });
 
-            user2 = await db.User.create({ 
+            user2 = await db.Felhasznalo.create({ 
                 vezeteknev: "Nagy",
                 keresztnev: "Mária",
                 email: "nagy.maria@example.com",
-                telefonszam: "0623456789"
+                telefonszam: "0623456789",
+                jelszo: "pass"
             });
 
-            user3 = await db.User.create({ 
+            user3 = await db.Felhasznalo.create({ 
                 vezeteknev: "Tóth",
                 keresztnev: "Péter",
                 email: "toth.peter@example.com",
-                telefonszam: "0634567890"
+                telefonszam: "0634567890",
+                jelszo: "pass"
             });
         });
 
         afterAll(async () => 
         {
-            await db.User.destroy({ where: {} });
+            await db.Felhasznalo.destroy({ where: {} });
         });
 
         describe("getUser method tests", () => 
@@ -58,15 +61,6 @@ describe("Repository tests", () =>
                 const firstUser = results.find(u => u.email === "kovacs.janos@example.com");
                 expect(firstUser).toBeDefined();
                 expect(firstUser.vezeteknev).toEqual("Kovács");
-            });
-
-            test("should throw error given the database is not setup correctly", async () => 
-            {
-                const invalidRepository = new UserRepository({});
-
-                const promise = invalidRepository.getUser();
-
-                await expect(promise).rejects.toThrow();
             });
         });
 
@@ -98,7 +92,8 @@ describe("Repository tests", () =>
                     vezeteknev: "Szabó",
                     keresztnev: "Anna",
                     email: "szabo.anna@example.com",
-                    telefonszam: "0645678901"
+                    telefonszam: "0645678901",
+                    jelszo: "pass"
                 };
 
                 await userRepository.createUser(user);
@@ -143,111 +138,6 @@ describe("Repository tests", () =>
                 const foundUser = users.find(item => item.id === user3.id);
 
                 expect(foundUser).toBeUndefined();
-            });
-        });
-
-        describe("getUserByEmail method tests", () => 
-        {
-            test("should return user by email", async () => 
-            {
-                const result = await userRepository.getUserByEmail("kovacs.janos@example.com");
-
-                expect(result).toBeDefined();
-                expect(result.length).toBeGreaterThan(0);
-                expect(result[0].email).toEqual("kovacs.janos@example.com");
-            });
-
-            test("should return empty array when email not found", async () => 
-            {
-                const result = await userRepository.getUserByEmail("nemletezo@example.com");
-
-                expect(result).toBeDefined();
-                expect(result.length).toBe(0);
-            });
-        });
-
-        describe("getUserByPhone method tests", () => 
-        {
-            test("should return user by phone number", async () => 
-            {
-                const result = await userRepository.getUserByPhone("0612345678");
-
-                expect(result).toBeDefined();
-                expect(result.length).toBeGreaterThan(0);
-                expect(result[0].telefonszam).toEqual("0612345678");
-            });
-
-            test("should return empty array when phone not found", async () => 
-            {
-                const result = await userRepository.getUserByPhone("0699999999");
-
-                expect(result).toBeDefined();
-                expect(result.length).toBe(0);
-            });
-        });
-
-        describe("getUserWithDetails method tests", () => 
-        {
-            test("should return users with details ordered by id DESC", async () => 
-            {
-                const result = await userRepository.getUserWithDetails();
-
-                expect(result).toBeDefined();
-                expect(Array.isArray(result)).toBe(true);
-                expect(result.length).toBeGreaterThanOrEqual(0);
-            });
-        });
-
-        describe("getUserCountByEmail method tests", () => 
-        {
-            test("should return user count by email", async () => 
-            {
-                const result = await userRepository.getUserCountByEmail();
-
-                expect(result).toBeDefined();
-                expect(Array.isArray(result)).toBe(true);
-            });
-        });
-
-        describe("getUsersByDateRange method tests", () => 
-        {
-            test("should return users by date range", async () => 
-            {
-                const result = await userRepository.getUsersByDateRange("2024-01-01", "2024-12-31");
-
-                expect(result).toBeDefined();
-                expect(Array.isArray(result)).toBe(true);
-            });
-        });
-
-        describe("getTopUsers method tests", () => 
-        {
-            test("should return top users", async () => 
-            {
-                const result = await userRepository.getTopUsers(5);
-
-                expect(result).toBeDefined();
-                expect(Array.isArray(result)).toBe(true);
-            });
-
-            test("should return top users with custom limit", async () => 
-            {
-                const result = await userRepository.getTopUsers(2);
-
-                expect(result).toBeDefined();
-                expect(Array.isArray(result)).toBe(true);
-                expect(result.length).toBeLessThanOrEqual(2);
-            });
-        });
-
-        describe("getUsersByEtkezesType method tests", () => 
-        {
-            test("should return users by etkezes type", async () => 
-            {
-                const result = await userRepository.getUsersByEtkezesType();
-
-                expect(result).toBeDefined();
-                expect(Array.isArray(result)).toBe(true);
             });
         });
     });

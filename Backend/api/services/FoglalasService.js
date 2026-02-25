@@ -5,7 +5,6 @@ class FoglalasService {
         this.foglalasRepository = require("../repositories")(db).foglalasRepository;
         this.userRepository = require("../repositories")(db).userRepository;
         this.asztalRepository = require("../repositories")(db).asztalRepository;
-        this.etkezesTipusaRepository = require("../repositories")(db).etkezesTipusaRepository;
     }
     
     async getFoglalas(){
@@ -13,7 +12,7 @@ class FoglalasService {
     }
 
     async createFoglalas(data){
-        if (!data.user_id || !data.asztal_id || !data.foglalas_datum || !data.etkezes_id) {
+        if (!data.user_id || !data.asztal_id || !data.foglalas_datum) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
 
@@ -27,17 +26,13 @@ class FoglalasService {
             throw new NotFoundError("A megadott asztal nem létezik");
         }
 
-        const etkezes = await this.etkezesTipusaRepository.getEtkezesTipusaById(data.etkezes_id);
-        if (!etkezes) {
-            throw new NotFoundError("A megadott étkezés típus nem létezik");
-        }
-
         const foglalasDatum = new Date(data.foglalas_datum);
         if (isNaN(foglalasDatum.getTime()) || foglalasDatum < new Date()) {
             throw new BadRequestError("Érvénytelen vagy múltbeli dátum");
         }
 
         const datumResz = data.foglalas_datum.split(' ')[0];
+        const idopontResz = data.foglalas_datum.split(' ')[1] || "00:00";
         const foglaltIdopontok = await this.foglalasRepository.getFoglaltIdopontok(datumResz, data.asztal_id);
         const foglaltDatum = new Date(data.foglalas_datum);
         
@@ -51,7 +46,6 @@ class FoglalasService {
         }
 
         const foglalas = await this.foglalasRepository.createFoglalas(data);
-        await this.asztalRepository.updateAsztal(data.asztal_id, { asztal_allapot_id: 1 });
 
         return foglalas;
     }

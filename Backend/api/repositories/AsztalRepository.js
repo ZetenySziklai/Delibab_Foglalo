@@ -1,18 +1,11 @@
 class AsztalRepository{
     constructor(db){
         this.Asztal = db.Asztal;
-        this.AsztalAllapot = db.AsztalAllapot;
         this.Foglalas = db.Foglalas;
-        this.sequelize = db.sequelize;
     }
     
     async getAsztal(){
-        return await this.Asztal.findAll({
-            include: [{
-                model: this.AsztalAllapot,
-                attributes: ["nev"]
-            }]
-        });
+        return await this.Asztal.findAll();
     }
 
     async createAsztal(data){
@@ -20,12 +13,7 @@ class AsztalRepository{
     }
 
     async getAsztalById(id){
-        return await this.Asztal.findByPk(id, {
-            include: [{
-                model: this.AsztalAllapot,
-                attributes: ["nev"]
-            }]
-        });
+        return await this.Asztal.findByPk(id);
     }
 
     async updateAsztal(id, data){
@@ -38,6 +26,8 @@ class AsztalRepository{
         return deleted > 0;
     }
 
+
+    // itt valamit basszak
     async getSzabadAsztalok(datum, idopont, helyekSzama){
         const { Op } = require('sequelize');
         
@@ -49,7 +39,6 @@ class AsztalRepository{
 
         const foglaltAsztalIds = foglaltAsztalok.map(f => f.asztal_id);
         const whereCondition = {
-            asztal_allapot_id: 1,
             helyek_szama: { [Op.gte]: helyekSzama || 1 }
         };
 
@@ -58,8 +47,7 @@ class AsztalRepository{
         }
 
         return await this.Asztal.findAll({
-            where: whereCondition,
-            include: [{ model: this.AsztalAllapot, attributes: ["nev"] }]
+            where: whereCondition
         });
     }
 }

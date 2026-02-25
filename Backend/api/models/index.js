@@ -10,16 +10,16 @@ module.exports = (sequelize) => {
     const Idopont = require("./Idopont")(sequelize);
 
 
-    Felhasznalo.hasMany(Foglalas);
-    Foglalas.belongsTo(Felhasznalo);
+    Felhasznalo.hasMany(Foglalas, { foreignKey: 'user_id' });
+    Foglalas.belongsTo(Felhasznalo, { foreignKey: 'user_id' });
 
-    Asztal.hasMany(Foglalas);
-    Foglalas.belongsTo(Asztal);
+    Asztal.hasMany(Foglalas, { foreignKey: 'asztal_id' });
+    Foglalas.belongsTo(Asztal, { foreignKey: 'asztal_id' });
 
     Idopont.hasOne(Foglalas);
     Foglalas.belongsTo(Idopont);
 
-    Foglalas.hasOne(Foglalas)
+    Foglalas.hasOne(FoglalasiAdatok)
     FoglalasiAdatok.belongsTo(Foglalas)
 
     return {

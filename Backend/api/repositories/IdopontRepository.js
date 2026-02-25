@@ -1,8 +1,6 @@
 class IdopontRepository{
     constructor(db){
         this.Idopont = db.Idopont;
-        this.Foglalas = db.Foglalas;
-        this.sequelize = db.sequelize;
     }
     
     async getIdopont(){

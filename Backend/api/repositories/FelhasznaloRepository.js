@@ -1,47 +1,48 @@
-class UserRepository{
+class FelhasznaloRepository{
     constructor(db){
-        this.User = db.User;
-        this.EtkezesTipusa = db.EtkezesTipusa;
+        this.Felhasznalo = db.Felhasznalo;
         this.sequelize = db.sequelize;
     }
     
     async getUser(){
-        return await this.User.findAll();
+        return await this.Felhasznalo.findAll();
     }
 
     async getUserById(id){
-        return await this.User.findByPk(id);
+        return await this.Felhasznalo.findByPk(id);
     }
 
     async createUser(data){
-        return await this.User.create(data);
+        return await this.Felhasznalo.create(data);
     }
 
     async updateUser(id, data){
-        await this.User.update(data, { where: { id: id } });
-        return await this.User.findByPk(id);
+        await this.Felhasznalo.update(data, { where: { id: id } });
+        return await this.Felhasznalo.findByPk(id);
     }
 
     async deleteUser(id){
-        const deleted = await this.User.destroy({ where: { id: id } });
+        const deleted = await this.Felhasznalo.destroy({ where: { id: id } });
         return deleted > 0;
     }
 
     async getUserByEmail(email){
-        const results = await this.User.findAll({ where: { email: email }, raw: true });
+        const results = await this.Felhasznalo.findAll({ where: { email: email }, raw: true });
         return results;
     }
 
+
+    //kerdes hogy maradjon
     async getUserByPhone(telefonszam){
         const phoneNormalized = String(telefonszam).replace(/[\s-]/g, "");
-        return await this.User.findAll({
+        return await this.Felhasznalo.findAll({
             where: { telefonszam: phoneNormalized },
             raw: true
         });
     }
 
     async getUserWithDetails(){
-        const results = await this.User.findAll({
+        const results = await this.Felhasznalo.findAll({
             order: [['id', 'DESC']],
             raw: true
         });
@@ -50,7 +51,7 @@ class UserRepository{
 
     // GROUP BY - foglalások száma email szerint
     async getUserCountByEmail(){
-        return await this.User.findAll({
+        return await this.Felhasznalo.findAll({
             attributes: [
                 'email',
                 [this.sequelize.fn('COUNT', this.sequelize.col('id')), 'foglalasok_szama']
@@ -66,7 +67,7 @@ class UserRepository{
 
     // Összetett lekérdezés - foglalások időpont szerint csoportosítva
     async getUsersByDateRange(startDate, endDate){
-        const results = await this.User.findAll({
+        const results = await this.Felhasznalo.findAll({
             attributes: ['id','vezeteknev','keresztnev','email'],
             order: [['id', 'ASC']],
             raw: true
@@ -76,25 +77,18 @@ class UserRepository{
 
     // Aggregáció - legtöbb foglalással rendelkező személyek
     async getTopUsers(limit = 5){
-        return await this.User.findAll({
+        return await this.Felhasznalo.findAll({
             attributes: [
                 'vezeteknev',
                 'keresztnev',
                 'email',
                 [this.sequelize.fn('COUNT', this.sequelize.col('id')), 'osszes_foglalas']
             ],
-            group: ['User.id'],
+            group: ['Felhasznalo.id'],
             order: [[this.sequelize.literal('osszes_foglalas'), 'DESC']],
             limit: limit
         });
     }
-
-    // Komplex lekérdezés - foglalások étkezés típus szerint
-    async getUsersByEtkezesType(){
-        // Egyszerűsített változat asszociációk nélkül a hibák elkerülésére
-        return await this.EtkezesTipusa.findAll();
-    }
 }
 
-module.exports = UserRepository;
-
+module.exports = FelhasznaloRepository;
