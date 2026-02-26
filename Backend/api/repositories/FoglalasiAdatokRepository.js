@@ -1,10 +1,10 @@
-class FoglalasiAdatokRepository{
-    constructor(db){
+class FoglalasiAdatokRepository {
+    constructor(db) {
         this.FoglalasiAdatok = db.FoglalasiAdatok;
         this.Foglalas = db.Foglalas;
     }
-    
-    async getFoglalasiAdatok(){
+
+    async getFoglalasiAdatok() {
         return await this.FoglalasiAdatok.findAll({
             include: [{
                 model: this.Foglalas,
@@ -13,11 +13,11 @@ class FoglalasiAdatokRepository{
         });
     }
 
-    async createFoglalasiAdatok(data){
-        return await this.FoglalasiAdatok.create(data);
+    async createFoglalasiAdatok(data, options = {}) {
+        return await this.FoglalasiAdatok.create(data, options);
     }
 
-    async getFoglalasiAdatokById(id){
+    async getFoglalasiAdatokById(id) {
         return await this.FoglalasiAdatok.findByPk(id, {
             include: [{
                 model: this.Foglalas,
@@ -26,12 +26,12 @@ class FoglalasiAdatokRepository{
         });
     }
 
-    async updateFoglalasiAdatok(id, data){
+    async updateFoglalasiAdatok(id, data) {
         await this.FoglalasiAdatok.update(data, { where: { id: id } });
         return await this.getFoglalasiAdatokById(id);
     }
 
-    async deleteFoglalasiAdatok(id){
+    async deleteFoglalasiAdatok(id) {
         const deleted = await this.FoglalasiAdatok.destroy({ where: { id: id } });
         return deleted > 0;
     }

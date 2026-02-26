@@ -1,6 +1,4 @@
-const Felhasznalo = require("./Felhasznalo");
-const FoglalasiAdatok = require("./FoglalasiAdatok");
-const Idopont = require("./Idopont");
+
 
 module.exports = (sequelize) => {
     const Asztal = require("./Asztal")(sequelize);

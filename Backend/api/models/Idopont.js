@@ -12,11 +12,11 @@ module.exports = (sequelize) => {
                 allowNull: false
             },
             kezdet: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.DOUBLE,
                 allowNull: false
             },
             veg:{
-                type: DataTypes.INTEGER,
+                type: DataTypes.DOUBLE,
                 allowNull: false
             }
         },

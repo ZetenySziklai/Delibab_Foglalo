@@ -20,9 +20,9 @@ class FoglalasRepository{
         });
     }
 
-    async createFoglalas(data){
-        return await this.Foglalas.create(data);
-    }
+    async createFoglalas(data, options = {}){
+    return await this.Foglalas.create(data, options);
+}
 
     async getFoglalasById(id){
         return await this.Foglalas.findByPk(id, {
@@ -49,24 +49,21 @@ class FoglalasRepository{
         return deleted > 0;
     }
 
-    async getFoglaltIdopontok(datum, asztalId){
-        const { Op } = require('sequelize');
-        
-        // Lekérjük az adott dátumra és asztalra vonatkozó foglalásokat (foglalt időpontok)
-        const foglalasok = await this.Foglalas.findAll({
-            where: {
-                asztal_id: asztalId,
-                foglalas_datum: {
-                    [Op.gte]: new Date(datum + ' 00:00:00'),
-                    [Op.lt]: new Date(new Date(datum).setDate(new Date(datum).getDate() + 1))
-                }
-            },
-            // Az asztal_id-t is visszaadjuk, hogy a tesztben ellenőrizhető legyen
-            attributes: ['id', 'foglalas_datum', 'user_id', 'asztal_id']
-        });
-        
-        return foglalasok;
-    }
+    async getFoglaltIdopontok(datum, asztalId, options = {}){
+    const { Op } = require('sequelize');
+    
+    return await this.Foglalas.findAll({
+        where: {
+            asztal_id: asztalId,
+            foglalas_datum: {
+                [Op.gte]: new Date(datum + ' 00:00:00'),
+                [Op.lt]: new Date(new Date(datum).setDate(new Date(datum).getDate() + 1))
+            }
+        },
+        attributes: ['id', 'foglalas_datum', 'user_id', 'asztal_id'],
+        ...options
+    });
+}
 
     async getFoglalasByDatum(datum){
         const { Op } = require('sequelize');
