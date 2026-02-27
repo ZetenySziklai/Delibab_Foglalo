@@ -7,20 +7,54 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (password !== confirmPassword) {
-      alert('A jelszavak nem egyeznek!');
+      setError('A jelszavak nem egyeznek!');
       return;
     }
-    console.log('Register attempt:', { lastName, firstName, email, phone, password });
-    // Majd itt lesz a backend hívás
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('http://localhost:8000/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          vezeteknev: lastName,
+          keresztnev: firstName,
+          email: email,
+          telefonszam: phone,
+          jelszo: password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Hiba történt a regisztráció során.');
+      }
+
+      alert('Sikeres regisztráció! Most már bejelentkezhet.');
+      onSwitch();
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Váratlan hiba történt.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="auth-container">
       <h2>Regisztráció</h2>
+      {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Vezetéknév:</label>
@@ -76,7 +110,9 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             required 
           />
         </div>
-        <button type="submit">Regisztráció</button>
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Regisztráció...' : 'Regisztráció'}
+        </button>
       </form>
       <p>
         Már van fiókod? <button onClick={onSwitch}>Bejelentkezés</button>

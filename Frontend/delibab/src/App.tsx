@@ -10,6 +10,7 @@ import Modal from './components/Modal';
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'foglalo' | 'login' | 'register'>('home')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState<{ id: number; email: string; vezeteknev: string; keresztnev: string } | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleFoglalasClick = () => {
@@ -26,7 +27,7 @@ function App() {
   }
 
   if (currentPage === 'foglalo') {
-    return <FoglaloOldal onBack={() => setCurrentPage('home')} isLoggedIn={isLoggedIn} onLoginClick={() => setCurrentPage('login')} />
+    return <FoglaloOldal onBack={() => setCurrentPage('home')} isLoggedIn={isLoggedIn} onLoginClick={() => setCurrentPage('login')} user={user} />
   }
 
   const renderContent = () => {
@@ -34,7 +35,14 @@ function App() {
       case 'login':
         return (
           <section className="auth-page">
-            <Login onSwitch={() => setCurrentPage('register')} onLoginSuccess={() => { setIsLoggedIn(true); setCurrentPage('home'); }} />
+            <Login 
+              onSwitch={() => setCurrentPage('register')} 
+              onLoginSuccess={(userData) => { 
+                setIsLoggedIn(true); 
+                setUser(userData);
+                setCurrentPage('home'); 
+              }} 
+            />
             <button className="btn back-btn" onClick={() => setCurrentPage('home')}>Vissza a főoldalra</button>
           </section>
         );
@@ -108,6 +116,8 @@ function App() {
         onFoglalasClick={handleFoglalasClick} 
         onLoginClick={() => setCurrentPage('login')}
         onHomeClick={() => setCurrentPage('home')}
+        isLoggedIn={isLoggedIn}
+        user={user}
       />
 
       <main>

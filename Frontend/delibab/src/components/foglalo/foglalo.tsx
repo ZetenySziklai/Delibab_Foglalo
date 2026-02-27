@@ -14,17 +14,21 @@ interface FoglaloOldalProps {
   onBack: () => void;
   isLoggedIn: boolean;
   onLoginClick: () => void;
+  user: { id: number; email: string; vezeteknev: string; keresztnev: string } | null;
 }
 
-export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, onLoginClick }) => {
+export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, onLoginClick, user }) => {
   const [step, setStep] = useState(1);
   const [guests, setGuests] = useState(2);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [selectedTable, setSelectedTable] = useState<number | null>(null);
+  const [availableTables, setAvailableTables] = useState<any[]>([]);
+  const [isLoadingTables, setIsLoadingTables] = useState(false);
   const [contact, setContact] = useState<ContactForm>({
-    lastName: '',
-    firstName: '',
-    email: '',
+    lastName: user?.vezeteknev || '',
+    firstName: user?.keresztnev || '',
+    email: user?.email || '',
     phone: '',
     notes: '',
     terms: false,
@@ -85,35 +89,39 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      setError("A foglaláshoz be kell jelentkezni!");
+      return;
+    }
+    if (!selectedTable) {
+      setError("Kérjük válasszon egy asztalt!");
+      return;
+    }
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const foglaloData = {
-        vezeteknev: contact.lastName.trim(),
-        keresztnev: contact.firstName.trim(),
-        email: contact.email,
-        telefonszam: contact.phone,
-        megjegyzes: contact.notes,
-        date: `${date} ${time}`, // Összefűzve küldjük
-        etkezesTipus: getMealType(time),
-        people: guests.toString()
+      // 2. Foglalás létrehozása
+      const foglalasData = {
+        user_id: user.id,
+        asztal_id: selectedTable,
+        foglalas_datum: `${date} ${time}:00`,
       };
 
-      const response = await fetch('http://localhost:8000/api/foglalok', {
+      const response = await fetch('http://localhost:8000/api/foglalasok', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(foglaloData),
+        body: JSON.stringify(foglalasData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.msg || errorData.message || 'Hiba történt a foglalás során.');
+        throw new Error(errorData.message || 'Hiba történt a foglalás során.');
       }
 
-      setStep(5); // Success step
+      setStep(6); // Success step (now step 6)
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Váratlan hiba történt.');
@@ -127,30 +135,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       case 1:
         return (
           <div className="step-container fade-in">
-            <h2>Hány főre szeretnél foglalni?</h2>
-            <div className="guest-selector">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                <button 
-                  key={num} 
-                  className={`guest-btn ${guests === num ? 'active' : ''}`}
-                  onClick={() => { setGuests(num); setStep(2); }}
-                >
-                  {num}
-                </button>
-              ))}
-              <button 
-                className={`guest-btn ${guests > 8 ? 'active' : ''}`}
-                onClick={() => { setGuests(9); setStep(2); }}
-              >
-                8+
-              </button>
-            </div>
-          </div>
-        );
-      case 2:
-        return (
-          <div className="step-container fade-in">
-            <button className="back-btn" onClick={() => setStep(1)}>← Vissza</button>
+            <button className="back-btn" onClick={onBack}>← Vissza</button>
             <h2>Melyik napon?</h2>
             <div className="date-grid">
               {getNextDays().map(day => (
@@ -158,30 +143,38 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                   key={day} 
                   className={`date-btn ${date === day ? 'active' : ''}`}
                   disabled={isLoadingTimes}
-                  onClick={async () => { 
-                    if (isLoadingTimes) return;
+                  onClick={() => { 
                     setDate(day); 
-                    setIsLoadingTimes(true);
-                    try {
-                      const response = await fetch(`http://localhost:8000/api/foglalasok/reserved-times?datum=${day}`);
-                      if (response.ok) {
-                        const times = await response.json();
-                        setReservedTimes(times);
-                      } else {
-                        setReservedTimes([]);
-                      }
-                    } catch (err) {
-                      console.error("Hiba a foglalások lekérdezésekor:", err);
-                      setReservedTimes([]);
-                    } finally {
-                      setIsLoadingTimes(false);
-                      setStep(3);
-                    }
+                    setStep(2);
                   }}
                 >
-                  {isLoadingTimes && date === day ? 'Betöltés...' : new Date(day).toLocaleDateString('hu-HU', { weekday: 'short', month: 'short', day: 'numeric' })}
+                  {new Date(day).toLocaleDateString('hu-HU', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </button>
               ))}
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <div className="step-container fade-in">
+            <button className="back-btn" onClick={() => setStep(1)}>← Vissza</button>
+            <h2>Hány főre szeretnél foglalni?</h2>
+            <div className="guest-selector">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                <button 
+                  key={num} 
+                  className={`guest-btn ${guests === num ? 'active' : ''}`}
+                  onClick={() => { setGuests(num); setStep(3); }}
+                >
+                  {num}
+                </button>
+              ))}
+              <button 
+                className={`guest-btn ${guests > 8 ? 'active' : ''}`}
+                onClick={() => { setGuests(9); setStep(3); }}
+              >
+                8+
+              </button>
             </div>
           </div>
         );
@@ -195,20 +188,30 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
             </div>
             <div className="time-grid">
               {timeSlots.map(slot => {
-                const isReserved = reservedTimes.includes(slot);
                 const displayTime = `${slot}-${calculateEndTime(slot)}`;
                 return (
                   <button 
                     key={slot} 
-                    className={`time-btn ${time === slot ? 'active' : ''} ${isReserved ? 'disabled' : ''}`}
-                    onClick={() => { 
-                      if (!isReserved) {
-                        setTime(slot); 
-                        setStep(4); 
+                    className={`time-btn ${time === slot ? 'active' : ''}`}
+                    onClick={async () => { 
+                      setTime(slot); 
+                      setIsLoadingTables(true);
+                      setError(null);
+                      try {
+                        const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${slot}&helyekSzama=${guests}`);
+                        if (response.ok) {
+                          const data = await response.json();
+                          setAvailableTables(data.szabad_asztalok || []);
+                          setStep(4);
+                        } else {
+                          throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
+                        }
+                      } catch (err: any) {
+                        setError(err.message);
+                      } finally {
+                        setIsLoadingTables(false);
                       }
                     }}
-                    disabled={isReserved}
-                    title={isReserved ? "Ez az időpont már foglalt" : ""}
                   >
                     {displayTime}
                   </button>
@@ -221,6 +224,34 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         return (
           <div className="step-container fade-in">
             <button className="back-btn" onClick={() => setStep(3)}>← Vissza</button>
+            <h2>Válassz asztalt</h2>
+            {isLoadingTables ? (
+              <p>Asztalok betöltése...</p>
+            ) : availableTables.length > 0 ? (
+              <div className="table-grid">
+                {availableTables.map(table => (
+                  <button 
+                    key={table.id} 
+                    className={`table-btn ${selectedTable === table.id ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedTable(table.id);
+                      setStep(5);
+                    }}
+                  >
+                    Asztal #{table.id} ({table.helyek_szama} fő)
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p>Sajnos nincs szabad asztal ebben az időpontban.</p>
+            )}
+            {error && <p className="error-message">{error}</p>}
+          </div>
+        );
+      case 5:
+        return (
+          <div className="step-container fade-in">
+            <button className="back-btn" onClick={() => setStep(4)}>← Vissza</button>
             <h2>Elérhetőségek</h2>
             
             {error && <div className="error-message">{error}</div>}
@@ -288,6 +319,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                 <p><strong>Foglalás részletei:</strong></p>
                 <p>👤 {guests} fő</p>
                 <p>📅 {date} {time}</p>
+                <p>🪑 Asztal #{selectedTable}</p>
               </div>
 
               <div className="form-checkbox">
@@ -308,7 +340,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
             </form>
           </div>
         );
-      case 5:
+      case 6:
         return (
           <div className="step-container fade-in success-step">
             <div className="success-icon">✓</div>
@@ -320,6 +352,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
               <p>👤 {guests} fő</p>
               <p>📅 {date}</p>
               <p>⏰ {time}</p>
+              <p>🪑 Asztal #{selectedTable}</p>
             </div>
           </div>
         );

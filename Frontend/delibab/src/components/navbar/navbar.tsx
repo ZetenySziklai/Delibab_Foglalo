@@ -5,9 +5,11 @@ interface NavbarProps {
   onFoglalasClick?: () => void;
   onLoginClick?: () => void;
   onHomeClick?: () => void;
+  isLoggedIn?: boolean;
+  user?: { vezeteknev: string; keresztnev: string } | null;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onFoglalasClick, onLoginClick, onHomeClick }) => {
+const Navbar: React.FC<NavbarProps> = ({ onFoglalasClick, onLoginClick, onHomeClick, isLoggedIn, user }) => {
     return (
         <nav>
             <div className="navigacio">
@@ -26,15 +28,19 @@ const Navbar: React.FC<NavbarProps> = ({ onFoglalasClick, onLoginClick, onHomeCl
                   Foglalás
                 </a>
                 <a href="#kapcsolat" onClick={(e) => { if(onHomeClick) { onHomeClick(); } }}>Kapcsolat</a>
-                <a 
-                  href="#" 
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onLoginClick?.();
-                  }}
-                >
-                  Belépés
-                </a>
+                {isLoggedIn ? (
+                  <span className="user-name">Szia, {user?.keresztnev}!</span>
+                ) : (
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLoginClick?.();
+                    }}
+                  >
+                    Belépés
+                  </a>
+                )}
             </div>
         </nav>
     );
