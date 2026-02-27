@@ -10,7 +10,7 @@ import Modal from './components/Modal';
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'foglalo' | 'login' | 'register'>('home')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState<{ id: number; email: string; vezeteknev: string; keresztnev: string } | null>(null)
+  const [user, setUser] = useState<{ id: number; email: string; vezeteknev: string; keresztnev: string; telefonszam: string } | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleFoglalasClick = () => {

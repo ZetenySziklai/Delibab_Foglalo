@@ -194,6 +194,33 @@
   border-color: rgb(65, 37, 0);
 }
 
+/* Table Grid */
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+}
+
+.table-btn {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.table-btn:hover {
+  border-color: rgb(65, 37, 0);
+}
+
+.table-btn.active {
+  background-color: rgb(65, 37, 0);
+  color: white;
+  border-color: rgb(65, 37, 0);
+}
+
 .time-btn.disabled {
   background-color: #eee;
   color: #aaa;

@@ -14,6 +14,20 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     e.preventDefault();
     setError(null);
 
+    // Email validáció: valami@valami.valami
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
+    if (!emailRegex.test(email)) {
+      setError('Kérjük, adjon meg egy érvényes email címet (példa: nev@domain.hu)!');
+      return;
+    }
+
+    // Telefonszám validáció: pontosan 11 számjegy
+    const phoneRegex = /^\d{11}$/;
+    if (!phoneRegex.test(phone)) {
+      setError('A telefonszámnak pontosan 11 számjegyből kell állnia (példa: 06301234567)!');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('A jelszavak nem egyeznek!');
       return;
@@ -80,6 +94,7 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             type="email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
+            placeholder="pelda@email.hu"
             required 
           />
         </div>
@@ -89,6 +104,7 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             type="tel" 
             value={phone} 
             onChange={(e) => setPhone(e.target.value)} 
+            placeholder="06301234567"
             required 
           />
         </div>

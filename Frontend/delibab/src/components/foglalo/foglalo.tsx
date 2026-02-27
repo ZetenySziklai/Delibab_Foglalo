@@ -14,7 +14,7 @@ interface FoglaloOldalProps {
   onBack: () => void;
   isLoggedIn: boolean;
   onLoginClick: () => void;
-  user: { id: number; email: string; vezeteknev: string; keresztnev: string } | null;
+  user: { id: number; email: string; vezeteknev: string; keresztnev: string; telefonszam: string } | null;
 }
 
 export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, onLoginClick, user }) => {
@@ -29,7 +29,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     lastName: user?.vezeteknev || '',
     firstName: user?.keresztnev || '',
     email: user?.email || '',
-    phone: '',
+    phone: user?.telefonszam || '',
     notes: '',
     terms: false,
   });
@@ -238,7 +238,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                       setStep(5);
                     }}
                   >
-                    Asztal #{table.id} ({table.helyek_szama} fő)
+                    Asztal ({table.helyek_szama} fő)
                   </button>
                 ))}
               </div>
@@ -319,7 +319,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                 <p><strong>Foglalás részletei:</strong></p>
                 <p>👤 {guests} fő</p>
                 <p>📅 {date} {time}</p>
-                <p>🪑 Asztal #{selectedTable}</p>
+                <p>📞 {contact.phone}</p>
               </div>
 
               <div className="form-checkbox">
@@ -352,7 +352,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
               <p>👤 {guests} fő</p>
               <p>📅 {date}</p>
               <p>⏰ {time}</p>
-              <p>🪑 Asztal #{selectedTable}</p>
+              <p>📞 {contact.phone}</p>
             </div>
           </div>
         );

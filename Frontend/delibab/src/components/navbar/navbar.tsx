@@ -6,7 +6,7 @@ interface NavbarProps {
   onLoginClick?: () => void;
   onHomeClick?: () => void;
   isLoggedIn?: boolean;
-  user?: { vezeteknev: string; keresztnev: string } | null;
+  user?: { vezeteknev: string; keresztnev: string; telefonszam: string } | null;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ onFoglalasClick, onLoginClick, onHomeClick, isLoggedIn, user }) => {
