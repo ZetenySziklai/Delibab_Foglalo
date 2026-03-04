@@ -7,7 +7,8 @@ namespace AdminWPF.Models
         IdopontLetrehoz,
         IdopontTorol,
         FoglalasLetrehoz,
-        FoglalasTorol
+        FoglalasTorol,
+        FoglalasTöröl    // asztal/időpont törlésnél a kapcsolódó foglalások törlése
     }
 
     public class FuggoBenMuvelet
@@ -25,17 +26,16 @@ namespace AdminWPF.Models
         // Foglalás műveletek
         public FoglalasLetrehozas? UjFoglalas { get; set; }
         public int? FoglalasId { get; set; }
-        public int? FoglalaId { get; set; }   // foglalasiadatok FK
+        public int? FoglalasiAdatokId { get; set; }  // foglalasiadatok.id – törlésnél kell
 
         public string Leiras => Tipus switch
         {
-            MuveletTipus.AsztalLetrehoz   => $"+ Asztal ({UjAsztal?.HelyekSzama} fő)",
-            MuveletTipus.AsztalTorol      => $"- Asztal #{AsztalId}",
-            MuveletTipus.IdopontLetrehoz  => $"+ Időpont",
-            MuveletTipus.IdopontTorol     => $"- Időpont #{IdopontId}",
-            MuveletTipus.FoglalasLetrehoz => $"+ Foglalás A#{UjFoglalas?.AsztalId} I#{UjFoglalas?.IdopontId}",
-            MuveletTipus.FoglalasTorol    => $"- Foglalás #{FoglalasId}",
-            _                             => "?"
+            MuveletTipus.AsztalLetrehoz  => $"+ Asztal ({UjAsztal?.HelyekSzama} fő)",
+            MuveletTipus.AsztalTorol     => $"- Asztal #{AsztalId}",
+            MuveletTipus.IdopontLetrehoz => $"+ Időpont",
+            MuveletTipus.IdopontTorol    => $"- Időpont #{IdopontId}",
+            MuveletTipus.FoglalasTöröl   => $"- Foglalás #{FoglalasId} (asztal/időpont törlés miatt)",
+            _                            => "?"
         };
     }
 }

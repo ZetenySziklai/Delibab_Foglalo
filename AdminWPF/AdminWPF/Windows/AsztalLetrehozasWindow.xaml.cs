@@ -22,6 +22,13 @@ namespace AdminWPF.Windows
                 return;
             }
 
+            if (helyek > 12)
+            {
+                MessageBox.Show("Maximum 12 férőhelyes asztalt lehet létrehozni!",
+                    "Túl nagy férőhelyszám", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             Eredmeny = new AsztalLetrehozas { HelyekSzama = helyek };
             DialogResult = true;
             Close();

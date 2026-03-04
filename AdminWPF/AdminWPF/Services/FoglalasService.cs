@@ -32,9 +32,24 @@ namespace AdminWPF.Services
             }
         }
 
+        // Lekéri a foglalasiadatok tábla összes sorát (id + FoglalasId kell)
+        public async Task<List<FoglalasiAdatokValasz>> GetFoglalasiAdatokAsync()
+        {
+            try
+            {
+                var result = await _httpClient.GetFromJsonAsync<List<FoglalasiAdatokValasz>>("/api/foglalasi-adatok");
+                return result ?? new List<FoglalasiAdatokValasz>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Hiba a foglalási adatok lekérésekor: {ex.Message}");
+                return new List<FoglalasiAdatokValasz>();
+            }
+        }
+
         /// <summary>
-        /// Létrehozza a foglalást, majd a foglalasiAdatokat is (két API hívás).
-        /// Visszaad egy hibaüzenetet ha sikertelen, null ha sikeres.
+        /// 1. POST /api/foglalasok  → kapja vissza az új foglalas.id-t
+        /// 2. POST /api/foglalasi-adatok  → FoglalaId = foglalas.id
         /// </summary>
         public async Task<string?> CreateFoglalasAsync(FoglalasLetrehozas foglalas, FoglalasiadatokLetrehozas adatok)
         {
@@ -46,41 +61,27 @@ namespace AdminWPF.Services
                 if (!foglalasResponse.IsSuccessStatusCode)
                 {
                     string hiba = await foglalasResponse.Content.ReadAsStringAsync();
-                    try
-                    {
-                        var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
-                        return errObj?.HibaSzoveg ?? $"Foglalás sikertelen ({foglalasResponse.StatusCode})";
-                    }
-                    catch
-                    {
-                        return $"Foglalás sikertelen ({foglalasResponse.StatusCode})";
-                    }
+                    var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
+                    return errObj?.HibaSzoveg ?? $"Foglalás sikertelen ({foglalasResponse.StatusCode})";
                 }
 
-                // 2. Az új foglalás id-jának kiolvasása
+                // 2. Visszakapott foglalas.id kiolvasása
                 var ujFoglalas = await foglalasResponse.Content.ReadFromJsonAsync<Foglalas>();
                 if (ujFoglalas == null) return "Foglalás létrejött, de az id nem olvasható";
 
-                // 3. FoglalasiAdatok létrehozása
-                adatok.FoglalaId       = ujFoglalas.Id;
-                adatok.FoglaiasDatum   = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                // 3. FoglalasiadatokLetrehozas: FoglalaId = az új foglalas.id
+                adatok.FoglalaId     = ujFoglalas.Id;
+                adatok.FoglaiasDatum = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
 
                 var adatokResponse = await _httpClient.PostAsJsonAsync("/api/foglalasi-adatok", adatok);
 
                 if (!adatokResponse.IsSuccessStatusCode)
                 {
-                    // A foglalás megvan, de az adatok mentése sikertelen – töröljük vissza
+                    // Rollback: foglalást töröljük vissza
                     await _httpClient.DeleteAsync($"/api/foglalasok/{ujFoglalas.Id}");
                     string hiba = await adatokResponse.Content.ReadAsStringAsync();
-                    try
-                    {
-                        var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
-                        return errObj?.HibaSzoveg ?? $"Foglalási adatok mentése sikertelen ({adatokResponse.StatusCode})";
-                    }
-                    catch
-                    {
-                        return $"Foglalási adatok mentése sikertelen ({adatokResponse.StatusCode})";
-                    }
+                    var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
+                    return errObj?.HibaSzoveg ?? $"Foglalási adatok mentése sikertelen ({adatokResponse.StatusCode})";
                 }
 
                 return null; // siker
@@ -93,25 +94,33 @@ namespace AdminWPF.Services
         }
 
         /// <summary>
-        /// Törli a foglalást. A backend kaszkád törli a foglalasiAdatokat is.
+        /// Törlés: előbb a foglalasiadatok sort, majd a foglalást.
+        /// Ha foglalasiAdatokId null, csak a foglalást törli.
         /// </summary>
-        public async Task<string?> DeleteFoglalasAsync(int foglalasId)
+        public async Task<string?> DeleteFoglalasAsync(int foglalasId, int? foglalasiAdatokId = null)
         {
             try
             {
+                // 1. Foglalasiadatok törlése (ha van)
+                if (foglalasiAdatokId.HasValue)
+                {
+                    var adatokResp = await _httpClient.DeleteAsync($"/api/foglalasi-adatok/{foglalasiAdatokId.Value}");
+                    // Ha 404 → már nincs, folytatjuk
+                    if (!adatokResp.IsSuccessStatusCode && adatokResp.StatusCode != System.Net.HttpStatusCode.NotFound)
+                    {
+                        string hiba = await adatokResp.Content.ReadAsStringAsync();
+                        var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
+                        return errObj?.HibaSzoveg ?? $"Foglalási adatok törlése sikertelen ({adatokResp.StatusCode})";
+                    }
+                }
+
+                // 2. Foglalás törlése
                 var response = await _httpClient.DeleteAsync($"/api/foglalasok/{foglalasId}");
                 if (response.IsSuccessStatusCode) return null;
 
-                string hiba = await response.Content.ReadAsStringAsync();
-                try
-                {
-                    var errObj = JsonSerializer.Deserialize<ApiHibaValasz>(hiba);
-                    return errObj?.HibaSzoveg ?? $"Törlés sikertelen ({response.StatusCode})";
-                }
-                catch
-                {
-                    return $"Törlés sikertelen ({response.StatusCode})";
-                }
+                string hibaFogl = await response.Content.ReadAsStringAsync();
+                var errFogl = JsonSerializer.Deserialize<ApiHibaValasz>(hibaFogl);
+                return errFogl?.HibaSzoveg ?? $"Törlés sikertelen ({response.StatusCode})";
             }
             catch (Exception ex)
             {
@@ -121,7 +130,6 @@ namespace AdminWPF.Services
         }
     }
 
-    // API hibaválasz deszializáláshoz
     internal class ApiHibaValasz
     {
         [JsonPropertyName("message")]
@@ -134,5 +142,25 @@ namespace AdminWPF.Services
         public string? error { get; set; }
 
         public string? HibaSzoveg => message ?? msg ?? error;
+    }
+
+    // A GET /api/foglalasi-adatok válasz modellje
+    public class FoglalasiAdatokValasz
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("felnott")]
+        public int Felnott { get; set; }
+
+        [JsonPropertyName("gyerek")]
+        public int Gyerek { get; set; }
+
+        [JsonPropertyName("megjegyzes")]
+        public string? Megjegyzes { get; set; }
+
+        // Sequelize által generált FK – a DB-ben FoglalaId oszlopnév
+        [JsonPropertyName("FoglalaId")]
+        public int FoglalasId { get; set; }
     }
 }

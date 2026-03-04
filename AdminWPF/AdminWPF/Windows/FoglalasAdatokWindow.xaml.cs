@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Windows;
+using AdminWPF.Services;
 
 namespace AdminWPF.Windows
 {
@@ -9,33 +11,53 @@ namespace AdminWPF.Windows
         public int    Gyerek        { get; private set; }
         public string Megjegyzes    { get; private set; } = "";
 
-        public FoglalasAdatokWindow(int asztalId, string asztalInfo, string idopontInfo)
+        private readonly List<Felhasznalo> _felhasznalok;
+        private readonly int _asztalMaxFo;  // az asztal kapacitása
+
+        public FoglalasAdatokWindow(int asztalId, string asztalInfo, string idopontInfo,
+                                    List<Felhasznalo> felhasznalok, int asztalMaxFo)
         {
             InitializeComponent();
             txtAsztalInfo.Text  = asztalInfo;
             txtIdopontInfo.Text = idopontInfo;
+            _felhasznalok       = felhasznalok;
+            _asztalMaxFo        = asztalMaxFo;
+
+            if (_felhasznalok.Count == 0)
+            {
+                txtFelhasznaloHiba.Visibility = Visibility.Visible;
+                btnFoglal.IsEnabled           = false;
+            }
+            else
+            {
+                cbFelhasznalo.ItemsSource   = _felhasznalok;
+                cbFelhasznalo.SelectedIndex = 0;
+            }
         }
 
         private void BtnFoglal_Click(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(txtFelhasznaloId.Text.Trim(), out int fId) || fId <= 0)
+            if (cbFelhasznalo.SelectedItem is not Felhasznalo kivalasztott)
             {
-                MessageBox.Show("Adjon meg érvényes Felhasználó ID-t!", "Hiba",
+                MessageBox.Show("Válasszon felhasználót!", "Hiba",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
             if (!int.TryParse(txtFelnott.Text.Trim(), out int felnott) || felnott < 0)
             {
                 MessageBox.Show("A felnőttek száma nem lehet negatív!", "Hiba",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
             if (!int.TryParse(txtGyerek.Text.Trim(), out int gyerek) || gyerek < 0)
             {
                 MessageBox.Show("A gyerekek száma nem lehet negatív!", "Hiba",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
             if (felnott + gyerek == 0)
             {
                 MessageBox.Show("Legalább 1 személy szükséges a foglaláshoz!", "Hiba",
@@ -43,7 +65,17 @@ namespace AdminWPF.Windows
                 return;
             }
 
-            FelhasznaloId = fId;
+            // Kapacitás ellenőrzés
+            if (felnott + gyerek > _asztalMaxFo)
+            {
+                MessageBox.Show(
+                    $"Túl sok személy!\n\nAz asztal maximum {_asztalMaxFo} főt fogad.\n" +
+                    $"Megadott személyek: {felnott + gyerek} fő (felnőtt: {felnott}, gyerek: {gyerek})",
+                    "Kapacitás túllépés", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            FelhasznaloId = kivalasztott.Id;
             Felnott       = felnott;
             Gyerek        = gyerek;
             Megjegyzes    = txtMegjegyzes.Text.Trim();
