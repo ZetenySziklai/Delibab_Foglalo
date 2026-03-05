@@ -76,7 +76,7 @@ namespace AdminWPF.Windows {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/AdminWPF;V1.0.0.0;component/windows/asztalletrehozaswindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/AdminWPF;component/windows/asztalletrehozaswindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Windows\AsztalLetrehozasWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

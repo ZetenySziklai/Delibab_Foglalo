@@ -71,7 +71,7 @@ namespace AdminWPF.Services
 
                 // 3. FoglalasiadatokLetrehozas: FoglalaId = az új foglalas.id
                 adatok.FoglalaId     = ujFoglalas.Id;
-                adatok.FoglaiasDatum = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
+                adatok.FoglaiasDatum = foglalas.FoglaiasDatum; // a MainWindow-ból kapott kiválasztott dátum
 
                 var adatokResponse = await _httpClient.PostAsJsonAsync("/api/foglalasi-adatok", adatok);
 

@@ -43,6 +43,10 @@
           "SelectedChildIndex": 3,
           "Children": [
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
@@ -52,12 +56,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\Downloads\\MainWindow.xaml.cs",
               "ViewState": "AgIAABcDAAAAAAAAAAAUwDMDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T18:51:21.035Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+              "WhenOpened": "2026-03-04T18:51:21.035Z"
             },
             {
               "$type": "Document",
@@ -69,8 +68,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\Downloads\\AsztalLetrehozasWindow.xaml.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAYwCsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T18:50:19.559Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-04T18:50:19.559Z"
             },
             {
               "$type": "Document",
@@ -78,9 +76,9 @@
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\vizsgaremek\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\vizsgaremek\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs*",
-              "RelativeToolTip": "AdminWPF\\MainWindow.xaml.cs*",
-              "ViewState": "AgIAAB0DAAAAAAAAAAAUwDMDAAAAAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\vizsgaremek\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAOcCAAAAAAAAAAAUwPwCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-04T18:34:41.745Z",
               "EditorCaption": ""
@@ -103,12 +101,11 @@
               "Title": "AsztalLetrehozasWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\vizsgaremek\\AdminWPF\\AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
               "RelativeDocumentMoniker": "AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\vizsgaremek\\AdminWPF\\AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs*",
-              "RelativeToolTip": "AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs*",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\vizsgaremek\\AdminWPF\\AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-04T18:34:35.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-04T18:34:35.378Z"
             },
             {
               "$type": "Document",

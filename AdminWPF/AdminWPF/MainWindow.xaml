@@ -70,6 +70,17 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="RedButtonInaktiv" TargetType="Button" BasedOn="{StaticResource GreenButton}">
+            <Setter Property="Background" Value="#e8a0a7"/>
+            <Setter Property="Foreground" Value="#c0c0c0"/>
+            <Setter Property="Cursor" Value="Arrow"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#e8a0a7"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="GroupBoxStyle" TargetType="GroupBox">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -151,9 +162,10 @@
                                 Click="BtnAsztalHozzaad_Click"/>
                         <Button x:Name="btnAsztalTorol"
                                 Content="- Törlés"
-                                Style="{StaticResource RedButton}"
+                                Style="{StaticResource RedButtonInaktiv}"
                                 Width="100" Height="35"
                                 Margin="15,0,0,0"
+                                IsEnabled="False"
                                 Click="BtnAsztalTorol_Click"/>
                     </StackPanel>
                 </GroupBox>
@@ -169,10 +181,22 @@
                                 Click="BtnIdopontHozzaad_Click"/>
                         <Button x:Name="btnIdopontTorol"
                                 Content="- Törlés"
-                                Style="{StaticResource RedButton}"
+                                Style="{StaticResource RedButtonInaktiv}"
                                 Width="100" Height="35"
                                 Margin="15,0,0,0"
+                                IsEnabled="False"
                                 Click="BtnIdopontTorol_Click"/>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="📅 Foglalás dátuma"
+                          Style="{StaticResource GroupBoxStyle}"
+                          Width="220" Height="80">
+                    <StackPanel VerticalAlignment="Center">
+                        <ComboBox x:Name="cmbDatum"
+                                  Width="190" Height="32"
+                                  FontFamily="Segoe UI" FontSize="11"
+                                  SelectionChanged="CmbDatum_SelectionChanged"/>
                     </StackPanel>
                 </GroupBox>
 

@@ -17,34 +17,36 @@ namespace AdminWPF
     {
         private readonly HttpClient _httpClient;
 
-        private AsztalService _asztalService;
-        private IdopontService _idopontService;
-        private FoglalasService _foglalasService;
-        private FelhasznaloService _felhasznaloService;
+        private readonly AsztalService _asztalService;
+        private readonly IdopontService _idopontService;
+        private readonly FoglalasService _foglalasService;
+        private readonly FelhasznaloService _felhasznaloService;
 
-        // Jelenlegi API-ból betöltött adatok
+        // API-ból betöltött adatok
         private List<Asztal> _asztalok = new();
         private List<Idopont> _idopontok = new();
         private List<Foglalas> _foglalasok = new();
         private List<Felhasznalo> _felhasznalok = new();
 
-        // Rácsban lévő cellák változásai (foglalás ki/be)
-        // kulcs = "asztalId_idopontId"
+        // Rácsban lévő cellák változásai – kulcs: "asztalId_idopontId"
         private readonly Dictionary<string, RacsCella> _cellaValtozasok = new();
 
-        // Összes függőben lévő művelet (asztal/időpont hozzáadás/törlés)
+        // Függőben lévő műveletek (asztal/időpont hozzáadás/törlés)
         private readonly List<FuggoBenMuvelet> _fuggoBenMuveletek = new();
 
-        // Lokálisan hozzáadott (még nem mentett) asztalok/időpontok – a rács megjelenítéséhez
+        // Lokálisan hozzáadott, még nem mentett asztalok/időpontok
         private readonly List<Asztal> _lokalisAsztalok = new();
         private readonly List<Idopont> _lokalisIdopontok = new();
 
-        // Lokálisan törölt (még nem mentett) asztal/időpont id-k
+        // Lokálisan törölt asztal/időpont id-k
         private readonly HashSet<int> _torolniValoAsztalIds = new();
         private readonly HashSet<int> _torolniValoIdopontIds = new();
 
-        private int _lokalisAsztalSorszam = -1; // negatív = lokális (még nincs DB id)
+        private int _lokalisAsztalSorszam = -1;
         private int _lokalisIdopontSorszam = -1;
+
+        // Kiválasztott foglalási nap (alapértelmezett: holnap)
+        private DateTime _kivalasztottDatum = DateTime.Today.AddDays(1);
 
         public MainWindow(HttpClient httpClient)
         {
@@ -54,12 +56,41 @@ namespace AdminWPF
             _idopontService = new IdopontService(_httpClient);
             _foglalasService = new FoglalasService(_httpClient);
             _felhasznaloService = new FelhasznaloService(_httpClient);
-            Loaded += async (_, _) => await AdatokBetoltese();
+
+            Loaded += async (_, _) =>
+            {
+                DatumComboBoxFeltoltes();
+                await AdatokBetoltese();
+            };
+        }
+
+        // ─────────────────────────────────────────────
+        //  DÁTUM COMBOBOX – holnaptól 30 nap
+        // ─────────────────────────────────────────────
+
+        private void DatumComboBoxFeltoltes()
+        {
+            var hun = new System.Globalization.CultureInfo("hu-HU");
+            DateTime holnap = DateTime.Today.AddDays(1);
+
+            for (int i = 0; i < 30; i++)
+                cmbDatum.Items.Add(holnap.AddDays(i).ToString("yyyy. MM. dd. (ddd)", hun));
+
+            cmbDatum.SelectedIndex = 0;
+            _kivalasztottDatum = holnap;
+        }
+
+        private void CmbDatum_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbDatum.SelectedIndex < 0) return;
+            _kivalasztottDatum = DateTime.Today.AddDays(1 + cmbDatum.SelectedIndex);
+            RacsEpitese();
         }
 
         // ─────────────────────────────────────────────
         //  ADATOK BETÖLTÉSE API-BÓL
         // ─────────────────────────────────────────────
+
         private async Task AdatokBetoltese()
         {
             labelStatus.Content = "Betöltés...";
@@ -69,36 +100,24 @@ namespace AdminWPF
             try
             {
                 _asztalok = await _asztalService.GetAsztalokAsync();
-                _idopontok = (await _idopontService.GetIdopontokAsync())
-                                    .OrderBy(i => i.Kezdet).ToList();
+                _idopontok = (await _idopontService.GetIdopontokAsync()).OrderBy(i => i.Kezdet).ToList();
                 _foglalasok = await _foglalasService.GetFoglalasokAsync();
                 _felhasznalok = await _felhasznaloService.GetFelhasznalokAsync();
 
-                // A foglalasiadatok.id-t (FoglalasiAdatokId) is betöltjük,
-                // mert a törléshez kell – a backend nem adja vissza join-ban
+                // FoglalasiAdatokId betöltése – törléshez kell, a backend nem adja join-ban
                 var foglalasiAdatokLista = await _foglalasService.GetFoglalasiAdatokAsync();
                 foreach (var f in _foglalasok)
                 {
                     var adat = foglalasiAdatokLista.FirstOrDefault(a => a.FoglalasId == f.Id);
-                    if (adat != null)
-                    {
-                        f.FoglalasiAdatokId = adat.Id;
-                        if (f.Felnott == null) f.Felnott = adat.Felnott;
-                        if (f.Gyerek == null) f.Gyerek = adat.Gyerek;
-                        if (f.Megjegyzes == null) f.Megjegyzes = adat.Megjegyzes;
-                    }
+                    if (adat == null) continue;
+
+                    f.FoglalasiAdatokId = adat.Id;
+                    f.Felnott    ??= adat.Felnott;
+                    f.Gyerek     ??= adat.Gyerek;
+                    f.Megjegyzes ??= adat.Megjegyzes;
                 }
 
-                // Lokális pending lista törlése – friss adatok vannak
-                _cellaValtozasok.Clear();
-                _fuggoBenMuveletek.Clear();
-                _lokalisAsztalok.Clear();
-                _lokalisIdopontok.Clear();
-                _torolniValoAsztalIds.Clear();
-                _torolniValoIdopontIds.Clear();
-                _lokalisAsztalSorszam = -1;
-                _lokalisIdopontSorszam = -1;
-
+                AllapotVisszaallitas();
                 RacsEpitese();
                 StatusFrissites();
             }
@@ -116,23 +135,33 @@ namespace AdminWPF
             }
         }
 
+        // Friss adatok betöltésekor minden lokális változás törlődik
+        private void AllapotVisszaallitas()
+        {
+            _cellaValtozasok.Clear();
+            _fuggoBenMuveletek.Clear();
+            _lokalisAsztalok.Clear();
+            _lokalisIdopontok.Clear();
+            _torolniValoAsztalIds.Clear();
+            _torolniValoIdopontIds.Clear();
+            _lokalisAsztalSorszam = -1;
+            _lokalisIdopontSorszam = -1;
+        }
+
         // ─────────────────────────────────────────────
-        //  MEGJELENÍTENDŐ LISTÁK (API + lokális módosítások)
+        //  MEGJELENÍTENDŐ LISTÁK (API + lokális változások)
         // ─────────────────────────────────────────────
+
         private List<Asztal> MegjelenithitoAsztalok()
         {
-            var lista = _asztalok
-                .Where(a => !_torolniValoAsztalIds.Contains(a.Id))
-                .ToList();
+            var lista = _asztalok.Where(a => !_torolniValoAsztalIds.Contains(a.Id)).ToList();
             lista.AddRange(_lokalisAsztalok);
             return lista;
         }
 
         private List<Idopont> MegjelenithitoIdopontok()
         {
-            var lista = _idopontok
-                .Where(i => !_torolniValoIdopontIds.Contains(i.Id))
-                .ToList();
+            var lista = _idopontok.Where(i => !_torolniValoIdopontIds.Contains(i.Id)).ToList();
             lista.AddRange(_lokalisIdopontok);
             return lista;
         }
@@ -140,13 +169,14 @@ namespace AdminWPF
         // ─────────────────────────────────────────────
         //  RÁCS ÉPÍTÉSE
         // ─────────────────────────────────────────────
+
         private void RacsEpitese()
         {
             gridFoglalas.Children.Clear();
             gridFoglalas.ColumnDefinitions.Clear();
             gridFoglalas.RowDefinitions.Clear();
 
-            var asztalok = MegjelenithitoAsztalok();
+            var asztalok  = MegjelenithitoAsztalok();
             var idopontok = MegjelenithitoIdopontok();
 
             if (asztalok.Count == 0 || idopontok.Count == 0)
@@ -159,7 +189,7 @@ namespace AdminWPF
                     FontFamily = new FontFamily("Segoe UI"),
                     FontSize = 13,
                     Foreground = Brushes.Gray,
-                    TextAlignment = System.Windows.TextAlignment.Center,
+                    TextAlignment = TextAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(20)
@@ -167,6 +197,7 @@ namespace AdminWPF
                 return;
             }
 
+            // Oszlop- és sordefiníciók
             gridFoglalas.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
             foreach (var _ in asztalok)
                 gridFoglalas.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
@@ -175,55 +206,28 @@ namespace AdminWPF
             foreach (var _ in idopontok)
                 gridFoglalas.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
+            // Fejléc sor
             AddFejlecCella(0, 0, "Időpont \\ Asztal");
-
             for (int a = 0; a < asztalok.Count; a++)
             {
-                string fejlec = asztalok[a].Id < 0
+                string szoveg = asztalok[a].Id < 0
                     ? $"⏳ Új asztal\n({asztalok[a].HelyekSzama} fő)"
                     : $"Asztal #{asztalok[a].Id}\n({asztalok[a].HelyekSzama} fő)";
-                AddFejlecCella(0, a + 1, fejlec, asztalok[a].Id < 0);
+                AddFejlecCella(0, a + 1, szoveg, asztalok[a].Id < 0);
             }
 
+            // Sorok: időpont fejléc + cellák
             for (int i = 0; i < idopontok.Count; i++)
             {
                 var idopont = idopontok[i];
                 int sor = i + 1;
 
-                bool lokalisIdopont = idopont.Id < 0;
-                AddFejlecCella(sor, 0, idopont.ToString(), lokalisIdopont);
+                AddFejlecCella(sor, 0, idopont.ToString(), idopont.Id < 0);
 
                 for (int a = 0; a < asztalok.Count; a++)
                 {
                     var asztal = asztalok[a];
-                    string kulcs = $"{asztal.Id}_{idopont.Id}";
-
-                    RacsCella cellaAdat;
-                    if (_cellaValtozasok.TryGetValue(kulcs, out var valtozas))
-                    {
-                        cellaAdat = valtozas;
-                    }
-                    else
-                    {
-                        var meglevo = _foglalasok.FirstOrDefault(f =>
-                            f.AsztalId == asztal.Id && f.IdopontId == idopont.Id);
-
-                        cellaAdat = new RacsCella
-                        {
-                            AsztalId = asztal.Id,
-                            IdopontId = idopont.Id,
-                            IdopontKezdet = idopont.Kezdet,
-                            Foglalt = meglevo != null,
-                            FoglalasId = meglevo?.Id,
-                            FoglalasiAdatokId = meglevo?.FoglalasiAdatokId,
-                            FelhasznaloId = meglevo?.FelhasznaloId ?? 1,
-                            Megjegyzes = meglevo?.Megjegyzes ?? "",
-                            Felnott = meglevo?.Felnott ?? 0,
-                            Gyerek = meglevo?.Gyerek ?? 0,
-                        };
-                    }
-
-                    // Lokális asztal/időpont cellái nem kattinthatók (még nincsen DB id)
+                    var cellaAdat = CellaAdatLekeres(asztal, idopont);
                     bool kattinthato = asztal.Id > 0 && idopont.Id > 0;
 
                     var cella = CellaLetrehozas(cellaAdat, kattinthato);
@@ -234,58 +238,42 @@ namespace AdminWPF
             }
         }
 
+        // Visszaadja az adott asztal+időpont cellájának adatait
+        private RacsCella CellaAdatLekeres(Asztal asztal, Idopont idopont)
+        {
+            string kulcs = $"{asztal.Id}_{idopont.Id}";
+
+            if (_cellaValtozasok.TryGetValue(kulcs, out var valtozas))
+                return valtozas;
+
+            var meglevo = _foglalasok.FirstOrDefault(f =>
+                f.AsztalId == asztal.Id &&
+                f.IdopontId == idopont.Id &&
+                f.FoglaiasDatum != null &&
+                DateTime.TryParse(f.FoglaiasDatum, out var fd) &&
+                fd.Date == _kivalasztottDatum.Date);
+
+            return new RacsCella
+            {
+                AsztalId          = asztal.Id,
+                IdopontId         = idopont.Id,
+                IdopontKezdet     = idopont.Kezdet,
+                Foglalt           = meglevo != null,
+                FoglalasId        = meglevo?.Id,
+                FoglalasiAdatokId = meglevo?.FoglalasiAdatokId,
+                FelhasznaloId     = meglevo?.FelhasznaloId ?? 1,
+                Megjegyzes        = meglevo?.Megjegyzes ?? "",
+                Felnott           = meglevo?.Felnott ?? 0,
+                Gyerek            = meglevo?.Gyerek ?? 0,
+            };
+        }
+
         // ─────────────────────────────────────────────
-        //  CELLA LÉTREHOZÁS
+        //  CELLA LÉTREHOZÁS / FRISSÍTÉS
         // ─────────────────────────────────────────────
+
         private Border CellaLetrehozas(RacsCella cellaAdat, bool kattinthato = true)
         {
-            var panel = new StackPanel
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 6, 0, 6)
-            };
-
-            panel.Children.Add(new TextBlock
-            {
-                Text = cellaAdat.Foglalt ? "●" : "○",
-                Foreground = Brushes.White,
-                FontSize = 14,
-                HorizontalAlignment = HorizontalAlignment.Center
-            });
-
-            if (cellaAdat.Foglalt)
-            {
-                panel.Children.Add(new TextBlock
-                {
-                    Text = $"👤 {cellaAdat.FelhasznaloId}",
-                    Foreground = Brushes.White,
-                    FontSize = 9,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(0, 2, 0, 0)
-                });
-                panel.Children.Add(new TextBlock
-                {
-                    Text = $"Felnőtt: {cellaAdat.Felnott}  Gyerek: {cellaAdat.Gyerek}",
-                    Foreground = Brushes.White,
-                    FontSize = 9,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-                if (!string.IsNullOrWhiteSpace(cellaAdat.Megjegyzes))
-                {
-                    panel.Children.Add(new TextBlock
-                    {
-                        Text = cellaAdat.Megjegyzes.Length > 15
-                                                ? cellaAdat.Megjegyzes[..15] + "…"
-                                                : cellaAdat.Megjegyzes,
-                        Foreground = new SolidColorBrush(Color.FromRgb(220, 240, 220)),
-                        FontSize = 8,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        TextWrapping = TextWrapping.Wrap
-                    });
-                }
-            }
-
             SolidColorBrush hatter = !kattinthato
                 ? new SolidColorBrush(Color.FromRgb(150, 150, 150))
                 : FoglaltSzin(cellaAdat.Foglalt);
@@ -293,10 +281,10 @@ namespace AdminWPF
             var cella = new Border
             {
                 Background = hatter,
-                Margin = new Thickness(1),
-                Cursor = kattinthato ? Cursors.Hand : Cursors.Arrow,
-                Tag = cellaAdat,
-                Child = panel
+                Margin     = new Thickness(1),
+                Cursor     = kattinthato ? Cursors.Hand : Cursors.Arrow,
+                Tag        = cellaAdat,
+                Child      = CellaTartalom(cellaAdat)
             };
 
             if (kattinthato)
@@ -308,75 +296,83 @@ namespace AdminWPF
         private void CellaFrissites(Border cella, RacsCella adat)
         {
             cella.Background = FoglaltSzin(adat.Foglalt);
+            cella.Child = CellaTartalom(adat);
+        }
 
+        // Felépíti a cella belső tartalmát (szövegek)
+        private StackPanel CellaTartalom(RacsCella adat)
+        {
             var panel = new StackPanel
             {
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center,
+                VerticalAlignment   = VerticalAlignment.Center,
                 Margin = new Thickness(0, 6, 0, 6)
             };
 
             panel.Children.Add(new TextBlock
             {
-                Text = adat.Foglalt ? "●" : "○",
-                Foreground = Brushes.White,
-                FontSize = 14,
+                Text                = adat.Foglalt ? "●" : "○",
+                Foreground          = Brushes.White,
+                FontSize            = 14,
                 HorizontalAlignment = HorizontalAlignment.Center
             });
 
-            if (adat.Foglalt)
+            if (!adat.Foglalt) return panel;
+
+            panel.Children.Add(new TextBlock
             {
+                Text                = $"👤 {adat.FelhasznaloId}",
+                Foreground          = Brushes.White,
+                FontSize            = 9,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin              = new Thickness(0, 2, 0, 0)
+            });
+            panel.Children.Add(new TextBlock
+            {
+                Text                = $"Felnőtt: {adat.Felnott}  Gyerek: {adat.Gyerek}",
+                Foreground          = Brushes.White,
+                FontSize            = 9,
+                HorizontalAlignment = HorizontalAlignment.Center
+            });
+
+            if (!string.IsNullOrWhiteSpace(adat.Megjegyzes))
+            {
+                string megjegyzes = adat.Megjegyzes.Length > 15
+                    ? adat.Megjegyzes[..15] + "…"
+                    : adat.Megjegyzes;
+
                 panel.Children.Add(new TextBlock
                 {
-                    Text = $"👤 {adat.FelhasznaloId}",
-                    Foreground = Brushes.White,
-                    FontSize = 9,
+                    Text                = megjegyzes,
+                    Foreground          = new SolidColorBrush(Color.FromRgb(220, 240, 220)),
+                    FontSize            = 8,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(0, 2, 0, 0)
+                    TextWrapping        = TextWrapping.Wrap
                 });
-                panel.Children.Add(new TextBlock
-                {
-                    Text = $"Felnőtt: {adat.Felnott}  Gyerek: {adat.Gyerek}",
-                    Foreground = Brushes.White,
-                    FontSize = 9,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-                if (!string.IsNullOrWhiteSpace(adat.Megjegyzes))
-                {
-                    panel.Children.Add(new TextBlock
-                    {
-                        Text = adat.Megjegyzes.Length > 15
-                                                ? adat.Megjegyzes[..15] + "…"
-                                                : adat.Megjegyzes,
-                        Foreground = new SolidColorBrush(Color.FromRgb(220, 240, 220)),
-                        FontSize = 8,
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        TextWrapping = TextWrapping.Wrap
-                    });
-                }
             }
 
-            cella.Child = panel;
+            return panel;
         }
 
         private void AddFejlecCella(int sor, int oszlop, string szoveg, bool lokalis = false)
         {
-            var bg = lokalis
-                ? new SolidColorBrush(Color.FromRgb(120, 100, 20))  // sötét sárga = nem mentett
+            var hatter = lokalis
+                ? new SolidColorBrush(Color.FromRgb(120, 100, 20))
                 : new SolidColorBrush(Color.FromRgb(45, 45, 48));
 
-            var border = new Border { Background = bg, Margin = new Thickness(1) };
+            var border = new Border { Background = hatter, Margin = new Thickness(1) };
             border.Child = new TextBlock
             {
-                Text = szoveg,
-                Foreground = Brushes.White,
-                FontFamily = new FontFamily("Segoe UI"),
-                FontSize = 9,
-                FontWeight = FontWeights.Bold,
-                TextAlignment = System.Windows.TextAlignment.Center,
+                Text                = szoveg,
+                Foreground          = Brushes.White,
+                FontFamily          = new FontFamily("Segoe UI"),
+                FontSize            = 9,
+                FontWeight          = FontWeights.Bold,
+                TextAlignment       = TextAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(6, 8, 6, 8)
+                Margin              = new Thickness(6, 8, 6, 8)
             };
+
             Grid.SetRow(border, sor);
             Grid.SetColumn(border, oszlop);
             gridFoglalas.Children.Add(border);
@@ -390,60 +386,45 @@ namespace AdminWPF
         // ─────────────────────────────────────────────
         //  CELLA KATTINTÁS
         // ─────────────────────────────────────────────
+
         private void Cella_Kattintas(object sender, MouseButtonEventArgs e)
         {
             if (sender is not Border cella || cella.Tag is not RacsCella adat) return;
 
-            string kulcs = $"{adat.AsztalId}_{adat.IdopontId}";
-
             if (!adat.Foglalt)
             {
-                // SZABAD → FOGLALT: felugró ablak, asztal és időpont info átadásával
-                var asztal = MegjelenithitoAsztalok().FirstOrDefault(a => a.Id == adat.AsztalId);
+                var asztal  = MegjelenithitoAsztalok().FirstOrDefault(a => a.Id == adat.AsztalId);
                 var idopont = MegjelenithitoIdopontok().FirstOrDefault(i => i.Id == adat.IdopontId);
 
-                string asztalInfo = asztal != null ? $"#{asztal.Id}  ({asztal.HelyekSzama} fő)" : $"#{adat.AsztalId}";
+                string asztalInfo  = asztal  != null ? $"#{asztal.Id}  ({asztal.HelyekSzama} fő)" : $"#{adat.AsztalId}";
                 string idopontInfo = idopont != null ? idopont.ToString() : $"#{adat.IdopontId}";
 
-                var ablak = new FoglalasAdatokWindow(adat.AsztalId, asztalInfo, idopontInfo, _felhasznalok, asztal?.HelyekSzama ?? 99) { Owner = this };
-                bool? eredmeny = ablak.ShowDialog();
-                if (eredmeny != true) return;
+                var ablak = new FoglalasAdatokWindow(
+                    adat.AsztalId, asztalInfo, idopontInfo, _felhasznalok, asztal?.HelyekSzama ?? 99)
+                { Owner = this };
 
-                adat.Foglalt = true;
+                if (ablak.ShowDialog() != true) return;
+
+                adat.Foglalt       = true;
                 adat.FelhasznaloId = ablak.FelhasznaloId;
-                adat.Felnott = ablak.Felnott;
-                adat.Gyerek = ablak.Gyerek;
-                adat.Megjegyzes = ablak.Megjegyzes;
+                adat.Felnott       = ablak.Felnott;
+                adat.Gyerek        = ablak.Gyerek;
+                adat.Megjegyzes    = ablak.Megjegyzes;
             }
             else
             {
-                // FOGLALT → SZABAD
-                adat.Foglalt = false;
+                adat.Foglalt       = false;
                 adat.FelhasznaloId = 1;
-                adat.Felnott = 0;
-                adat.Gyerek = 0;
-                adat.Megjegyzes = "";
+                adat.Felnott       = 0;
+                adat.Gyerek        = 0;
+                adat.Megjegyzes    = "";
             }
 
-            // Tag frissítése is (hogy következő kattintás helyes állapotot lásson)
             cella.Tag = adat;
-
             CellaFrissites(cella, adat);
 
-            // Változás tárolása a pending dict-be
-            _cellaValtozasok[kulcs] = new RacsCella
-            {
-                AsztalId = adat.AsztalId,
-                IdopontId = adat.IdopontId,
-                IdopontKezdet = adat.IdopontKezdet,
-                Foglalt = adat.Foglalt,
-                FoglalasId = adat.FoglalasId,
-                FoglalasiAdatokId = adat.FoglalasiAdatokId,
-                FelhasznaloId = adat.FelhasznaloId,
-                Felnott = adat.Felnott,
-                Gyerek = adat.Gyerek,
-                Megjegyzes = adat.Megjegyzes
-            };
+            string kulcs = $"{adat.AsztalId}_{adat.IdopontId}";
+            _cellaValtozasok[kulcs] = adat;
 
             StatusFrissites();
         }
@@ -451,6 +432,7 @@ namespace AdminWPF
         // ─────────────────────────────────────────────
         //  STATUS BAR
         // ─────────────────────────────────────────────
+
         private void StatusFrissites()
         {
             int osszesFuggo = _fuggoBenMuveletek.Count + _cellaValtozasok.Count;
@@ -469,20 +451,19 @@ namespace AdminWPF
         }
 
         // ─────────────────────────────────────────────
-        //  MENTÉS GOMB – minden változás elküldése API-nak
+        //  MENTÉS
         // ─────────────────────────────────────────────
+
         private async void BtnMentes_Click(object sender, RoutedEventArgs e)
         {
             int osszesFuggo = _fuggoBenMuveletek.Count + _cellaValtozasok.Count;
 
             if (osszesFuggo == 0)
             {
-                MessageBox.Show("Nincs mentendő változás.", "Mentés",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Nincs mentendő változás.", "Mentés", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            // Összefoglalás a megerősítő ablakhoz
             var osszefoglalo = new System.Text.StringBuilder();
             osszefoglalo.AppendLine($"Az alábbi {osszesFuggo} változás lesz elküldve az API-nak:\n");
 
@@ -496,17 +477,13 @@ namespace AdminWPF
 
             osszefoglalo.AppendLine("\nBiztosan menti?");
 
-            var megerosit = MessageBox.Show(
-                osszefoglalo.ToString(),
-                "Mentés megerősítése",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
+            var megerosit = MessageBox.Show(osszefoglalo.ToString(), "Mentés megerősítése",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (megerosit != MessageBoxResult.Yes) return;
 
-            btnMentes.IsEnabled = false;
+            btnMentes.IsEnabled    = false;
             btnFrissites.IsEnabled = false;
-            labelStatus.Content = "Mentés folyamatban...";
+            labelStatus.Content    = "Mentés folyamatban...";
 
             int sikeres = 0, sikertelen = 0;
             var hibaUzenetek = new List<string>();
@@ -528,78 +505,61 @@ namespace AdminWPF
             {
                 try
                 {
-                    bool ok = false;
-                    switch (muvelet.Tipus)
+                    bool ok = muvelet.Tipus switch
                     {
-                        case MuveletTipus.AsztalLetrehoz:
-                            ok = await _asztalService.CreateAsztalAsync(muvelet.UjAsztal!);
-                            break;
-                        case MuveletTipus.AsztalTorol:
-                            ok = await _asztalService.DeleteAsztalAsync(muvelet.AsztalId!.Value);
-                            break;
-                        case MuveletTipus.IdopontLetrehoz:
-                            ok = await _idopontService.CreateIdopontAsync(muvelet.UjIdopont!);
-                            if (!ok) hibaUzenetek.Add($"Időpont létrehozás sikertelen – lehet hogy már létezik ez a kezdet/vég érték");
-                            break;
-                        case MuveletTipus.IdopontTorol:
-                            ok = await _idopontService.DeleteIdopontAsync(muvelet.IdopontId!.Value);
-                            break;
-                    }
+                        MuveletTipus.AsztalLetrehoz  => await _asztalService.CreateAsztalAsync(muvelet.UjAsztal!),
+                        MuveletTipus.AsztalTorol     => await _asztalService.DeleteAsztalAsync(muvelet.AsztalId!.Value),
+                        MuveletTipus.IdopontLetrehoz => await _idopontService.CreateIdopontAsync(muvelet.UjIdopont!),
+                        MuveletTipus.IdopontTorol    => await _idopontService.DeleteIdopontAsync(muvelet.IdopontId!.Value),
+                        _ => false
+                    };
+
+                    if (muvelet.Tipus == MuveletTipus.IdopontLetrehoz && !ok)
+                        hibaUzenetek.Add("Időpont létrehozás sikertelen – lehet hogy már létezik ez a kezdet/vég érték");
+
                     if (ok) sikeres++; else sikertelen++;
                 }
                 catch (Exception ex) { sikertelen++; hibaUzenetek.Add(ex.Message); }
             }
 
-            // 2. Cella változások (foglalás létre/törlés)
+            // 2. Cella változások (foglalás létrehozás/törlés)
             foreach (var v in _cellaValtozasok.Values)
             {
                 try
                 {
                     if (v.Foglalt)
                     {
-                        // Foglalás + foglalasiAdatok egyszerre
-                        // Jövőbeli dátum generálása az időpont kezdetéből
-                        // IdopontKezdet pl. 10.5 = 10:30, 14.0 = 14:00
-                        int ora = (int)v.IdopontKezdet;
+                        int ora  = (int)v.IdopontKezdet;
                         int perc = (int)Math.Round((v.IdopontKezdet - ora) * 60);
-                        string foglaiasDatum = DateTime.Today.AddDays(1)
+                        string foglaiasDatum = _kivalasztottDatum.Date
                             .AddHours(ora).AddMinutes(perc)
                             .ToString("yyyy-MM-dd HH:mm:ss");
 
                         var ujFoglalas = new FoglalasLetrehozas
                         {
                             FelhasznaloId = v.FelhasznaloId,
-                            AsztalId = v.AsztalId,
-                            IdopontId = v.IdopontId,
+                            AsztalId      = v.AsztalId,
+                            IdopontId     = v.IdopontId,
                             FoglaiasDatum = foglaiasDatum
                         };
                         var ujAdatok = new FoglalasiadatokLetrehozas
                         {
-                            Felnott = v.Felnott,
-                            Gyerek = v.Gyerek,
+                            Felnott    = v.Felnott,
+                            Gyerek     = v.Gyerek,
                             Megjegyzes = v.Megjegyzes
                         };
+
                         string? hiba = await _foglalasService.CreateFoglalasAsync(ujFoglalas, ujAdatok);
-                        if (hiba == null)
-                            sikeres++;
-                        else
-                        {
-                            sikertelen++;
-                            hibaUzenetek.Add($"Asztal #{v.AsztalId} / Időpont #{v.IdopontId}: {hiba}");
-                        }
+                        if (hiba == null) sikeres++;
+                        else { sikertelen++; hibaUzenetek.Add($"Asztal #{v.AsztalId} / Időpont #{v.IdopontId}: {hiba}"); }
                     }
                     else
                     {
                         if (v.FoglalasId.HasValue)
                         {
                             string? hiba = await _foglalasService.DeleteFoglalasAsync(v.FoglalasId.Value, v.FoglalasiAdatokId);
-                            if (hiba == null)
-                                sikeres++;
-                            else
-                            {
-                                sikertelen++;
-                                hibaUzenetek.Add($"Törlés #{v.FoglalasId}: {hiba}");
-                            }
+                            if (hiba == null) sikeres++;
+                            else { sikertelen++; hibaUzenetek.Add($"Törlés #{v.FoglalasId}: {hiba}"); }
                         }
                         else
                         {
@@ -610,27 +570,24 @@ namespace AdminWPF
                 catch (Exception ex) { sikertelen++; hibaUzenetek.Add(ex.Message); }
             }
 
-            // Friss adatok betöltése API-ból
             await AdatokBetoltese();
 
-            btnMentes.IsEnabled = true;
+            btnMentes.IsEnabled    = true;
             btnFrissites.IsEnabled = true;
-            labelStatus.Content = $"Mentve – {sikeres} sikeres, {sikertelen} sikertelen";
+            labelStatus.Content    = $"Mentve – {sikeres} sikeres, {sikertelen} sikertelen";
 
             string eredmenyUzenet = $"Mentés kész!\n✅ Sikeres: {sikeres}  |  ❌ Sikertelen: {sikertelen}";
             if (hibaUzenetek.Count > 0)
                 eredmenyUzenet += "\n\nHibák:\n" + string.Join("\n", hibaUzenetek);
 
-            MessageBox.Show(
-                eredmenyUzenet,
-                "Mentés eredménye",
-                MessageBoxButton.OK,
+            MessageBox.Show(eredmenyUzenet, "Mentés eredménye", MessageBoxButton.OK,
                 sikertelen > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
         }
 
         // ─────────────────────────────────────────────
         //  FRISSÍTÉS API-BÓL
         // ─────────────────────────────────────────────
+
         private async void BtnFrissites_Click(object sender, RoutedEventArgs e)
         {
             int osszesFuggo = _fuggoBenMuveletek.Count + _cellaValtozasok.Count;
@@ -639,9 +596,7 @@ namespace AdminWPF
                 ? $"Van {osszesFuggo} mentetlen változás!\n\nBiztosan frissít az API-ból? A nem mentett módosítások elvesznek!"
                 : "Biztosan frissíti az adatokat az API-ból?";
 
-            var megerosit = MessageBox.Show(
-                szoveg,
-                "Frissítés megerősítése",
+            var megerosit = MessageBox.Show(szoveg, "Frissítés megerősítése",
                 MessageBoxButton.YesNo,
                 osszesFuggo > 0 ? MessageBoxImage.Warning : MessageBoxImage.Question);
 
@@ -651,24 +606,23 @@ namespace AdminWPF
         }
 
         // ─────────────────────────────────────────────
-        //  ASZTAL KEZELÉS – lokális queue, NEM hív API-t azonnal
+        //  ASZTAL KEZELÉS
         // ─────────────────────────────────────────────
+
         private void BtnAsztalHozzaad_Click(object sender, RoutedEventArgs e)
         {
             var ablak = new AsztalLetrehozasWindow { Owner = this };
             if (ablak.ShowDialog() != true || ablak.Eredmeny == null) return;
 
-            // Lokális ideiglenes asztal (negatív ID = még nincs mentve)
-            var lokalisAsztal = new Asztal
+            _lokalisAsztalok.Add(new Asztal
             {
                 Id = _lokalisAsztalSorszam--,
                 HelyekSzama = ablak.Eredmeny.HelyekSzama
-            };
-            _lokalisAsztalok.Add(lokalisAsztal);
+            });
 
             _fuggoBenMuveletek.Add(new FuggoBenMuvelet
             {
-                Tipus = MuveletTipus.AsztalLetrehoz,
+                Tipus    = MuveletTipus.AsztalLetrehoz,
                 UjAsztal = ablak.Eredmeny
             });
 
@@ -692,17 +646,13 @@ namespace AdminWPF
 
             if (kivalasztott.Id < 0)
             {
-                // Lokális (nem mentett) asztal – csak a listából vesszük ki
                 _lokalisAsztalok.RemoveAll(a => a.Id == kivalasztott.Id);
-                // Kapcsolódó pending létrehozás törlése is
                 _fuggoBenMuveletek.RemoveAll(m =>
                     m.Tipus == MuveletTipus.AsztalLetrehoz &&
                     m.UjAsztal?.HelyekSzama == kivalasztott.HelyekSzama);
             }
             else
             {
-                // API-ból betöltött asztal – queue-ba kerül
-                // A kapcsolódó foglalásokat is törölni kell előbb
                 var kapcsolodoFoglalasok = _foglalasok.Where(f => f.AsztalId == kivalasztott.Id).ToList();
                 if (kapcsolodoFoglalasok.Count > 0)
                 {
@@ -712,20 +662,18 @@ namespace AdminWPF
                     if (megerosit != MessageBoxResult.Yes) return;
 
                     foreach (var f in kapcsolodoFoglalasok)
-                    {
                         _fuggoBenMuveletek.Add(new FuggoBenMuvelet
                         {
-                            Tipus = MuveletTipus.FoglalasTöröl,
-                            FoglalasId = f.Id,
+                            Tipus             = MuveletTipus.FoglalasTöröl,
+                            FoglalasId        = f.Id,
                             FoglalasiAdatokId = f.FoglalasiAdatokId
                         });
-                    }
                 }
 
                 _torolniValoAsztalIds.Add(kivalasztott.Id);
                 _fuggoBenMuveletek.Add(new FuggoBenMuvelet
                 {
-                    Tipus = MuveletTipus.AsztalTorol,
+                    Tipus    = MuveletTipus.AsztalTorol,
                     AsztalId = kivalasztott.Id
                 });
             }
@@ -735,24 +683,24 @@ namespace AdminWPF
         }
 
         // ─────────────────────────────────────────────
-        //  IDŐPONT KEZELÉS – lokális queue, NEM hív API-t azonnal
+        //  IDŐPONT KEZELÉS
         // ─────────────────────────────────────────────
+
         private void BtnIdopontHozzaad_Click(object sender, RoutedEventArgs e)
         {
             var ablak = new IdopontLetrehozasWindow(MegjelenithitoIdopontok()) { Owner = this };
             if (ablak.ShowDialog() != true || ablak.Eredmeny == null) return;
 
-            var lokalisIdopont = new Idopont
+            _lokalisIdopontok.Add(new Idopont
             {
-                Id = _lokalisIdopontSorszam--,
+                Id     = _lokalisIdopontSorszam--,
                 Kezdet = ablak.Eredmeny.Kezdet,
-                Veg = ablak.Eredmeny.Veg
-            };
-            _lokalisIdopontok.Add(lokalisIdopont);
+                Veg    = ablak.Eredmeny.Veg
+            });
 
             _fuggoBenMuveletek.Add(new FuggoBenMuvelet
             {
-                Tipus = MuveletTipus.IdopontLetrehoz,
+                Tipus     = MuveletTipus.IdopontLetrehoz,
                 UjIdopont = ablak.Eredmeny
             });
 
@@ -780,11 +728,10 @@ namespace AdminWPF
                 _fuggoBenMuveletek.RemoveAll(m =>
                     m.Tipus == MuveletTipus.IdopontLetrehoz &&
                     m.UjIdopont?.Kezdet == kivalasztott.Kezdet &&
-                    m.UjIdopont?.Veg == kivalasztott.Veg);
+                    m.UjIdopont?.Veg    == kivalasztott.Veg);
             }
             else
             {
-                // A kapcsolódó foglalásokat is törölni kell előbb
                 var kapcsolodoFoglalasok = _foglalasok.Where(f => f.IdopontId == kivalasztott.Id).ToList();
                 if (kapcsolodoFoglalasok.Count > 0)
                 {
@@ -794,20 +741,18 @@ namespace AdminWPF
                     if (megerosit != MessageBoxResult.Yes) return;
 
                     foreach (var f in kapcsolodoFoglalasok)
-                    {
                         _fuggoBenMuveletek.Add(new FuggoBenMuvelet
                         {
-                            Tipus = MuveletTipus.FoglalasTöröl,
-                            FoglalasId = f.Id,
+                            Tipus             = MuveletTipus.FoglalasTöröl,
+                            FoglalasId        = f.Id,
                             FoglalasiAdatokId = f.FoglalasiAdatokId
                         });
-                    }
                 }
 
                 _torolniValoIdopontIds.Add(kivalasztott.Id);
                 _fuggoBenMuveletek.Add(new FuggoBenMuvelet
                 {
-                    Tipus = MuveletTipus.IdopontTorol,
+                    Tipus     = MuveletTipus.IdopontTorol,
                     IdopontId = kivalasztott.Id
                 });
             }
