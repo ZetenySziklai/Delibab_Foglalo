@@ -103,6 +103,8 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="pelda@email.hu"
+            pattern="^[^@\s]+@[^@\s]+\.[^@\s]{2,}$"
+            title="Kérjük, adjon meg egy érvényes email címet (példa: nev@domain.hu)!"
             required 
           />
         </div>
@@ -113,6 +115,8 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             value={phone} 
             onChange={handlePhoneChange} 
             placeholder="06301234567"
+            pattern="^\d{11}$"
+            title="A telefonszámnak pontosan 11 számjegyből kell állnia (példa: 06301234567)!"
             required 
           />
         </div>

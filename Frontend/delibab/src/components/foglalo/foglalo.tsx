@@ -236,7 +236,13 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                         setError(null);
                         setSelectedTable(null); // Reset table selection when time changes
                         try {
-                          const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${slot}&helyekSzama=${guests}`);
+                          // Korrigáljuk az időpontot (+1 óra), hogy megegyezzen az adatbázisban tárolt értékkel
+                          const [h, m] = slot.split(':').map(Number);
+                          const correctedH = (h + 1).toString().padStart(2, '0');
+                          const correctedTime = `${correctedH}:${m.toString().padStart(2, '0')}:00`;
+
+                          const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${correctedTime}&helyekSzama=${guests}`);
+                          
                           if (response.ok) {
                             const data = await response.json();
                             setAvailableTables(data.szabad_asztalok || []);
