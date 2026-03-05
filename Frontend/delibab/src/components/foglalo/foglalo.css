@@ -113,34 +113,6 @@
   text-decoration: underline;
 }
 
-/* Guest Selector */
-.guest-selector {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 15px;
-}
-
-.guest-btn {
-  background: white;
-  border: 1px solid #ddd;
-  padding: 20px;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.guest-btn:hover {
-  border-color: rgb(65, 37, 0);
-  background-color: #fff9f0;
-}
-
-.guest-btn.active {
-  background-color: rgb(65, 37, 0);
-  color: white;
-  border-color: rgb(65, 37, 0);
-}
-
 /* Date Grid */
 .date-grid {
   display: grid;
@@ -366,6 +338,10 @@
   background: #f8f9fa;
   padding: 10px;
   border-radius: 6px;
+}
+
+.text-center {
+  text-align: center;
 }
 
 /* Success Step */

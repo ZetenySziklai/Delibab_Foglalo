@@ -8,6 +8,8 @@ interface ContactForm {
   phone: string;
   notes: string;
   terms: boolean;
+  adults: number;
+  children: number;
 }
 
 interface FoglaloOldalProps {
@@ -19,7 +21,7 @@ interface FoglaloOldalProps {
 
 export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, onLoginClick, user }) => {
   const [step, setStep] = useState(1);
-  const [guests, setGuests] = useState(2);
+  const [guests, setGuests] = useState(1);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
@@ -32,6 +34,8 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     phone: user?.telefonszam || '',
     notes: '',
     terms: false,
+    adults: 1,
+    children: 0,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,10 +85,13 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         if (value.length > 11) return;
     }
 
-    setContact(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setContact(prev => {
+      const updated = {
+        ...prev,
+        [name]: type === 'checkbox' ? checked : (type === 'number' ? parseInt(value, 10) || 0 : value)
+      };
+      return updated;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,16 +104,44 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       setError("Kérjük válasszon egy asztalt!");
       return;
     }
+
+    const table = availableTables.find(t => t.id === selectedTable);
+    const totalGuests = contact.adults + contact.children;
+    
+    if (table && totalGuests > table.helyek_szama) {
+      setError(`Az asztal maximum ${table.helyek_szama} fős! Kérjük csökkentse a létszámot.`);
+      return;
+    }
+
+    if (table && totalGuests !== table.helyek_szama) {
+      setError(`Kérjük összesen ${table.helyek_szama} főt osszon el a felnőttek és gyerekek között, mivel egy ${table.helyek_szama} fős asztalt választott!`);
+      return;
+    }
+
+    if (totalGuests < 1) {
+      setError("Legalább egy főre kell foglalni!");
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
 
     try {
-      // 2. Foglalás létrehozása
+      // Manual formatting to YYYY-MM-DD HH:mm:ss string.
+      // We manually add 1 hour to the time because the backend/database 
+      // seems to subtract 1 hour regardless of what we send.
+      const [hour, minute] = time.split(':').map(Number);
+      const correctedHour = (hour + 1).toString().padStart(2, '0');
+      const reservationDateTime = `${date} ${correctedHour}:${minute.toString().padStart(2, '0')}:00`;
+
+      // 1. Foglalás létrehozása
       const foglalasData = {
         user_id: user.id,
         asztal_id: selectedTable,
-        foglalas_datum: `${date} ${time}:00`,
+        foglalas_datum: reservationDateTime,
       };
+
+      console.log('FOGLALÁS ADATOK (KORRIGÁLT):', foglalasData);
 
       const response = await fetch('http://localhost:8000/api/foglalasok', {
         method: 'POST',
@@ -119,6 +154,30 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Hiba történt a foglalás során.');
+      }
+
+      const result = await response.json();
+      const foglalasId = result.id;
+
+      // 2. Foglalási adatok feltöltése (felnőtt, gyerek, megjegyzés)
+      // A backend FoglalasiAdatok modellje 'felnott', 'gyerek' és 'foglalas_datum' mezőket vár.
+      const fogAdatokResponse = await fetch('http://localhost:8000/api/foglalasi-adatok', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          foglalas_id: foglalasId,
+          felnott: contact.adults,
+          gyerek: contact.children,
+          megjegyzes: contact.notes,
+          foglalas_datum: reservationDateTime
+        }),
+      });
+
+      if (!fogAdatokResponse.ok) {
+        const errorData = await fogAdatokResponse.json();
+        console.error('Foglalási adatok mentési hiba:', errorData);
       }
 
       setStep(6); // Success step (now step 6)
@@ -145,7 +204,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                   disabled={isLoadingTimes}
                   onClick={() => { 
                     setDate(day); 
-                    setStep(2);
+                    setStep(3);
                   }}
                 >
                   {new Date(day).toLocaleDateString('hu-HU', { weekday: 'short', month: 'short', day: 'numeric' })}
@@ -154,96 +213,74 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
             </div>
           </div>
         );
-      case 2:
-        return (
-          <div className="step-container fade-in">
-            <button className="back-btn" onClick={() => setStep(1)}>← Vissza</button>
-            <h2>Hány főre szeretnél foglalni?</h2>
-            <div className="guest-selector">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                <button 
-                  key={num} 
-                  className={`guest-btn ${guests === num ? 'active' : ''}`}
-                  onClick={() => { setGuests(num); setStep(3); }}
-                >
-                  {num}
-                </button>
-              ))}
-              <button 
-                className={`guest-btn ${guests > 8 ? 'active' : ''}`}
-                onClick={() => { setGuests(9); setStep(3); }}
-              >
-                8+
-              </button>
-            </div>
-          </div>
-        );
       case 3:
         return (
           <div className="step-container fade-in">
-            <button className="back-btn" onClick={() => setStep(2)}>← Vissza</button>
-            <h2>Mikor érkeztek?</h2>
-            <div className="meal-times-info-small">
-               <p>☕ Reggeli: 11:30-ig | 🍽️ Ebéd: 12:00-18:00 | 🍷 Vacsora: 18:00-tól</p>
-            </div>
-            <div className="time-grid">
-              {timeSlots.map(slot => {
-                const displayTime = `${slot}-${calculateEndTime(slot)}`;
-                return (
-                  <button 
-                    key={slot} 
-                    className={`time-btn ${time === slot ? 'active' : ''}`}
-                    onClick={async () => { 
-                      setTime(slot); 
-                      setIsLoadingTables(true);
-                      setError(null);
-                      try {
-                        const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${slot}&helyekSzama=${guests}`);
-                        if (response.ok) {
-                          const data = await response.json();
-                          setAvailableTables(data.szabad_asztalok || []);
-                          setStep(4);
-                        } else {
-                          throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
-                        }
-                      } catch (err: any) {
-                        setError(err.message);
-                      } finally {
-                        setIsLoadingTables(false);
-                      }
-                    }}
-                  >
-                    {displayTime}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        );
-      case 4:
-        return (
-          <div className="step-container fade-in">
-            <button className="back-btn" onClick={() => setStep(3)}>← Vissza</button>
-            <h2>Válassz asztalt</h2>
-            {isLoadingTables ? (
-              <p>Asztalok betöltése...</p>
-            ) : availableTables.length > 0 ? (
-              <div className="table-grid">
-                {availableTables.map(table => (
-                  <button 
-                    key={table.id} 
-                    className={`table-btn ${selectedTable === table.id ? 'active' : ''}`}
-                    onClick={() => {
-                      setSelectedTable(table.id);
-                      setStep(5);
-                    }}
-                  >
-                    Asztal ({table.helyek_szama} fő)
-                  </button>
-                ))}
+            <button className="back-btn" onClick={() => setStep(1)}>← Vissza</button>
+            
+            <div className="time-selection-section">
+              <h2>Mikor érkeztek?</h2>
+              <div className="meal-times-info-small">
+                <p>☕ Reggeli: 11:30-ig | 🍽️ Ebéd: 12:00-18:00 | 🍷 Vacsora: 18:00-tól</p>
               </div>
-            ) : (
-              <p>Sajnos nincs szabad asztal ebben az időpontban.</p>
+              <div className="time-grid">
+                {timeSlots.map(slot => {
+                  const displayTime = `${slot}-${calculateEndTime(slot)}`;
+                  return (
+                    <button 
+                      key={slot} 
+                      className={`time-btn ${time === slot ? 'active' : ''}`}
+                      onClick={async () => { 
+                        setTime(slot); 
+                        setIsLoadingTables(true);
+                        setError(null);
+                        setSelectedTable(null); // Reset table selection when time changes
+                        try {
+                          const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${slot}&helyekSzama=${guests}`);
+                          if (response.ok) {
+                            const data = await response.json();
+                            setAvailableTables(data.szabad_asztalok || []);
+                          } else {
+                            throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
+                          }
+                        } catch (err: any) {
+                          setError(err.message);
+                        } finally {
+                          setIsLoadingTables(false);
+                        }
+                      }}
+                    >
+                      {displayTime}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {time && (
+              <div className="table-selection-section" style={{ marginTop: '40px', borderTop: '1px solid #eee', paddingTop: '40px' }}>
+                <h2>Válassz asztalt</h2>
+                {isLoadingTables ? (
+                  <p className="text-center">Asztalok betöltése...</p>
+                ) : availableTables.length > 0 ? (
+                  <div className="table-grid">
+                    {availableTables.map(table => (
+                      <button 
+                        key={table.id} 
+                        className={`table-btn ${selectedTable === table.id ? 'active' : ''}`}
+                        onClick={() => {
+                          setSelectedTable(table.id);
+                          setStep(5);
+                        }}
+                      >
+                        Asztal ({table.helyek_szama} fő)
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center">Sajnos nincs szabad asztal ebben az időpontban.</p>
+                )}
+              </div>
             )}
             {error && <p className="error-message">{error}</p>}
           </div>
@@ -251,12 +288,37 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       case 5:
         return (
           <div className="step-container fade-in">
-            <button className="back-btn" onClick={() => setStep(4)}>← Vissza</button>
+            <button className="back-btn" onClick={() => setStep(3)}>← Vissza</button>
             <h2>Elérhetőségek</h2>
             
             {error && <div className="error-message">{error}</div>}
 
             <form onSubmit={handleSubmit} className="contact-form">
+              <div className="form-row">
+                <div className="form-group half">
+                    <label>Felnőtt *</label>
+                    <input 
+                    type="number" 
+                    name="adults" 
+                    value={contact.adults} 
+                    onChange={handleContactChange} 
+                    min="0"
+                    required 
+                    />
+                </div>
+                <div className="form-group half">
+                    <label>Gyermek *</label>
+                    <input 
+                    type="number" 
+                    name="children" 
+                    value={contact.children} 
+                    onChange={handleContactChange} 
+                    min="0"
+                    required 
+                    />
+                </div>
+              </div>
+
               <div className="form-row">
                 <div className="form-group half">
                     <label>Vezetéknév *</label>
@@ -317,7 +379,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
               
               <div className="summary-preview">
                 <p><strong>Foglalás részletei:</strong></p>
-                <p>👤 {guests} fő</p>
+                <p>👤 {contact.adults} felnőtt, {contact.children} gyerek</p>
                 <p>📅 {date} {time}</p>
                 <p>📞 {contact.phone}</p>
               </div>
@@ -349,7 +411,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
             <p>Hamarosan e-mailben értesítjük a megerősítésről.</p>
             <div className="final-summary">
               <p><strong>Délibáb Kávézó és Street Food</strong></p>
-              <p>👤 {guests} fő</p>
+              <p>👤 {contact.adults} felnőtt, {contact.children} gyerek</p>
               <p>📅 {date}</p>
               <p>⏰ {time}</p>
               <p>📞 {contact.phone}</p>

@@ -10,6 +10,14 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Csak számokat engedélyezünk, és maximum 11 karaktert
+    if (/^\d*$/.test(value) && value.length <= 11) {
+      setPhone(value);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -103,7 +111,7 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
           <input 
             type="tel" 
             value={phone} 
-            onChange={(e) => setPhone(e.target.value)} 
+            onChange={handlePhoneChange} 
             placeholder="06301234567"
             required 
           />
