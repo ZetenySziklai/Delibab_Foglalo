@@ -1,31 +1,41 @@
-class IdopontRepository{
-    constructor(db){
+class IdopontRepository {
+    constructor(db) {
         this.Idopont = db.Idopont;
     }
-    
-    async getIdopont(){
-        return await this.Idopont.findAll();
+
+    async getIdopont(options = {}) {
+        return await this.Idopont.findAll({
+            transaction: options.transaction,
+        });
     }
 
-    async createIdopont(data){
-        return await this.Idopont.create(data);
+    async createIdopont(data, options = {}) {
+        return await this.Idopont.create(data, {
+            transaction: options.transaction,
+        });
     }
 
-    async getIdopontById(id){
-        return await this.Idopont.findByPk(id);
+    async getIdopontById(id, options = {}) {
+        return await this.Idopont.findByPk(id, {
+            transaction: options.transaction,
+        });
     }
 
-    async updateIdopont(id, data){
-        await this.Idopont.update(data, { where: { id: id } });
-        return await this.getIdopontById(id);
+    async updateIdopont(id, data, options = {}) {
+        await this.Idopont.update(data, {
+            where: { id },
+            transaction: options.transaction,
+        });
+        return await this.getIdopontById(id, options);
     }
 
-    async deleteIdopont(id){
-        const deleted = await this.Idopont.destroy({ where: { id: id } });
+    async deleteIdopont(id, options = {}) {
+        const deleted = await this.Idopont.destroy({
+            where: { id },
+            transaction: options.transaction,
+        });
         return deleted > 0;
     }
 }
 
 module.exports = IdopontRepository;
-
-

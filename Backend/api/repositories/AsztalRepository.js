@@ -1,40 +1,51 @@
-class AsztalRepository{
-    constructor(db){
+class AsztalRepository {
+    constructor(db) {
         this.Asztal = db.Asztal;
         this.Foglalas = db.Foglalas;
     }
-    
-    async getAsztal(){
-        return await this.Asztal.findAll();
+
+    async getAsztal(options = {}) {
+        return await this.Asztal.findAll({
+            transaction: options.transaction,
+        });
     }
 
-    async createAsztal(data){
-        return await this.Asztal.create(data);
+    async createAsztal(data, options = {}) {
+        return await this.Asztal.create(data, {
+            transaction: options.transaction,
+        });
     }
 
-    async getAsztalById(id){
-        return await this.Asztal.findByPk(id);
+    async getAsztalById(id, options = {}) {
+        return await this.Asztal.findByPk(id, {
+            transaction: options.transaction,
+        });
     }
 
-    async updateAsztal(id, data){
-        await this.Asztal.update(data, { where: { id: id } });
-        return await this.getAsztalById(id);
+    async updateAsztal(id, data, options = {}) {
+        await this.Asztal.update(data, {
+            where: { id },
+            transaction: options.transaction,
+        });
+        return await this.getAsztalById(id, options);
     }
 
-    async deleteAsztal(id){
-        const deleted = await this.Asztal.destroy({ where: { id: id } });
+    async deleteAsztal(id, options = {}) {
+        const deleted = await this.Asztal.destroy({
+            where: { id },
+            transaction: options.transaction,
+        });
         return deleted > 0;
     }
 
-
-    // itt valamit basszak
-    async getSzabadAsztalok(datum, idopont, helyekSzama){
+    async getSzabadAsztalok(datum, idopont, helyekSzama, options = {}) {
         const { Op } = require('sequelize');
-        
+
         const foglaltAsztalok = await this.Foglalas.findAll({
             where: { foglalas_datum: new Date(datum + ' ' + idopont) },
             attributes: ['asztal_id'],
-            raw: true
+            raw: true,
+            transaction: options.transaction,
         });
 
         const foglaltAsztalIds = foglaltAsztalok.map(f => f.asztal_id);
@@ -47,7 +58,8 @@ class AsztalRepository{
         }
 
         return await this.Asztal.findAll({
-            where: whereCondition
+            where: whereCondition,
+            transaction: options.transaction,
         });
     }
 }

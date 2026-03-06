@@ -4,39 +4,47 @@ class FoglalasiAdatokRepository {
         this.Foglalas = db.Foglalas;
     }
 
-    async getFoglalasiAdatok() {
+    async getFoglalasiAdatok(options = {}) {
         return await this.FoglalasiAdatok.findAll({
             include: [{
                 model: this.Foglalas,
                 attributes: ["id"]
-            }]
+            }],
+            transaction: options.transaction,
         });
     }
 
     async createFoglalasiAdatok(data, options = {}) {
-        return await this.FoglalasiAdatok.create(data, options);
+        return await this.FoglalasiAdatok.create(data, {
+            transaction: options.transaction,
+        });
     }
 
-    async getFoglalasiAdatokById(id) {
+    async getFoglalasiAdatokById(id, options = {}) {
         return await this.FoglalasiAdatok.findByPk(id, {
             include: [{
                 model: this.Foglalas,
                 attributes: ["id"]
-            }]
+            }],
+            transaction: options.transaction,
         });
     }
 
-    async updateFoglalasiAdatok(id, data) {
-        await this.FoglalasiAdatok.update(data, { where: { id: id } });
-        return await this.getFoglalasiAdatokById(id);
+    async updateFoglalasiAdatok(id, data, options = {}) {
+        await this.FoglalasiAdatok.update(data, {
+            where: { id },
+            transaction: options.transaction,
+        });
+        return await this.getFoglalasiAdatokById(id, options);
     }
 
-    async deleteFoglalasiAdatok(id) {
-        const deleted = await this.FoglalasiAdatok.destroy({ where: { id: id } });
+    async deleteFoglalasiAdatok(id, options = {}) {
+        const deleted = await this.FoglalasiAdatok.destroy({
+            where: { id },
+            transaction: options.transaction,
+        });
         return deleted > 0;
     }
 }
 
 module.exports = FoglalasiAdatokRepository;
-
-

@@ -4,50 +4,68 @@ class FelhasznaloRepository {
         this.sequelize = db.sequelize;
     }
 
-    async getUser() {
-        return await this.Felhasznalo.findAll();
+    async getUser(options = {}) {
+        return await this.Felhasznalo.findAll({
+            transaction: options.transaction,
+        });
     }
 
-    async getUserById(id) {
-        return await this.Felhasznalo.findByPk(id);
+    async getUserById(id, options = {}) {
+        return await this.Felhasznalo.findByPk(id, {
+            transaction: options.transaction,
+        });
     }
 
     async createUser(data, options = {}) {
-        return await this.Felhasznalo.create(data, options);
+        return await this.Felhasznalo.create(data, {
+            transaction: options.transaction,
+        });
     }
 
-    async updateUser(id, data) {
-        await this.Felhasznalo.update(data, { where: { id: id } });
-        return await this.Felhasznalo.findByPk(id);
+    async updateUser(id, data, options = {}) {
+        await this.Felhasznalo.update(data, {
+            where: { id },
+            transaction: options.transaction,
+        });
+        return await this.getUserById(id, options);
     }
 
-    async deleteUser(id) {
-        const deleted = await this.Felhasznalo.destroy({ where: { id: id } });
+    async deleteUser(id, options = {}) {
+        const deleted = await this.Felhasznalo.destroy({
+            where: { id },
+            transaction: options.transaction,
+        });
         return deleted > 0;
     }
 
     async getUserByEmail(email, options = {}) {
-        return await this.Felhasznalo.findAll({ where: { email }, raw: true, ...options });
+        return await this.Felhasznalo.findAll({
+            where: { email },
+            raw: true,
+            transaction: options.transaction,
+            lock: options.lock,
+        });
     }
 
-
-
-    //kerdes hogy maradjon
     async getUserByPhone(telefonszam, options = {}) {
         const phoneNormalized = String(telefonszam).replace(/[\s-]/g, "");
-        return await this.Felhasznalo.findAll({ where: { telefonszam: phoneNormalized }, raw: true, ...options });
-    }
-
-    async getUserWithDetails() {
-        const results = await this.Felhasznalo.findAll({
-            order: [['id', 'DESC']],
-            raw: true
+        return await this.Felhasznalo.findAll({
+            where: { telefonszam: phoneNormalized },
+            raw: true,
+            transaction: options.transaction,
+            lock: options.lock,
         });
-        return results;
     }
 
-    // GROUP BY - foglalások száma email szerint
-    async getUserCountByEmail() {
+    async getUserWithDetails(options = {}) {
+        return await this.Felhasznalo.findAll({
+            order: [['id', 'DESC']],
+            raw: true,
+            transaction: options.transaction,
+        });
+    }
+
+    async getUserCountByEmail(options = {}) {
         return await this.Felhasznalo.findAll({
             attributes: [
                 'email',
@@ -58,22 +76,21 @@ class FelhasznaloRepository {
                 this.sequelize.fn('COUNT', this.sequelize.col('id')),
                 '>', 1
             ),
-            order: [[this.sequelize.literal('foglalasok_szama'), 'DESC']]
+            order: [[this.sequelize.literal('foglalasok_szama'), 'DESC']],
+            transaction: options.transaction,
         });
     }
 
-    // Összetett lekérdezés - foglalások időpont szerint csoportosítva
-    async getUsersByDateRange(startDate, endDate) {
-        const results = await this.Felhasznalo.findAll({
+    async getUsersByDateRange(startDate, endDate, options = {}) {
+        return await this.Felhasznalo.findAll({
             attributes: ['id', 'vezeteknev', 'keresztnev', 'email'],
             order: [['id', 'ASC']],
-            raw: true
+            raw: true,
+            transaction: options.transaction,
         });
-        return results;
     }
 
-    // Aggregáció - legtöbb foglalással rendelkező személyek
-    async getTopUsers(limit = 5) {
+    async getTopUsers(limit = 5, options = {}) {
         return await this.Felhasznalo.findAll({
             attributes: [
                 'vezeteknev',
@@ -83,7 +100,8 @@ class FelhasznaloRepository {
             ],
             group: ['Felhasznalo.id'],
             order: [[this.sequelize.literal('osszes_foglalas'), 'DESC']],
-            limit: limit
+            limit,
+            transaction: options.transaction,
         });
     }
 }

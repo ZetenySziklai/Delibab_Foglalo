@@ -1,15 +1,15 @@
-const { BadRequestError, NotFoundError } = require("../errors");
+const { BadRequestError } = require("../errors");
 
 class AsztalService {
-    constructor(db){
+    constructor(db) {
         this.asztalRepository = require("../repositories")(db).asztalRepository;
     }
-    
-    async getAsztal(){
-        return await this.asztalRepository.getAsztal();
+
+    async getAsztal(options = {}) {
+        return await this.asztalRepository.getAsztal(options);
     }
 
-    async createAsztal(data){
+    async createAsztal(data, options = {}) {
         if (!data.helyek_szama) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
@@ -18,26 +18,26 @@ class AsztalService {
             throw new BadRequestError("A helyek száma pozitív szám kell legyen");
         }
 
-        return await this.asztalRepository.createAsztal(data);
+        return await this.asztalRepository.createAsztal(data, options);
     }
 
-    async getAsztalById(id){
-        return await this.asztalRepository.getAsztalById(id);
+    async getAsztalById(id, options = {}) {
+        return await this.asztalRepository.getAsztalById(id, options);
     }
 
-    async updateAsztal(id, data){
-        return await this.asztalRepository.updateAsztal(id, data);
+    async updateAsztal(id, data, options = {}) {
+        return await this.asztalRepository.updateAsztal(id, data, options);
     }
 
-    async deleteAsztal(id){
-        return await this.asztalRepository.deleteAsztal(id);
+    async deleteAsztal(id, options = {}) {
+        return await this.asztalRepository.deleteAsztal(id, options);
     }
 
-    async getSzabadAsztalok(datum, idopont, helyekSzama){
+    async getSzabadAsztalok(datum, idopont, helyekSzama, options = {}) {
         if (!datum || !idopont) {
             throw new BadRequestError("Dátum és időpont kötelező");
         }
-        return await this.asztalRepository.getSzabadAsztalok(datum, idopont, helyekSzama);
+        return await this.asztalRepository.getSzabadAsztalok(datum, idopont, helyekSzama, options);
     }
 }
 
