@@ -42,10 +42,10 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
   const [reservedTimes, setReservedTimes] = useState<string[]>([]);
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
 
-  // Dátum generálás (következő 14 nap)
+  // Dátum generálás (következő 30 nap)
   const getNextDays = () => {
     const days = [];
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 30; i++) {
       const d = new Date();
       d.setDate(d.getDate() + i);
       days.push(d.toISOString().split('T')[0]);
