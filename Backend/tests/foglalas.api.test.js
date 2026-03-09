@@ -1,8 +1,8 @@
 require("dotenv").config({ quiet: true, path: "./.env.test" });
 
 const request = require("supertest");
-const app = require("../../app");
-const db = require("../../api/db");
+const app = require("../app");
+const db = require("../api/db");
 
 describe("/api/foglalasok", () =>
 {
@@ -115,6 +115,8 @@ describe("/api/foglalasok", () =>
 
             // Assert
             expect(res.status).toBe(201);
+            expect(res.body.id).toBeDefined();
+            expect(res.body.id).not.toBeNull();
             expect(res.body.user_id).toEqual(user.id);
             expect(res.body.asztal_id).toEqual(asztal.id);
         });
@@ -297,6 +299,7 @@ describe("/api/foglalasok", () =>
 
         test("should return empty array for user with no bookings", async () =>
         {
+            // Arrange
             const otherUser = await db.Felhasznalo.create(
             {
                 vezeteknev: "Üres",
@@ -306,8 +309,10 @@ describe("/api/foglalasok", () =>
                 jelszo: "pass123",
             });
 
+            // Act
             const res = await request(app).get(`/api/foglalasok/user/${otherUser.id}`);
 
+            // Assert
             expect(res.status).toBe(200);
             expect(res.body.length).toBe(0);
         });

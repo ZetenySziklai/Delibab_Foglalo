@@ -1,8 +1,8 @@
 require("dotenv").config({ quiet: true, path: "./.env.test" });
 
 const request = require("supertest");
-const app = require("../../app");
-const db = require("../../api/db");
+const app = require("../app");
+const db = require("../api/db");
 
 describe("/api/users", () =>
 {
@@ -109,6 +109,8 @@ describe("/api/users", () =>
 
             // Assert
             expect(res.status).toBe(201);
+            expect(res.body.id).toBeDefined();
+            expect(res.body.id).not.toBeNull();
             expect(res.body.vezeteknev).toEqual(newUser.vezeteknev);
             expect(res.body.keresztnev).toEqual(newUser.keresztnev);
             expect(res.body.email).toEqual(newUser.email);

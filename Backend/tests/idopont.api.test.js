@@ -1,8 +1,8 @@
 require("dotenv").config({ quiet: true, path: "./.env.test" });
 
 const request = require("supertest");
-const app = require("../../app");
-const db = require("../../api/db");
+const app = require("../app");
+const db = require("../api/db");
 
 describe("/api/idopontok", () =>
 {
@@ -89,6 +89,8 @@ describe("/api/idopontok", () =>
 
             // Assert
             expect(res.status).toBe(201);
+            expect(res.body.id).toBeDefined();
+            expect(res.body.id).not.toBeNull();
             expect(res.body.kezdet).toEqual(newIdopont.kezdet);
             expect(res.body.veg).toEqual(newIdopont.veg);
         });

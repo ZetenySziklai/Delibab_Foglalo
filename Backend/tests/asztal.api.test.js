@@ -1,8 +1,8 @@
 require("dotenv").config({ quiet: true, path: "./.env.test" });
 
 const request = require("supertest");
-const app = require("../../app");
-const db = require("../../api/db");
+const app = require("../app");
+const db = require("../api/db");
 
 describe("/api/asztalok", () =>
 {
@@ -88,6 +88,8 @@ describe("/api/asztalok", () =>
 
             // Assert
             expect(res.status).toBe(201);
+            expect(res.body.id).toBeDefined();
+            expect(res.body.id).not.toBeNull();
             expect(res.body.helyek_szama).toEqual(newAsztal.helyek_szama);
         });
 
@@ -177,10 +179,12 @@ describe("/api/asztalok", () =>
     {
         test("should return free tables for a given date and time", async () =>
         {
+            // Arrange & Act
             const res = await request(app)
                 .get("/api/asztalok/szabad/list")
                 .query({ datum: "2026-12-01", idopont: "12:00" });
 
+            // Assert
             expect(res.status).toBe(200);
             expect(res.body).toHaveProperty("datum", "2026-12-01");
             expect(res.body).toHaveProperty("idopont", "12:00");

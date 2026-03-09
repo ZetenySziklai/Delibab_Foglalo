@@ -16,6 +16,9 @@ const asztalRoutes = require("./api/routes/asztalRoutes");
 const foglalasRoutes = require("./api/routes/foglalasRoutes");
 const foglalasiAdatokRoutes = require("./api/routes/foglalasiAdatokRoutes");
 const idopontRoutes = require("./api/routes/idopontRoutes");
+const contactRoutes = require("./api/routes/contactRoutes");
+
+
 
 app.use("/api", api);
 api.use("/users", userRoutes);
@@ -24,7 +27,8 @@ api.use("/foglalasok", foglalasRoutes);
 api.use("/foglalasi-adatok", foglalasiAdatokRoutes);
 api.use("/idopontok", idopontRoutes);
 
-// Error handler middleware - mindig az utolsóként kell használni
+api.use("/contact", contactRoutes);
+
 app.use(errorHandler);
 
 
