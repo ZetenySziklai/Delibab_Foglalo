@@ -11,6 +11,10 @@ class FoglalasService {
         return await this.foglalasRepository.getFoglalas(options);
     }
 
+
+
+
+    
     async createFoglalas(data, options = {}) {
         if (!data.user_id || !data.asztal_id || !data.foglalas_datum) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
@@ -39,6 +43,9 @@ class FoglalasService {
 
         return await this.foglalasRepository.createFoglalas(data, options);
     }
+
+
+
 
     async getFoglalasById(id, options = {}) {
         return await this.foglalasRepository.getFoglalasById(id, options);

@@ -8,6 +8,8 @@ const dialectOptions = {};
 //specialis karakterek kezelese (kiveheto) 
 if (dialect === 'mysql') {
   dialectOptions.charset = 'utf8mb4';
+  dialectOptions.dateStrings = true;
+  dialectOptions.typeCast = true;
 }
 
 const sequelize = new Sequelize(
