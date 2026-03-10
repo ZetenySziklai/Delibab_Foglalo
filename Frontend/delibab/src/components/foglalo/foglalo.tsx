@@ -113,11 +113,6 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       return;
     }
 
-    if (table && totalGuests !== table.helyek_szama) {
-      setError(`Kérjük összesen ${table.helyek_szama} főt osszon el a felnőttek és gyerekek között, mivel egy ${table.helyek_szama} fős asztalt választott!`);
-      return;
-    }
-
     if (totalGuests < 1) {
       setError("Legalább egy főre kell foglalni!");
       return;
@@ -448,8 +443,8 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
           </div>
           <div className="info-block">
             <h3>📞 Kapcsolat</h3>
-            <p><a href="tel:+36302446727">+36 30 244 6727</a></p>
-            <p><a href="mailto:delibabcegled@gmail.hu">delibabcegled@gmail.hu</a></p>
+            <p><a href="tel:+36302446727">+36 30 322 9001</a></p>
+            <p><a href="mailto:delibabcegled@gmail.hu">delibabcegled@gmail.com</a></p>
           </div>
           <div className="info-block meal-times-sidebar">
              <h3>🍽️ Konyha</h3>

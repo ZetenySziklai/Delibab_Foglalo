@@ -16,7 +16,7 @@
   }
 
 
-  .navigacio a {
+  .navigacio a, .navigacio .user-name {
       text-decoration: none;
       color: white;
       padding: 5px 0;
@@ -24,10 +24,18 @@
       transition: color 0.3s;
       width: 100%;
       text-align: center;
+      display: inline-block;
   }
 
   .navigacio a:hover {
       color: #d4a574;
+  }
+
+  .navigacio .user-name {
+      color: #d4a574;
+      font-weight: bold;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
   }
 
   .navigacio p {
@@ -61,16 +69,25 @@
           margin: 10px;
       }
 
-      .navigacio a {
+      .navigacio a, .navigacio .user-name {
           padding: 10px 15px;
           margin: 5px;
           width: auto;
           border-radius: 4px;
           background: rgba(255, 255, 255, 0.1);
+          display: inline-block;
       }
 
       .navigacio a:hover {
           background: rgba(255, 255, 255, 0.2);
+      }
+
+      .navigacio .user-name {
+          background: rgba(212, 165, 116, 0.2);
+          border: 1px solid rgba(212, 165, 116, 0.4);
+          color: #d4a574;
+          padding-bottom: 10px;
+          margin-bottom: 5px;
       }
   }
 
@@ -80,7 +97,7 @@
           flex-wrap: nowrap;
       }
 
-      .navigacio a {
+      .navigacio a, .navigacio .user-name {
           width: 80%;
           text-align: center;
       }

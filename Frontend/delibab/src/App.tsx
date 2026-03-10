@@ -95,13 +95,13 @@ function App() {
                   <strong>Név:</strong> Délibáb Kávézó és Street Food
                 </p>
                 <p>
-                  <strong>Telefon:</strong> +36 30 244 6727
+                  <strong>Telefon:</strong> +36 30 322 9001
                 </p>
                 <p>
                   <strong>Cím:</strong> Cegléd, Szabadság tér 1
                 </p>
                 <p>
-                  <strong>Email:</strong> delibabcegled@gmail.hu
+                  <strong>Email:</strong> delibabcegled@gmail.com
                 </p>
               </div>
             </Kartya>
