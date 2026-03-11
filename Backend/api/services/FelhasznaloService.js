@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const { BadRequestError } = require("../errors");
 
 class UserService {
@@ -39,6 +40,11 @@ class UserService {
         }
 
         data.telefonszam = phoneNormalized;
+
+        // Jelszó hashelése
+        const saltRounds = 10;
+        data.jelszo = await bcrypt.hash(data.jelszo, saltRounds);
+
         return await this.userRepository.createUser(data, options);
     }
 
@@ -54,6 +60,12 @@ class UserService {
         if ((data.vezeteknev && !nameRegex.test(data.vezeteknev)) ||
             (data.keresztnev && !nameRegex.test(data.keresztnev))) {
             throw new BadRequestError("A név csak betűket tartalmazhat");
+        }
+
+        // Ha jelszót is frissítenek, azt is hashelni kell
+        if (data.jelszo) {
+            const saltRounds = 10;
+            data.jelszo = await bcrypt.hash(data.jelszo, saltRounds);
         }
 
         return await this.userRepository.updateUser(id, data, options);
