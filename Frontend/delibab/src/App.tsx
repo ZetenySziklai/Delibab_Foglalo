@@ -13,6 +13,12 @@ function App() {
   const [user, setUser] = useState<{ id: number; email: string; vezeteknev: string; keresztnev: string; telefonszam: string } | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    setCurrentPage('home');
+  }
+
   const handleFoglalasClick = () => {
     if (!isLoggedIn) {
       setIsModalOpen(true);
@@ -116,6 +122,7 @@ function App() {
         onFoglalasClick={handleFoglalasClick} 
         onLoginClick={() => setCurrentPage('login')}
         onHomeClick={() => setCurrentPage('home')}
+        onLogout={handleLogout}
         isLoggedIn={isLoggedIn}
         user={user}
       />

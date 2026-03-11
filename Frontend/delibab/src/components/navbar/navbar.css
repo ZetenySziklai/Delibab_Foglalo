@@ -96,6 +96,141 @@
       color: #e0e0e0;        
   }
 
+  /* User Profile Styles - Top Right Position */
+  .user-profile {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      background: rgba(65, 37, 0, 0.9); /* Sötétbarna, mint a navbar */
+      border-radius: 30px; /* Lekerekített kapszula forma */
+      border: 1px solid rgba(212, 165, 116, 0.4);
+      z-index: 1100; /* Legfelül legyen */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      backdrop-filter: blur(5px);
+      transition: transform 0.3s ease;
+  }
+
+  .user-profile:hover {
+      transform: translateY(-2px);
+      background: rgb(85, 47, 0);
+  }
+
+  .user-avatar {
+      width: 35px;
+      height: 35px;
+      background: #d4a574;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1rem;
+      margin-right: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+
+  .user-details {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+  }
+
+  .welcome-msg {
+      font-size: 0.65rem;
+      color: #d4a574;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+  }
+
+  .user-name {
+      font-weight: bold;
+      color: white !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      font-size: 0.9rem !important;
+      text-align: left !important;
+  }
+
+  .logout-link {
+      background: none;
+      border: none;
+      color: #ff6b6b;
+      font-size: 0.7rem;
+      padding: 0;
+      margin-top: 2px;
+      cursor: pointer;
+      text-align: left;
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: normal;
+  }
+
+  .logout-link:hover {
+      color: #ff8787;
+      text-decoration: underline;
+  }
+
+  /* Login Icon Button Styles */
+  .login-icon-btn {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      width: 45px;
+      height: 45px;
+      background: #d4a574;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1100;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      color: white;
+      padding: 0;
+  }
+
+  .login-icon-btn:hover {
+      background: rgb(85, 47, 0);
+      transform: scale(1.05);
+      border-color: #d4a574;
+  }
+
+  .user-icon {
+      width: 24px;
+      height: 24px;
+  }
+
+  /* Responsive adjustments for user profile and login button */
+  @media (max-width: 768px) {
+      .user-profile, .login-icon-btn {
+          top: 10px;
+          right: 10px;
+      }
+
+      .login-icon-btn {
+          width: 40px;
+          height: 40px;
+      }
+      
+      .user-avatar {
+          width: 30px;
+          height: 30px;
+          font-size: 0.9rem;
+      }
+
+      .user-name {
+          font-size: 0.8rem !important;
+      }
+  }
+
   /* Responsive navbar */
   @media (max-width: 768px) {
       .hamburger {
