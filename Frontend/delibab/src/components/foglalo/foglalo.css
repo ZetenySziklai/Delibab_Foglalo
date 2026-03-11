@@ -407,6 +407,15 @@
     flex-direction: column;
   }
 
+  .main-back-btn {
+    position: relative;
+    top: 10px;
+    right: 0;
+    margin: 10px 20px;
+    display: inline-block;
+    width: fit-content;
+  }
+
   .foglalo-sidebar {
     width: 100%;
     padding: 20px;
@@ -416,9 +425,50 @@
 
   .sidebar-content h2 {
     margin-bottom: 20px;
+    font-size: 1.3rem;
   }
 
   .foglalo-main-content {
     padding: 20px;
+  }
+
+  .step-container h2 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .date-grid, .time-grid, .table-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .date-btn, .time-btn, .table-btn {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-group.half {
+    width: 100%;
+  }
+
+  .foglalo-main-content {
+    padding: 15px;
+  }
+
+  .meal-times-info-small p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .date-grid, .time-grid, .table-grid {
+    grid-template-columns: 1fr;
   }
 }
