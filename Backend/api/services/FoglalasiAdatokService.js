@@ -11,7 +11,7 @@ class FoglalasiAdatokService {
     }
 
     async createFoglalasiAdatok(data, options = {}) {
-        if (!data.foglalas_datum || data.felnott === undefined || data.gyerek === undefined) {
+        if (data.felnott === undefined || data.gyerek === undefined) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
 
