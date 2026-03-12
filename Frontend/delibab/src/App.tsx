@@ -1,5 +1,5 @@
 import './App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Navbar from './components/navbar/navbar'
 import Kartya from './components/kartya/kartya'
 import { FoglaloOldal } from './components/foglalo/foglalo';
@@ -9,14 +9,67 @@ import Modal from './components/Modal';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'foglalo' | 'login' | 'register'>('home')
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState<{ id: number; email: string; vezeteknev: string; keresztnev: string; telefonszam: string } | null>(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true')
+  const [user, setUser] = useState<{ id: number; email: string; vezeteknev: string; keresztnev: string; telefonszam: string } | null>(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  })
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true)
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setUser(null);
-    setCurrentPage('home');
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/auth/status', {
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const userData = data.user || data;
+          if (userData && (userData.id || userData.email || userData.keresztnev)) {
+            setIsLoggedIn(true);
+            setUser(userData);
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('user', JSON.stringify(userData));
+          } else {
+            throw new Error('Invalid user data');
+          }
+        } else {
+          setIsLoggedIn(false);
+          setUser(null);
+          localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('user');
+        }
+      } catch (err) {
+        console.error('Auth status check failed:', err);
+        // If the check fails (e.g. server down), we might want to keep the local state 
+        // OR clear it. Usually safer to clear if it's a 401/403, but here we just log.
+      } finally {
+        setIsLoadingAuth(false);
+      }
+    };
+    checkAuthStatus();
+  }, []);
+
+  if (isLoadingAuth && !isLoggedIn) {
+    return <div className="loading-screen">Betöltés...</div>;
+  }
+
+  const handleLogout = async () => {
+    try {
+      await fetch('http://localhost:8000/api/auth/logout', {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    } finally {
+      setIsLoggedIn(false);
+      setUser(null);
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('user');
+      setCurrentPage('home');
+    }
   }
 
   const handleFoglalasClick = () => {
@@ -46,6 +99,8 @@ function App() {
               onLoginSuccess={(userData) => { 
                 setIsLoggedIn(true); 
                 setUser(userData);
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('user', JSON.stringify(userData));
                 setCurrentPage('home'); 
               }} 
             />

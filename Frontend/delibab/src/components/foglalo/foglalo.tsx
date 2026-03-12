@@ -79,12 +79,6 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
-    // Telefonszám validáció
-    if (name === 'phone') {
-        if (!/^\d*$/.test(value)) return;
-        if (value.length > 11) return;
-    }
-
     setContact(prev => {
       const updated = {
         ...prev,
@@ -123,50 +117,49 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
 
     try {
       // Manual formatting to YYYY-MM-DD HH:mm:ss string.
-      // We manually add 1 hour to the time because the backend/database 
-      // seems to subtract 1 hour regardless of what we send.
       const [hour, minute] = time.split(':').map(Number);
-      const correctedHour = (hour + 1).toString().padStart(2, '0');
-      const reservationDateTime = `${date} ${correctedHour}:${minute.toString().padStart(2, '0')}:00`;
+      const reservationDateTime = `${date} ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
 
-      // 1. Foglalás létrehozása
+      // 1. Foglalás létrehozása - a foglalas_datum mezőbe a választott időpont kerül
       const foglalasData = {
         user_id: user.id,
         asztal_id: selectedTable,
         foglalas_datum: reservationDateTime,
       };
 
-      console.log('FOGLALÁS ADATOK (KORRIGÁLT):', foglalasData);
+      console.log('FOGLALÁS LÉTREHOZÁSA (VÁLASZTOTT IDŐPONT):', foglalasData);
 
       const response = await fetch('http://localhost:8000/api/foglalasok', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(foglalasData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Hiba történt a foglalás során.');
+        console.error('SERVER ERROR 400 DETAILS:', data);
+        throw new Error(data.message || 'Hiba történt a foglalás során.');
       }
 
-      const result = await response.json();
-      const foglalasId = result.id;
+      const foglalasId = data.id;
 
-      // 2. Foglalási adatok feltöltése (felnőtt, gyerek, megjegyzés)
-      // A backend FoglalasiAdatok modellje 'felnott', 'gyerek' és 'foglalas_datum' mezőket vár.
+      // 2. Foglalási adatok feltöltése (felnőtt, gyerek, megjegyzés, és a választott időpont)
       const fogAdatokResponse = await fetch('http://localhost:8000/api/foglalasi-adatok', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           foglalas_id: foglalasId,
           felnott: contact.adults,
           gyerek: contact.children,
           megjegyzes: contact.notes,
-          foglalas_datum: reservationDateTime
+          foglalas_datum: reservationDateTime // Itt marad a választott időpont
         }),
       });
 
@@ -231,12 +224,9 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                         setError(null);
                         setSelectedTable(null); // Reset table selection when time changes
                         try {
-                          // Korrigáljuk az időpontot (+1 óra), hogy megegyezzen az adatbázisban tárolt értékkel
-                          const [h, m] = slot.split(':').map(Number);
-                          const correctedH = (h + 1).toString().padStart(2, '0');
-                          const correctedTime = `${correctedH}:${m.toString().padStart(2, '0')}:00`;
-
-                          const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${correctedTime}&helyekSzama=${guests}`);
+                          const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${slot}:00&helyekSzama=${guests}`, {
+                            credentials: 'include',
+                          });
                           
                           if (response.ok) {
                             const data = await response.json();
@@ -350,8 +340,6 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                   name="email" 
                   value={contact.email} 
                   onChange={handleContactChange} 
-                  pattern="^[^@\s]+@[^@\s]+\.[^@\s]{2,}$"
-                  title="Kérjük, adjon meg egy érvényes email címet"
                   required 
                 />
               </div>
@@ -362,8 +350,6 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                   name="phone" 
                   value={contact.phone} 
                   onChange={handleContactChange} 
-                  pattern="^\d{11}$"
-                  title="A telefonszámnak pontosan 11 számjegyből kell állnia"
                   required 
                   placeholder="06301234567"
                 />

@@ -12,26 +12,25 @@ const Login: React.FC<{ onSwitch: () => void; onLoginSuccess?: (userData: any) =
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/users`);
+      const response = await fetch(`http://localhost:8000/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: email,
+          jelszo: password,
+        }),
+      });
       
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Hiba történt a bejelentkezés során.');
+        throw new Error(data.message || 'Hiba történt a bejelentkezés során.');
       }
 
-      const users = await response.json();
-      const user = Array.isArray(users) 
-        ? users.find((u: any) => u.email.toLowerCase() === email.toLowerCase())
-        : (users.email.toLowerCase() === email.toLowerCase() ? users : null);
-
-      if (!user) {
-        throw new Error('Felhasználó nem található ezzel az email címmel.');
-      }
-
-      if (user.jelszo === password) {
-        if (onLoginSuccess) onLoginSuccess(user);
-      } else {
-        throw new Error('Hibás jelszó!');
-      }
+      if (onLoginSuccess) onLoginSuccess(data.user || data);
     } catch (err: any) {
       console.error(err);
       setError(err.message || 'Váratlan hiba történt.');

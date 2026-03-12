@@ -10,31 +10,9 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Csak számokat engedélyezünk, és maximum 11 karaktert
-    if (/^\d*$/.test(value) && value.length <= 11) {
-      setPhone(value);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    // Email validáció: valami@valami.valami
-    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
-    if (!emailRegex.test(email)) {
-      setError('Kérjük, adjon meg egy érvényes email címet (példa: nev@domain.hu)!');
-      return;
-    }
-
-    // Telefonszám validáció: pontosan 11 számjegy
-    const phoneRegex = /^\d{11}$/;
-    if (!phoneRegex.test(phone)) {
-      setError('A telefonszámnak pontosan 11 számjegyből kell állnia (példa: 06301234567)!');
-      return;
-    }
 
     if (password !== confirmPassword) {
       setError('A jelszavak nem egyeznek!');
@@ -49,6 +27,7 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           vezeteknev: lastName,
           keresztnev: firstName,
@@ -103,8 +82,6 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="pelda@email.hu"
-            pattern="^[^@\s]+@[^@\s]+\.[^@\s]{2,}$"
-            title="Kérjük, adjon meg egy érvényes email címet (példa: nev@domain.hu)!"
             required 
           />
         </div>
@@ -113,10 +90,8 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
           <input 
             type="tel" 
             value={phone} 
-            onChange={handlePhoneChange} 
+            onChange={(e) => setPhone(e.target.value)} 
             placeholder="06301234567"
-            pattern="^\d{11}$"
-            title="A telefonszámnak pontosan 11 számjegyből kell állnia (példa: 06301234567)!"
             required 
           />
         </div>
