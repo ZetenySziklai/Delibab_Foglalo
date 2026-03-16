@@ -42,10 +42,10 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
   const [reservedTimes, setReservedTimes] = useState<string[]>([]);
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
 
-  // Dátum generálás (következő 30 nap)
+  // Dátum generálás (holnaptól kezdve 30 nap)
   const getNextDays = () => {
     const days = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 1; i <= 30; i++) {
       const d = new Date();
       d.setDate(d.getDate() + i);
       days.push(d.toISOString().split('T')[0]);
@@ -168,6 +168,25 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         console.error('Foglalási adatok mentési hiba:', errorData);
       }
 
+      // 3. Email értesítés küldése a /api/contact endpointon keresztül
+      try {
+        await fetch('http://localhost:8000/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            name: `${contact.lastName} ${contact.firstName}`,
+            email: contact.email,
+            message: `Új asztalfoglalás érkezett!\n\nDátum: ${date}\nIdőpont: ${time}\nVendégek: ${contact.adults} felnőtt, ${contact.children} gyerek\nTelefonszám: ${contact.phone}\nMegjegyzés: ${contact.notes || 'Nincs'}`
+          }),
+        });
+      } catch (emailErr) {
+        console.error('Email küldési hiba:', emailErr);
+        // A foglalás már sikeres volt, így nem dobunk hibát, ha csak az email nem ment el
+      }
+
       setStep(6); // Success step (now step 6)
     } catch (err: any) {
       console.error(err);
@@ -214,10 +233,27 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
               <div className="time-grid">
                 {timeSlots.map(slot => {
                   const displayTime = `${slot}-${calculateEndTime(slot)}`;
+                  
+                  // Ellenőrizzük, hogy az időpont a múltban van-e (csak a mai napra)
+                  const isPast = () => {
+                    const today = new Date().toISOString().split('T')[0];
+                    if (date !== today) return false;
+
+                    const now = new Date();
+                    const [slotHour, slotMinute] = slot.split(':').map(Number);
+                    const slotDate = new Date();
+                    slotDate.setHours(slotHour, slotMinute, 0, 0);
+
+                    return slotDate < now;
+                  };
+
+                  const isDisabled = isPast();
+
                   return (
                     <button 
                       key={slot} 
-                      className={`time-btn ${time === slot ? 'active' : ''}`}
+                      className={`time-btn ${time === slot ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
+                      disabled={isDisabled}
                       onClick={async () => { 
                         setTime(slot); 
                         setIsLoadingTables(true);
