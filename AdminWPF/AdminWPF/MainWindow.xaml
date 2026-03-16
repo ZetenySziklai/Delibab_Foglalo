@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:AdminWPF"
         mc:Ignorable="d"
         Title="Délibáb Étterem - Admin Felület"
-        Height="650" Width="1300"
-        MinHeight="600" MinWidth="1000"
+        Height="700" Width="1300"
+        MinHeight="620" MinWidth="820"
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">
 
@@ -17,15 +17,16 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Height" Value="40"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
-                                CornerRadius="3"
+                                CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -50,8 +51,9 @@
 
         <Style x:Key="BlueButton" TargetType="Button" BasedOn="{StaticResource GreenButton}">
             <Setter Property="Background" Value="#007BFF"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Padding" Value="18,0"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#0056B3"/>
@@ -61,8 +63,9 @@
 
         <Style x:Key="GrayButton" TargetType="Button" BasedOn="{StaticResource GreenButton}">
             <Setter Property="Background" Value="#6C757D"/>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="Padding" Value="18,0"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#5A6268"/>
@@ -93,7 +96,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -108,10 +111,13 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Cím -->
-                <Label Grid.Column="0"
-                       Content="🍽️ Délibáb Étterem - Admin"
-                       FontFamily="Segoe UI" FontSize="18" FontWeight="Bold"
-                       Foreground="White" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="/delibab_ikon.png" Width="32" Height="32" Margin="0,0,10,0"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Label Content="Délibáb Étterem - Admin"
+                           FontFamily="Segoe UI" FontSize="18" FontWeight="Bold"
+                           Foreground="White" VerticalAlignment="Center" Padding="0"/>
+                </StackPanel>
 
                 <!-- ── VÁLTOZÁS TRACKER BADGE ── -->
                 <Border x:Name="badgeValtozas"
@@ -149,21 +155,21 @@
 
         <!-- ═══ GOMBOK ═══ -->
         <Border Grid.Row="1" Background="#F0F0F0" Padding="10">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left">
 
                 <GroupBox Header="🪑 Asztal kezelés"
                           Style="{StaticResource GroupBoxStyle}"
-                          Width="260" Height="80">
+                          Width="270" Height="90">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Button x:Name="btnAsztalHozzaad"
                                 Content="+ Asztal"
                                 Style="{StaticResource GreenButton}"
-                                Width="100" Height="35"
+                                Width="110" Height="40"
                                 Click="BtnAsztalHozzaad_Click"/>
                         <Button x:Name="btnAsztalTorol"
                                 Content="- Törlés"
                                 Style="{StaticResource RedButtonInaktiv}"
-                                Width="100" Height="35"
+                                Width="110" Height="40"
                                 Margin="15,0,0,0"
                                 IsEnabled="False"
                                 Click="BtnAsztalTorol_Click"/>
@@ -172,17 +178,17 @@
 
                 <GroupBox Header="🕐 Időpont kezelés"
                           Style="{StaticResource GroupBoxStyle}"
-                          Width="280" Height="80">
+                          Width="295" Height="90">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Button x:Name="btnIdopontHozzaad"
                                 Content="+ Időpont"
                                 Style="{StaticResource GreenButton}"
-                                Width="110" Height="35"
+                                Width="120" Height="40"
                                 Click="BtnIdopontHozzaad_Click"/>
                         <Button x:Name="btnIdopontTorol"
                                 Content="- Törlés"
                                 Style="{StaticResource RedButtonInaktiv}"
-                                Width="100" Height="35"
+                                Width="110" Height="40"
                                 Margin="15,0,0,0"
                                 IsEnabled="False"
                                 Click="BtnIdopontTorol_Click"/>
@@ -191,34 +197,46 @@
 
                 <GroupBox Header="📅 Foglalás dátuma"
                           Style="{StaticResource GroupBoxStyle}"
-                          Width="220" Height="80">
+                          Width="230" Height="90">
                     <StackPanel VerticalAlignment="Center">
                         <ComboBox x:Name="cmbDatum"
-                                  Width="190" Height="32"
+                                  Width="200" Height="34"
                                   FontFamily="Segoe UI" FontSize="11"
                                   SelectionChanged="CmbDatum_SelectionChanged"/>
                     </StackPanel>
                 </GroupBox>
 
+                <GroupBox Header="👤 Felhasználó kezelése"
+                          Style="{StaticResource GroupBoxStyle}"
+                          Width="210" Height="90">
+                    <StackPanel VerticalAlignment="Center">
+                        <Button x:Name="btnFelhasznaloKezeles"
+                                Content="⚙ Kezelés"
+                                Style="{StaticResource GreenButton}"
+                                Width="170" Height="40"
+                                Click="BtnFelhasznaloKezeles_Click"/>
+                    </StackPanel>
+                </GroupBox>
+
                 <GroupBox Header="💾 Műveletek"
                           Style="{StaticResource GroupBoxStyle}"
-                          Width="440" Height="80">
-                    <StackPanel Orientation="Horizontal">
+                          Width="460" Height="90">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Button x:Name="btnMentes"
                                 Content="💾 MENTÉS"
                                 Style="{StaticResource BlueButton}"
-                                Width="200" Height="45"
+                                Width="210" Height="46"
                                 Click="BtnMentes_Click"/>
                         <Button x:Name="btnFrissites"
                                 Content="🔄 Frissítés API-ból"
                                 Style="{StaticResource GrayButton}"
-                                Width="195" Height="45"
+                                Width="205" Height="46"
                                 Margin="15,0,0,0"
                                 Click="BtnFrissites_Click"/>
                     </StackPanel>
                 </GroupBox>
 
-            </StackPanel>
+            </WrapPanel>
         </Border>
 
         <!-- ═══ RÁCS ═══ -->

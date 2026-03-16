@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -21,6 +22,19 @@ namespace AdminWPF.Services
         [JsonPropertyName("email")]
         public string Email { get; set; } = "";
 
+        // JsonElement-ként tároljuk hogy 0/1 és true/false is működjön
+        [JsonPropertyName("isAdmin")]
+        public JsonElement IsAdminRaw { get; set; }
+
+        [JsonIgnore]
+        public bool IsAdmin => IsAdminRaw.ValueKind switch
+        {
+            JsonValueKind.True   => true,
+            JsonValueKind.False  => false,
+            JsonValueKind.Number => IsAdminRaw.GetInt32() == 1,
+            _                   => false
+        };
+
         public string TeljesNev => $"{Vezeteknev} {Keresztnev}";
         public override string ToString() => $"{Vezeteknev} {Keresztnev}  ({Email})";
     }
@@ -38,7 +52,8 @@ namespace AdminWPF.Services
         {
             try
             {
-                var result = await _httpClient.GetFromJsonAsync<List<Felhasznalo>>("/api/users");
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var result  = await _httpClient.GetFromJsonAsync<List<Felhasznalo>>("/api/users", options);
                 return result ?? new List<Felhasznalo>();
             }
             catch (Exception ex)

@@ -42,7 +42,8 @@ exports.login = async (req, res, next) =>
                 email: user.email,
                 vezeteknev: user.vezeteknev,
                 keresztnev: user.keresztnev,
-                telefonszam: user.telefonszam
+                telefonszam: user.telefonszam,
+                isAdmin: user.isAdmin === true || user.isAdmin === 1
             }
         });
     }

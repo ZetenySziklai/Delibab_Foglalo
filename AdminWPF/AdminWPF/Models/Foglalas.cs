@@ -30,6 +30,10 @@ namespace AdminWPF.Models
         [JsonPropertyName("gyerek")]
         public int? Gyerek { get; set; }
 
+        // foglalasiadatok.foglalas_datum – a FOGLALT NAP (betöltéskor töltjük ki)
+        // Ez alapján szűr a rács a kiválasztott dátumra
+        public string? FoglaltNap { get; set; }
+
         // foglalasiadatok.id – a foglalasiadatok sor törléséhez kell
         [JsonPropertyName("foglalasiAdatokId")]
         public int? FoglalasiAdatokId { get; set; }    }

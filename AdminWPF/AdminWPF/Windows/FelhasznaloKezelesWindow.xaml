@@ -1,8 +1,8 @@
-<Window x:Class="AdminWPF.Windows.AsztalLetrehozasWindow"
+<Window x:Class="AdminWPF.Windows.FelhasznaloKezelesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Új Asztal Hozzáadása"
-        Height="230" Width="340"
+        Title="Felhasználó kezelése"
+        Height="320" Width="430"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#F5F5F5">
@@ -13,13 +13,6 @@
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="#333"/>
-        </Style>
-        <Style x:Key="InputStyle" TargetType="TextBox">
-            <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Padding" Value="8,6"/>
-            <Setter Property="BorderBrush" Value="#CCC"/>
-            <Setter Property="BorderThickness" Value="1"/>
         </Style>
         <Style x:Key="ActionButton" TargetType="Button">
             <Setter Property="FontFamily" Value="Segoe UI"/>
@@ -48,31 +41,44 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="18"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="24"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Az asztal neve automatikusan lesz hozzárendelve."
-                   FontFamily="Segoe UI" FontSize="10" Foreground="#888" Margin="0,0,0,14"
-                   TextWrapping="Wrap"/>
+        <Label Grid.Row="0" Content="Felhasználó:" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+        <ComboBox x:Name="comboFelhasznalok"
+                  Grid.Row="1"
+                  FontFamily="Segoe UI" FontSize="11"
+                  Height="32" VerticalContentAlignment="Center" Padding="6,0"
+                  SelectionChanged="ComboFelhasznalok_SelectionChanged"/>
 
-        <Label Grid.Row="1" Content="Férőhelyek száma:" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
-        <TextBox x:Name="txtHelyekSzama" Grid.Row="2" Style="{StaticResource InputStyle}" Text="4"/>
+        <Label Grid.Row="3" Content="Művelet:" Style="{StaticResource LabelStyle}" Margin="0,0,0,4"/>
+        <ComboBox x:Name="comboMuvelet"
+                  Grid.Row="4"
+                  FontFamily="Segoe UI" FontSize="11"
+                  Height="32" VerticalContentAlignment="Center" Padding="6,0"
+                  SelectionChanged="ComboMuvelet_SelectionChanged">
+            <ComboBoxItem Content="👑 Admin hozzáférés adása"   Tag="admin_add"/>
+            <ComboBoxItem Content="🚫 Admin hozzáférés elvétele" Tag="admin_remove"/>
+            <ComboBoxItem Content="🗑 Felhasználó törlése"       Tag="delete"/>
+        </ComboBox>
 
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="btnMegse"
                     Content="Mégse"
                     Background="#6C757D"
                     Style="{StaticResource ActionButton}"
                     Width="100"
                     Click="BtnMegse_Click"/>
-            <Button x:Name="btnLetrehoz"
-                    Content="✔ Hozzáadás"
-                    Background="#28A745"
+            <Button x:Name="btnVegrehajt"
+                    Content="Végrehajtás"
+                    Background="#007BFF"
                     Style="{StaticResource ActionButton}"
-                    Width="120"
-                    Margin="10,0,0,0"
-                    Click="BtnLetrehoz_Click"/>
+                    Width="140" Margin="10,0,0,0"
+                    Click="BtnVegrehajt_Click"/>
         </StackPanel>
     </Grid>
 </Window>

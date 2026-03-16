@@ -8,23 +8,23 @@
     "net8.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\sziklai.zeteny\\.nuget\\packages\\": {},
+    "C:\\Users\\zeten\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\sziklai.zeteny\\Desktop\\uj\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\AdminWPF.csproj",
+      "projectUniqueName": "C:\\Users\\zeten\\OneDrive\\Asztali gép\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\AdminWPF.csproj",
       "projectName": "AdminWPF",
-      "projectPath": "C:\\Users\\sziklai.zeteny\\Desktop\\uj\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\AdminWPF.csproj",
-      "packagesPath": "C:\\Users\\sziklai.zeteny\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\sziklai.zeteny\\Desktop\\uj\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\obj\\",
+      "projectPath": "C:\\Users\\zeten\\OneDrive\\Asztali gép\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\AdminWPF.csproj",
+      "packagesPath": "C:\\Users\\zeten\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\zeten\\OneDrive\\Asztali gép\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\sziklai.zeteny\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\zeten\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -51,7 +51,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.300"
+      "SdkAnalysisLevel": "9.0.100"
     },
     "frameworks": {
       "net8.0-windows7.0": {
@@ -75,7 +75,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -9,7 +9,6 @@ namespace AdminWPF
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            // Bejelentkezéshez rövid timeout – ne kelljen 100mp-t várni
             var loginClient = new HttpClient
             {
                 BaseAddress = new Uri("http://localhost:8000"),
@@ -25,14 +24,14 @@ namespace AdminWPF
                 return;
             }
 
-            // Főablakhoz külön HttpClient, normál timeout
             var mainClient = new HttpClient
             {
                 BaseAddress = new Uri("http://localhost:8000"),
                 Timeout     = TimeSpan.FromSeconds(30)
             };
 
-            var mainWindow = new MainWindow(mainClient);
+            // Átadjuk a bejelentkezett admin ID-ját a főablaknak
+            var mainWindow = new MainWindow(mainClient, bejelentkezes.BejelentkezettId);
             mainWindow.Closed += (_, _) => Shutdown();
             mainWindow.Show();
         }

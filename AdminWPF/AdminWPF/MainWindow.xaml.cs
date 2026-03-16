@@ -17,6 +17,9 @@ namespace AdminWPF
     {
         private readonly HttpClient _httpClient;
 
+        // A bejelentkezett admin felhasználó ID-ja – ezt nem lehet törölni/módosítani
+        private readonly int _bejelentkezettAdminId;
+
         private readonly AsztalService _asztalService;
         private readonly IdopontService _idopontService;
         private readonly FoglalasService _foglalasService;
@@ -48,9 +51,10 @@ namespace AdminWPF
         // Kiválasztott foglalási nap (alapértelmezett: holnap)
         private DateTime _kivalasztottDatum = DateTime.Today.AddDays(1);
 
-        public MainWindow(HttpClient httpClient)
+        public MainWindow(HttpClient httpClient, int bejelentkezettAdminId)
         {
-            _httpClient = httpClient;
+            _httpClient            = httpClient;
+            _bejelentkezettAdminId = bejelentkezettAdminId;
             InitializeComponent();
             _asztalService = new AsztalService(_httpClient);
             _idopontService = new IdopontService(_httpClient);
@@ -112,6 +116,7 @@ namespace AdminWPF
                     if (adat == null) continue;
 
                     f.FoglalasiAdatokId = adat.Id;
+                    f.FoglaltNap     = adat.FoglaiasDatum; // a FOGLALT NAP (foglalasiadatok.foglalas_datum)
                     f.Felnott    ??= adat.Felnott;
                     f.Gyerek     ??= adat.Gyerek;
                     f.Megjegyzes ??= adat.Megjegyzes;
@@ -249,8 +254,8 @@ namespace AdminWPF
             var meglevo = _foglalasok.FirstOrDefault(f =>
                 f.AsztalId == asztal.Id &&
                 f.IdopontId == idopont.Id &&
-                f.FoglaiasDatum != null &&
-                DateTime.TryParse(f.FoglaiasDatum, out var fd) &&
+                f.FoglaltNap != null &&
+                DateTime.TryParse(f.FoglaltNap, out var fd) &&
                 fd.Date == _kivalasztottDatum.Date);
 
             return new RacsCella
@@ -321,7 +326,7 @@ namespace AdminWPF
 
             panel.Children.Add(new TextBlock
             {
-                Text                = $"👤 {adat.FelhasznaloId}",
+                Text                = $"👤 {adat.Felnott + adat.Gyerek} fő",
                 Foreground          = Brushes.White,
                 FontSize            = 9,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -759,6 +764,37 @@ namespace AdminWPF
 
             RacsEpitese();
             StatusFrissites();
+        }
+
+        // ─────────────────────────────────────────────
+        //  FELHASZNÁLÓ KEZELÉS
+        // ─────────────────────────────────────────────
+
+        private async void BtnFelhasznaloKezeles_Click(object sender, RoutedEventArgs e)
+        {
+            if (_felhasznalok.Count == 0)
+            {
+                MessageBox.Show("Nincs betöltött felhasználó!", "Figyelem",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var ablak = new FelhasznaloKezelesWindow(_httpClient, _felhasznalok, _bejelentkezettAdminId) { Owner = this };
+            if (ablak.ShowDialog() != true || ablak.Eredmeny == null) return;
+
+            var eredmeny = ablak.Eredmeny;
+            string uzenet = eredmeny.Muvelet switch
+            {
+                FelhasznaloMuvelet.AdminAdd    => "✅ Admin hozzáférés sikeresen megadva!",
+                FelhasznaloMuvelet.AdminRemove => "✅ Admin hozzáférés sikeresen elvéve!",
+                FelhasznaloMuvelet.Delete      => "✅ Felhasználó sikeresen törölve!",
+                _                              => "✅ Művelet sikeres!"
+            };
+
+            MessageBox.Show(uzenet, "Sikeres", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // Frissítjük a felhasználó listát
+            await AdatokBetoltese();
         }
     }
 }

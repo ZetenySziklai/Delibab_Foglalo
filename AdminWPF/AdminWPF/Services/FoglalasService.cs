@@ -150,6 +150,9 @@ namespace AdminWPF.Services
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
+        [JsonPropertyName("foglalas_datum")]
+        public string? FoglaiasDatum { get; set; }
+
         [JsonPropertyName("felnott")]
         public int Felnott { get; set; }
 
@@ -161,6 +164,6 @@ namespace AdminWPF.Services
 
         // Sequelize által generált FK – a DB-ben FoglalaId oszlopnév
         [JsonPropertyName("FoglalaId")]
-        public int FoglalasId { get; set; }
+        public int? FoglalasId { get; set; }
     }
 }
