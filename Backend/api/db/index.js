@@ -10,6 +10,7 @@ if (dialect === 'mysql') {
   dialectOptions.charset = 'utf8mb4';
   dialectOptions.dateStrings = true;
   dialectOptions.typeCast = true;
+  dialectOptions.timezone = '+00:00';
 }
 
 const sequelize = new Sequelize(
@@ -21,6 +22,7 @@ const sequelize = new Sequelize(
     dialect: dialect,
     port: process.env.DB_PORT,
     logging: false,
+    timezone: '+00:00',
     //storage: dialect === 'sqlite' ? process.env.DB_NAME : undefined,
     // ez kell a felso dialecthez
     dialectOptions: Object.keys(dialectOptions).length > 0 ? dialectOptions : undefined

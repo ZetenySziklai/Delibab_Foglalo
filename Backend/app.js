@@ -4,6 +4,26 @@ const api = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./api/middlewares/errorHandler");
+const swaggerUI = require("swagger-ui-express");
+const swaggerJsdoc = require("swagger-jsdoc");
+
+const apiDoc = swaggerJsdoc(
+{
+    definition:
+    {
+        openapi: "3.0.0",
+        info:
+        {
+            title: "Délibáb Kávézó - API Dokumentáció",
+            version: "1.0.0",
+        },
+    },
+ 
+    basePath: "/api",
+ 
+    apis: [ "./api/routes/*.js" ],
+});
+
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -12,6 +32,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
+api.use("/docs", swaggerUI.serve, swaggerUI.setup(apiDoc));
 
 const userRoutes = require("./api/routes/felhasznaloRoutes");
 const asztalRoutes = require("./api/routes/asztalRoutes");
