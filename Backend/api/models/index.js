@@ -11,14 +11,22 @@ module.exports = (sequelize) => {
     Felhasznalo.hasMany(Foglalas, { foreignKey: 'user_id' });
     Foglalas.belongsTo(Felhasznalo, { foreignKey: 'user_id' });
 
-    Asztal.hasMany(Foglalas, { foreignKey: 'asztal_id' });
-    Foglalas.belongsTo(Asztal, { foreignKey: 'asztal_id' });
+    Asztal.hasMany(Foglalas, { foreignKey: 'asztal_id', as: "foglalasok" });
+    Foglalas.belongsTo(Asztal, { foreignKey: 'asztal_id', as: "asztal" });
 
     Idopont.hasOne(Foglalas);
     Foglalas.belongsTo(Idopont);
 
-    Foglalas.hasOne(FoglalasiAdatok)
-    FoglalasiAdatok.belongsTo(Foglalas)
+    Foglalas.hasOne(FoglalasiAdatok, 
+    {
+        foreignKey: "FoglalasId",
+        as: "foglalasiAdatok"
+    })
+    FoglalasiAdatok.belongsTo(Foglalas, 
+    {
+        foreignKey: "FoglalasId",
+        as: "foglalas",
+    });
 
     return {
         Asztal,

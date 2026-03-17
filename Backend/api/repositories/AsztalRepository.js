@@ -1,3 +1,5 @@
+const { Op, col } = require('sequelize');
+
 class AsztalRepository {
     constructor(db) {
         this.Asztal = db.Asztal;
@@ -39,11 +41,22 @@ class AsztalRepository {
     }
 
     async getSzabadAsztalok(datum, idopont, helyekSzama, options = {}) {
-        const { Op } = require('sequelize');
+        
+
+        const foglalasDatum = new Date(datum + ' ' + idopont);
+        foglalasDatum.setHours(foglalasDatum.getHours() + 1);
 
         const foglaltAsztalok = await this.Foglalas.findAll({
-            where: { foglalas_datum: new Date(datum + ' ' + idopont) },
             attributes: ['asztal_id'],
+            include:
+            {
+                association: "foglalasiAdatok",
+                required: true,
+            },
+            where:
+            {
+                "$foglalasiAdatok.foglalas_datum$": foglalasDatum,
+            },
             raw: true,
             transaction: options.transaction,
         });

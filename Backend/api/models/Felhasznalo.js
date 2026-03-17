@@ -1,7 +1,7 @@
-const {Model, DataTypes} = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-    class Felhasznalo extends Model {};
+    class Felhasznalo extends Model { };
 
     Felhasznalo.init(
         {
@@ -30,7 +30,11 @@ module.exports = (sequelize) => {
             regisztracio_datuma: {
                 type: DataTypes.DATE,
                 allowNull: false,
-                defaultValue: DataTypes.NOW
+                defaultValue: () => {
+                    const now = new Date();
+                    now.setHours(now.getHours() + 1);
+                    return now;
+                }
             },
             jelszo: {
                 type: DataTypes.STRING(255),
