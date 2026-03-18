@@ -14,6 +14,7 @@ class FoglalasRepository {
                 },
                 {
                     model: this.Asztal,
+                    as: "asztal",
                     attributes: ["helyek_szama"]
                 }
             ],

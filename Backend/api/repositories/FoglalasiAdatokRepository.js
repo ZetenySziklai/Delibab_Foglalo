@@ -1,3 +1,5 @@
+const { Association } = require("sequelize");
+
 class FoglalasiAdatokRepository {
     constructor(db) {
         this.FoglalasiAdatok = db.FoglalasiAdatok;
@@ -8,6 +10,7 @@ class FoglalasiAdatokRepository {
         return await this.FoglalasiAdatok.findAll({
             include: [{
                 model: this.Foglalas,
+                as: "foglalas",
                 attributes: ["id"]
             }],
             transaction: options.transaction,
