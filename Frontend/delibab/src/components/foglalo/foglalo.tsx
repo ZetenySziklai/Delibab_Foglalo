@@ -115,7 +115,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     setIsSubmitting(true);
     setError(null);
 
-    try {      
+    try {
       // Amikorra foglalt → FoglalasiAdatok.foglalas_datum
       const [hour, minute] = time.split(':').map(Number);
       const correctedHour = (hour).toString().padStart(2, '0');
@@ -132,28 +132,27 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       endDate.setHours(endDate.getHours() + 1);
 
       const idopontResponse = await fetch("http://localhost:8000/api/idopontok",
-      {
-        method: "POST",
-
-        body: JSON.stringify(
         {
-           kezdet: hour + (minute / 30 == 1 ? 0.5 : 0),
-           veg: Number(endDate.getHours()) + (endDate.getMinutes() / 30 == 1 ? 0.5 : 0),
-        }),
+          method: "POST",
 
-        headers:
-        {
-          "Content-Type": "application/json",
-        },
-      });
+          body: JSON.stringify(
+            {
+              kezdet: hour + (minute / 30 == 1 ? 0.5 : 0),
+              veg: Number(endDate.getHours()) + (endDate.getMinutes() / 30 == 1 ? 0.5 : 0),
+            }),
 
-      const idopontId = (await idopontResponse.json()).id;
+          headers:
+          {
+            "Content-Type": "application/json",
+          },
+        });
+
+      const idopontResult = await idopontResponse.json();
+      const idopontId = idopontResult.id;
 
       if (!idopontResponse.ok) {
-        const errorData = await idopontResponse.json();
-        console.error('Időpont mentési hiba:', errorData);
+        console.error('Időpont mentési hiba:', idopontResult);
       }
-
       const foglalasData = {
         user_id: user.id,
         asztal_id: selectedTable,
@@ -197,7 +196,15 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         console.error('Foglalási adatok mentési hiba:', errorData);
       }
 
-     
+      await fetch('http://localhost:8000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${contact.lastName} ${contact.firstName}`,
+          email: contact.email,
+          message: `Új foglalás érkezett!\n\nDátum: ${date}\nIdőpont: ${time}\nAsztal ID: ${selectedTable}\nFelnőtt: ${contact.adults}, Gyerek: ${contact.children}\nTelefon: ${contact.phone}${contact.notes ? `\nMegjegyzés: ${contact.notes}` : ''}`,
+        }),
+      }).catch(err => console.error('Email küldési hiba:', err));
 
       setStep(6);
     } catch (err: any) {
@@ -209,7 +216,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
   };
 
   const renderStep = () => {
-    switch(step) {
+    switch (step) {
       case 1:
         return (
           <div className="step-container fade-in">
@@ -236,7 +243,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         return (
           <div className="step-container fade-in">
             <button className="back-btn" onClick={() => setStep(1)}>← Vissza</button>
-           
+
             <div className="time-selection-section">
               <h2>Mikor érkeztek?</h2>
               <div className="meal-times-info-small">
@@ -245,7 +252,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
               <div className="time-grid">
                 {timeSlots.map(slot => {
                   const displayTime = `${slot}-${calculateEndTime(slot)}`;
-                 
+
                   // Ellenőrizzük, hogy az időpont a múltban van-e (csak a mai napra)
                   const isPast = () => {
                     const today = new Date().toISOString().split('T')[0];
@@ -275,7 +282,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                           const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${slot}:00&helyekSzama=${guests}`, {
                             credentials: 'include',
                           });
-                         
+
                           if (response.ok) {
                             const data = await response.json();
                             setAvailableTables(data.szabad_asztalok || []);
@@ -329,55 +336,55 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
           <div className="step-container fade-in">
             <button className="back-btn" onClick={() => setStep(3)}>← Vissza</button>
             <h2>Elérhetőségek</h2>
-           
+
             {error && <div className="error-message">{error}</div>}
 
             <form onSubmit={handleSubmit} className="contact-form">
               <div className="form-row">
                 <div className="form-group half">
-                    <label>Felnőtt *</label>
-                    <input
+                  <label>Felnőtt *</label>
+                  <input
                     type="number"
                     name="adults"
                     value={contact.adults}
                     onChange={handleContactChange}
                     min="0"
                     required
-                    />
+                  />
                 </div>
                 <div className="form-group half">
-                    <label>Gyermek *</label>
-                    <input
+                  <label>Gyermek *</label>
+                  <input
                     type="number"
                     name="children"
                     value={contact.children}
                     onChange={handleContactChange}
                     min="0"
                     required
-                    />
+                  />
                 </div>
               </div>
 
               <div className="form-row">
                 <div className="form-group half">
-                    <label>Vezetéknév *</label>
-                    <input
+                  <label>Vezetéknév *</label>
+                  <input
                     type="text"
                     name="lastName"
                     value={contact.lastName}
                     onChange={handleContactChange}
                     required
-                    />
+                  />
                 </div>
                 <div className="form-group half">
-                    <label>Keresztnév *</label>
-                    <input
+                  <label>Keresztnév *</label>
+                  <input
                     type="text"
                     name="firstName"
                     value={contact.firstName}
                     onChange={handleContactChange}
                     required
-                    />
+                  />
                 </div>
               </div>
 
@@ -411,7 +418,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                   rows={3}
                 />
               </div>
-             
+
               <div className="summary-preview">
                 <p><strong>Foglalás részletei:</strong></p>
                 <p>👤 {contact.adults} felnőtt, {contact.children} gyerek</p>
@@ -481,14 +488,14 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
             <p><a href="mailto:delibabcegled@gmail.hu">delibabcegled@gmail.com</a></p>
           </div>
           <div className="info-block meal-times-sidebar">
-             <h3>🍽️ Konyha</h3>
-             <p>Reggeli: 08:00 - 11:30</p>
-             <p>Ebéd: 12:00 - 18:00</p>
-             <p>Vacsora: 18:00 - 22:00</p>
+            <h3>🍽️ Konyha</h3>
+            <p>Reggeli: 08:00 - 11:30</p>
+            <p>Ebéd: 12:00 - 18:00</p>
+            <p>Vacsora: 18:00 - 22:00</p>
           </div>
         </div>
       </div>
-     
+
       <div className="foglalo-main-content">
         {renderStep()}
       </div>
