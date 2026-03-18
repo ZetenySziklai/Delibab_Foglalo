@@ -71,7 +71,7 @@ namespace AdminWPF.Services
 
                 // 3. FoglalasiadatokLetrehozas: FoglalaId = az új foglalas.id
                 adatok.FoglalaId     = ujFoglalas.Id;
-                adatok.FoglaiasDatum = foglalas.FoglaiasDatum; // a MainWindow-ból kapott kiválasztott dátum
+                // adatok.FoglaiasDatum mar be van allitva a MainWindow-ban (UTC, foglalt idopont)
 
                 var adatokResponse = await _httpClient.PostAsJsonAsync("/api/foglalasi-adatok", adatok);
 
@@ -162,8 +162,8 @@ namespace AdminWPF.Services
         [JsonPropertyName("megjegyzes")]
         public string? Megjegyzes { get; set; }
 
-        // Sequelize által generált FK – a DB-ben FoglalaId oszlopnév
-        [JsonPropertyName("FoglalaId")]
+        // Sequelize által generált FK – a DB-ben FoglalasId oszlopnév
+        [JsonPropertyName("FoglalasId")]
         public int? FoglalasId { get; set; }
     }
 }

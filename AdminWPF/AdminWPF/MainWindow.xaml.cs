@@ -108,18 +108,16 @@ namespace AdminWPF
                 _foglalasok = await _foglalasService.GetFoglalasokAsync();
                 _felhasznalok = await _felhasznaloService.GetFelhasznalokAsync();
 
-                // FoglalasiAdatokId betöltése – törléshez kell, a backend nem adja join-ban
-                var foglalasiAdatokLista = await _foglalasService.GetFoglalasiAdatokAsync();
+                // FoglalasiAdatok mar benne van a foglalas join-ban (foglalasiAdatok alias)
                 foreach (var f in _foglalasok)
                 {
-                    var adat = foglalasiAdatokLista.FirstOrDefault(a => a.FoglalasId == f.Id);
-                    if (adat == null) continue;
+                    if (f.FoglalasiAdatok == null) continue;
 
-                    f.FoglalasiAdatokId = adat.Id;
-                    f.FoglaltNap     = adat.FoglaiasDatum; // a FOGLALT NAP (foglalasiadatok.foglalas_datum)
-                    f.Felnott    ??= adat.Felnott;
-                    f.Gyerek     ??= adat.Gyerek;
-                    f.Megjegyzes ??= adat.Megjegyzes;
+                    f.FoglalasiAdatokId = f.FoglalasiAdatok.Id;
+                    f.FoglaltNap        = f.FoglalasiAdatok.FoglaiasDatum;
+                    f.Felnott           = f.FoglalasiAdatok.Felnott;
+                    f.Gyerek            = f.FoglalasiAdatok.Gyerek;
+                    f.Megjegyzes        = f.FoglalasiAdatok.Megjegyzes;
                 }
 
                 AllapotVisszaallitas();
@@ -536,22 +534,26 @@ namespace AdminWPF
                     {
                         int ora  = (int)v.IdopontKezdet;
                         int perc = (int)Math.Round((v.IdopontKezdet - ora) * 60);
+                        // foglalasiadatok.foglalas_datum: a foglalt idopont +1 ora offset
                         string foglaiasDatum = _kivalasztottDatum.Date
-                            .AddHours(ora).AddMinutes(perc)
+                            .AddHours(ora).AddMinutes(perc).AddHours(1)
                             .ToString("yyyy-MM-dd HH:mm:ss");
+                        // foglalas.foglalas_datum: mentes pillanata
+                        string mentesIdeje = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                         var ujFoglalas = new FoglalasLetrehozas
                         {
                             FelhasznaloId = v.FelhasznaloId,
                             AsztalId      = v.AsztalId,
                             IdopontId     = v.IdopontId,
-                            FoglaiasDatum = foglaiasDatum
+                            FoglaiasDatum = mentesIdeje
                         };
                         var ujAdatok = new FoglalasiadatokLetrehozas
                         {
-                            Felnott    = v.Felnott,
-                            Gyerek     = v.Gyerek,
-                            Megjegyzes = v.Megjegyzes
+                            FoglaiasDatum = foglaiasDatum, // UTC foglalt idopont
+                            Felnott       = v.Felnott,
+                            Gyerek        = v.Gyerek,
+                            Megjegyzes    = v.Megjegyzes
                         };
 
                         string? hiba = await _foglalasService.CreateFoglalasAsync(ujFoglalas, ujAdatok);

@@ -34,9 +34,30 @@ namespace AdminWPF.Models
         // Ez alapján szűr a rács a kiválasztott dátumra
         public string? FoglaltNap { get; set; }
 
-        // foglalasiadatok.id – a foglalasiadatok sor törléséhez kell
-        [JsonPropertyName("foglalasiAdatokId")]
-        public int? FoglalasiAdatokId { get; set; }    }
+        public int? FoglalasiAdatokId { get; set; }
+
+        // Join-olt foglalasiAdatok (backend include-dal adja vissza)
+        [JsonPropertyName("foglalasiAdatok")]
+        public FoglalasiAdatokBeagyazott? FoglalasiAdatok { get; set; }
+    }
+
+    public class FoglalasiAdatokBeagyazott
+    {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("foglalas_datum")]
+        public string? FoglaiasDatum { get; set; }
+
+        [JsonPropertyName("felnott")]
+        public int Felnott { get; set; }
+
+        [JsonPropertyName("gyerek")]
+        public int Gyerek { get; set; }
+
+        [JsonPropertyName("megjegyzes")]
+        public string? Megjegyzes { get; set; }
+    }
 
     // POST /api/foglalasok
     public class FoglalasLetrehozas
@@ -72,8 +93,8 @@ namespace AdminWPF.Models
         [JsonPropertyName("gyerek")]
         public int Gyerek { get; set; }
 
-        // A DB oszlopneve FoglalaId → Sequelize ezt fogadja el
-        [JsonPropertyName("FoglalaId")]
+        // A DB oszlopneve FoglalasId → Sequelize ezt fogadja el
+        [JsonPropertyName("FoglalasId")]
         public int FoglalaId { get; set; }
     }
 

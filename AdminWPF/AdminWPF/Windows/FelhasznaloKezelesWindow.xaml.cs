@@ -33,8 +33,11 @@ namespace AdminWPF.Windows
             _felhasznalok          = felhasznalok;
             _bejelentkezettAdminId = bejelentkezettAdminId;
 
-            comboFelhasznalok.ItemsSource = felhasznalok;
-            if (felhasznalok.Count > 0)
+            // A bejelentkezett admin ne látszódjon a listában
+            var megjelenitendok = felhasznalok.Where(f => f.Id != bejelentkezettAdminId).ToList();
+
+            comboFelhasznalok.ItemsSource = megjelenitendok;
+            if (megjelenitendok.Count > 0)
                 comboFelhasznalok.SelectedIndex = 0;
 
             comboMuvelet.SelectedIndex = 0;
@@ -220,7 +223,7 @@ namespace AdminWPF.Windows
             [JsonPropertyName("id")]
             public int Id { get; set; }
 
-            [JsonPropertyName("FoglalaId")]
+            [JsonPropertyName("FoglalasId")]
             public int? FoglalasId { get; set; }
         }
     }
