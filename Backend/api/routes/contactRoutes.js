@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const contactController = require("../controllers/ContactController");
+const authMiddleware = require("../middlewares/authMiddleware");
+
 
 /**
  * @swagger
@@ -45,6 +47,8 @@ const contactController = require("../controllers/ContactController");
  *       200:
  *         description: Üzenet sikeresen elküldve
  */
-router.post("/", contactController.sendContactMessage);
+router.post("/", [authMiddleware.verifyToken],contactController.sendContactMessage);
+
+
 
 module.exports = router;

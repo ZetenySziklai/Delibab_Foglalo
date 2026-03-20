@@ -148,14 +148,10 @@ const getContactEmailTemplate = (name, email, message) => `
 // ====== Controller ======
 exports.sendContactMessage = async (req, res, next) => {
   try {
-    const { name, email, message } = req.body;
+    const { name, message } = req.body;
 
-    if (!name || !email || !message) {
+    if (!name || !message) {
       throw new BadRequestError("Minden mező kitöltése kötelező.");
-    }
-
-    if (!email.includes("@")) {
-      throw new BadRequestError("Érvényes email címet adjon meg.");
     }
 
     if (!process.env.MAIL_USER || !process.env.MAIL_PASS) {
@@ -174,7 +170,7 @@ exports.sendContactMessage = async (req, res, next) => {
 
     await transporter.sendMail({
       from: `"Étterem Foglalás" <${process.env.MAIL_USER}>`,
-      to: process.env.MAIL_USER,
+      to: req.user.email,
       subject: `🍽️ Új kapcsolatfelvétel - ${name}`,
       replyTo: email,
       text: `Név: ${name}\nEmail: ${email}\n\nÜzenet:\n${message}`,
