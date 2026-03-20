@@ -388,6 +388,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                     value={contact.lastName}
                     onChange={handleContactChange}
                     required
+                    readOnly
                   />
                 </div>
                 <div className="form-group half">
@@ -398,6 +399,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                     value={contact.firstName}
                     onChange={handleContactChange}
                     required
+                    readOnly
                   />
                 </div>
               </div>
@@ -410,6 +412,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                   value={contact.email}
                   onChange={handleContactChange}
                   required
+                  readOnly
                 />
               </div>
               <div className="form-group">
@@ -421,6 +424,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                   onChange={handleContactChange}
                   required
                   placeholder="06301234567"
+                  readOnly
                 />
               </div>
               <div className="form-group">
