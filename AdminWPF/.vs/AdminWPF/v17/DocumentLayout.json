@@ -1,9 +1,9 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\",
+  "WorkspaceRootPath": "C:\\Users\\deak.zsombor\\Desktop\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\deak.zsombor\\desktop\\vizsgaremek\\delibab_foglalo\\adminwpf\\adminwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
@@ -13,7 +13,7 @@
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\zeten\\Downloads\\MainWindow.xaml_2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\deak.zsombor\\desktop\\vizsgaremek\\delibab_foglalo\\adminwpf\\adminwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     }
   ],
@@ -28,16 +28,16 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "MainWindow.xaml_3.cs",
               "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\MainWindow.xaml_3.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Downloads\\MainWindow.xaml_3.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\zeten\\Downloads\\MainWindow.xaml_3.cs",
               "ToolTip": "C:\\Users\\zeten\\Downloads\\MainWindow.xaml_3.cs",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\Downloads\\MainWindow.xaml_3.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\zeten\\Downloads\\MainWindow.xaml_3.cs",
               "ViewState": "AgIAAAUDAAAAAAAAAAAYwCcDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-19T19:21:01.471Z"
@@ -47,9 +47,9 @@
               "DocumentIndex": 2,
               "Title": "MainWindow.xaml_2.cs",
               "DocumentMoniker": "C:\\Users\\zeten\\Downloads\\MainWindow.xaml_2.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Downloads\\MainWindow.xaml_2.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\zeten\\Downloads\\MainWindow.xaml_2.cs",
               "ToolTip": "C:\\Users\\zeten\\Downloads\\MainWindow.xaml_2.cs",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\Downloads\\MainWindow.xaml_2.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\zeten\\Downloads\\MainWindow.xaml_2.cs",
               "ViewState": "AgIAAAUDAAAAAAAAAAAYwCcDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-19T19:16:30.737Z"
@@ -58,11 +58,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\deak.zsombor\\Desktop\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\deak.zsombor\\Desktop\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
               "RelativeToolTip": "AdminWPF\\MainWindow.xaml.cs",
-              "ViewState": "AgIAAAsDAAAAAAAAAAAUwCcDAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAsDAAAAAAAAAAAywCcDAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-19T19:05:44.537Z",
               "EditorCaption": ""
@@ -71,9 +71,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\deak.zsombor\\Desktop\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml",
               "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml",
-              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\deak.zsombor\\Desktop\\vizsgaremek\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml",
               "RelativeToolTip": "AdminWPF\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2026-03-19T19:05:39.158Z"

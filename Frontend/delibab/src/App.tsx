@@ -123,7 +123,7 @@ function App() {
               text={
                 "Egy hely, ahol a városi lendület és a laza kávézóhangulat találkozik. Friss, ízekben gazdag ételek, különleges kávék és barátságos légkör vár mindenkit. Délibáb, ahol minden falat és korty egy kis kikapcsolódás."
               }
-              buttons={[{ href: 'https://www.facebook.com/delibabkavezo/?locale=hu_HU', label: 'Étlap', external: true, className: 'btn' }]}
+              buttons={[{ href: '/kepek/delibab_etlap.pdf', label: 'Étlap', external: true, className: 'btn' }]}
             />
 
             <Kartya

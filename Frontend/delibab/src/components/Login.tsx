@@ -24,16 +24,27 @@ const Login: React.FC<{ onSwitch: () => void; onLoginSuccess?: (userData: any) =
         }),
       });
       
-      const data = await response.json();
-
       if (!response.ok) {
+        if (response.status === 500) {
+          throw new Error('Nem sikerült csatlakozni a szerverhez.');
+        }
+        if (response.status === 401) {
+          throw new Error('Hibás email vagy jelszó');
+        }
+        const data = await response.json();
         throw new Error(data.message || 'Hiba történt a bejelentkezés során.');
       }
+
+      const data = await response.json();
 
       if (onLoginSuccess) onLoginSuccess(data.user || data);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Váratlan hiba történt.');
+      if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+        setError('Nem sikerült csatlakozni a szerverhez.');
+      } else {
+        setError(err.message || 'Váratlan hiba történt.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -43,14 +54,13 @@ const Login: React.FC<{ onSwitch: () => void; onLoginSuccess?: (userData: any) =
     <div className="auth-container">
       <h2>Bejelentkezés</h2>
       {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label>Email:</label>
           <input 
             type="email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
-            required 
           />
         </div>
         <div className="form-group">
@@ -59,7 +69,6 @@ const Login: React.FC<{ onSwitch: () => void; onLoginSuccess?: (userData: any) =
             type="password" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
-            required 
           />
         </div>
         <button type="submit" disabled={isSubmitting}>

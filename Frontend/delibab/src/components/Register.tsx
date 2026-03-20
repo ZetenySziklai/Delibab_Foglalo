@@ -6,18 +6,12 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
-    if (password !== confirmPassword) {
-      setError('A jelszavak nem egyeznek!');
-      return;
-    }
 
     setIsSubmitting(true);
 
@@ -38,15 +32,23 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
       });
 
       if (!response.ok) {
+        if (response.status === 500) {
+          throw new Error('Nem sikerült csatlakozni a szerverhez.');
+        }
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Hiba történt a regisztráció során.');
+        console.log('Backend hiba:', errorData);
+        throw new Error(errorData.msg || errorData.message || 'Hiba történt a regisztráció során.');
       }
 
       alert('Sikeres regisztráció! Most már bejelentkezhet.');
       onSwitch();
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Váratlan hiba történt.');
+      if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+        setError('Nem sikerült csatlakozni a szerverhez.');
+      } else {
+        setError(err.message || 'Váratlan hiba történt.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -56,14 +58,13 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
     <div className="auth-container">
       <h2>Regisztráció</h2>
       {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         <div className="form-group">
           <label>Vezetéknév:</label>
           <input 
             type="text" 
             value={lastName} 
             onChange={(e) => setLastName(e.target.value)} 
-            required 
           />
         </div>
         <div className="form-group">
@@ -72,27 +73,24 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             type="text" 
             value={firstName} 
             onChange={(e) => setFirstName(e.target.value)} 
-            required 
           />
         </div>
         <div className="form-group">
           <label>Email:</label>
           <input 
-            type="email" 
+            type="text" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="pelda@email.hu"
-            required 
           />
         </div>
         <div className="form-group">
           <label>Telefonszám:</label>
           <input 
-            type="tel" 
+            type="text" 
             value={phone} 
             onChange={(e) => setPhone(e.target.value)} 
             placeholder="06301234567"
-            required 
           />
         </div>
         <div className="form-group">
@@ -101,16 +99,6 @@ const Register: React.FC<{ onSwitch: () => void }> = ({ onSwitch }) => {
             type="password" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
-            required 
-          />
-        </div>
-        <div className="form-group">
-          <label>Jelszó megerősítése:</label>
-          <input 
-            type="password" 
-            value={confirmPassword} 
-            onChange={(e) => setConfirmPassword(e.target.value)} 
-            required 
           />
         </div>
         <button type="submit" disabled={isSubmitting}>

@@ -167,6 +167,9 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       });
 
       if (!response.ok) {
+        if (response.status === 500) {
+          throw new Error('Nem sikerült csatlakozni a szerverhez.');
+        }
         const errorData = await response.json();
         throw new Error(errorData.msg || 'Hiba történt a foglalás során.');
       }
@@ -209,7 +212,11 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       setStep(6);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Váratlan hiba történt.');
+      if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+        setError('Nem sikerült csatlakozni a szerverhez.');
+      } else {
+        setError(err.message || 'Váratlan hiba történt.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -287,10 +294,17 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                             const data = await response.json();
                             setAvailableTables(data.szabad_asztalok || []);
                           } else {
+                            if (response.status === 500) {
+                              throw new Error('Nem sikerült csatlakozni a szerverhez.');
+                            }
                             throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
                           }
                         } catch (err: any) {
-                          setError(err.message);
+                          if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+                            setError('Nem sikerült csatlakozni a szerverhez.');
+                          } else {
+                            setError(err.message || 'Váratlan hiba történt.');
+                          }
                         } finally {
                           setIsLoadingTables(false);
                         }
