@@ -63,13 +63,11 @@ exports.deleteAsztal = async (req, res, next) => {
 
 exports.getSzabadAsztalok = async (req, res, next) => {
     try {
-        const { datum, idopont, helyekSzama } = req.query;
-        const szabadAsztalok = await asztalService.getSzabadAsztalok(datum, idopont, helyekSzama);
+        const { datum, idopont} = req.query;
         res.status(200).json({
             datum,
             idopont,
-            helyek_szama: helyekSzama || "nincs megadva",
-            szabad_asztalok: szabadAsztalok
+            szabad_asztalok: await asztalService.getSzabadAsztalok(datum, idopont),
         });
     } catch (error) {
         next(error);

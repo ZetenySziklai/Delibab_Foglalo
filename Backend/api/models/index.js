@@ -20,7 +20,9 @@ module.exports = (sequelize) => {
     Foglalas.hasOne(FoglalasiAdatok, 
     {
         foreignKey: "FoglalasId",
-        as: "foglalasiAdatok"
+        as: "foglalasiAdatok",
+        // onDelete: 'CASCADE', 
+        // hooks: true
     })
     FoglalasiAdatok.belongsTo(Foglalas, 
     {

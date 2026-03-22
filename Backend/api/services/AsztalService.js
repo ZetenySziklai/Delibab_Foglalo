@@ -33,11 +33,11 @@ class AsztalService {
         return await this.asztalRepository.deleteAsztal(id, options);
     }
 
-    async getSzabadAsztalok(datum, idopont, helyekSzama, options = {}) {
+    async getSzabadAsztalok(datum, idopont, options = {}) {
         if (!datum || !idopont) {
             throw new BadRequestError("Dátum és időpont kötelező");
         }
-        return await this.asztalRepository.getSzabadAsztalok(datum, idopont, helyekSzama, options);
+        return await this.asztalRepository.getSzabadAsztalok(datum, idopont, options);
     }
 }
 

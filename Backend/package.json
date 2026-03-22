@@ -23,13 +23,12 @@
     "sequelize": "^6.37.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "test": "^3.3.0",
-    "transaction": "^0.0.2"
+    "test": "^3.3.0"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.10",
-    "sqlite3": "^5.1.7",
+    "sqlite3": "^6.0.1",
     "supertest": "^6.3.3"
   }
 }

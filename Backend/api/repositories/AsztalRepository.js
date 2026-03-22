@@ -1,5 +1,7 @@
 const { Op, col } = require('sequelize');
 
+const { DbError } = require("../errors");
+
 class AsztalRepository {
     constructor(db) {
         this.Asztal = db.Asztal;
@@ -40,40 +42,59 @@ class AsztalRepository {
         return deleted > 0;
     }
 
-    async getSzabadAsztalok(datum, idopont, helyekSzama, options = {}) {
+    async getSzabadAsztalok(datum, idopont, options = {}) {
         
 
-        const foglalasDatum = new Date(datum + ' ' + idopont);
-        foglalasDatum.setHours(foglalasDatum.getHours() + 1);
+        const foglalasIdo = new Date(datum + ' ' + idopont);
+        foglalasIdo.setHours(foglalasIdo.getHours() + 1);
 
-        const foglaltAsztalok = await this.Foglalas.findAll({
-            attributes: ['asztal_id'],
-            include:
+        try
+        {
+            return await this.Asztal.findAll(
             {
-                association: "foglalasiAdatok",
-                required: true,
-            },
-            where:
-            {
-                "$foglalasiAdatok.foglalas_datum$": foglalasDatum,
-            },
-            raw: true,
-            transaction: options.transaction,
-        });
+                include:
+                {
+                    association: "foglalasok",
 
-        const foglaltAsztalIds = foglaltAsztalok.map(f => f.asztal_id);
-        const whereCondition = {
-            helyek_szama: { [Op.gte]: helyekSzama || 1 }
-        };
+                    include:
+                    {
+                        association: "foglalasiAdatok",
 
-        if (foglaltAsztalIds.length > 0) {
-            whereCondition.id = { [Op.notIn]: foglaltAsztalIds };
+                        where: 
+                        {
+                            foglalas_datum:
+                            {
+                                [Op.eq]: foglalasIdo.toISOString(),
+                            }
+                        }
+                    },
+                },
+
+                where:
+                {
+                    [Op.or]:
+                    [
+                        
+                        {
+                            "$foglalasok.foglalasiAdatok.foglalas_datum$":
+                            {
+                                [Op.ne]: foglalasIdo.toISOString(),
+                            }    
+                        },
+
+                        {
+                            "$foglalasok.foglalasiAdatok.foglalas_datum$": null,
+                        }
+
+                    ]
+
+                },
+            });
         }
-
-        return await this.Asztal.findAll({
-            where: whereCondition,
-            transaction: options.transaction,
-        });
+        catch(error)
+        {
+            throw new DbError("Failed fetching reservations");
+        }
     }
 }
 

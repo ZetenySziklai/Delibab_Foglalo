@@ -204,9 +204,9 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${contact.lastName} ${contact.firstName}`,
-          email: contact.email,
           message: `Új foglalás érkezett!\n\nDátum: ${date}\nIdőpont: ${time}\nAsztal ID: ${selectedTable}\nFelnőtt: ${contact.adults}, Gyerek: ${contact.children}\nTelefon: ${contact.phone}${contact.notes ? `\nMegjegyzés: ${contact.notes}` : ''}`,
         }),
+        credentials: "include",
       }).catch(err => console.error('Email küldési hiba:', err));
 
       setStep(6);

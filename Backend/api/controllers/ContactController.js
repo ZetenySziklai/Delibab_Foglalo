@@ -172,12 +172,12 @@ exports.sendContactMessage = async (req, res, next) => {
       from: `"Étterem Foglalás" <${process.env.MAIL_USER}>`,
       to: req.user.email,
       subject: `🍽️ Új kapcsolatfelvétel - ${name}`,
-      replyTo: email,
-      text: `Név: ${name}\nEmail: ${email}\n\nÜzenet:\n${message}`,
-      html: getContactEmailTemplate(name, email, message),
+      replyTo: req.user.email,
+      text: `Név: ${name}\nEmail: ${req.user.email}\n\nÜzenet:\n${message}`,
+      html: getContactEmailTemplate(name, req.user.email, message),
     });
 
-    console.log("📨 Kapcsolatfelvételi email elküldve:", email);
+    console.log("📨 Kapcsolatfelvételi email elküldve:", req.user.email);
 
     res.status(200).json({
       message: "Üzenet sikeresen elküldve.",
