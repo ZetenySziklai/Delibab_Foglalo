@@ -266,6 +266,7 @@ namespace AdminWPF
                 AsztalId = asztal.Id,
                 IdopontId = idopont.Id,
                 IdopontKezdet = idopont.Kezdet,
+                FoglalasDatum = _kivalasztottDatum.Date,
                 Foglalt = meglevo != null,
                 FoglalasId = meglevo?.Id,
                 FoglalasiAdatokId = meglevo?.FoglalasiAdatokId,
@@ -273,6 +274,10 @@ namespace AdminWPF
                 Megjegyzes = meglevo?.Megjegyzes ?? "",
                 Felnott = meglevo?.Felnott ?? 0,
                 Gyerek = meglevo?.Gyerek ?? 0,
+                EredetiDmFelhasznaloId = meglevo?.FelhasznaloId ?? 0,
+                EredetiFelnott = meglevo?.Felnott ?? 0,
+                EredetiGyerek = meglevo?.Gyerek ?? 0,
+                EredetiMegjegyzes = meglevo?.Megjegyzes ?? "",
             };
         }
 
@@ -399,6 +404,8 @@ namespace AdminWPF
         {
             if (sender is not Border cella || cella.Tag is not RacsCella adat) return;
 
+            string kulcs = $"{adat.AsztalId}_{adat.IdopontId}";
+
             if (!adat.Foglalt)
             {
                 var asztal = MegjelenithitoAsztalok().FirstOrDefault(a => a.Id == adat.AsztalId);
@@ -413,6 +420,26 @@ namespace AdminWPF
 
                 if (ablak.ShowDialog() != true) return;
 
+                // Ha az aktuálisan nyilvántartott (legutóbb beállított) felhasználóval egyezik → nincs változás
+                int jelenlegiFelhasznaloId = _cellaValtozasok.TryGetValue(kulcs, out var korabbi)
+                    ? korabbi.FelhasznaloId
+                    : adat.EredetiDmFelhasznaloId;
+
+                if (adat.FoglalasId.HasValue && jelenlegiFelhasznaloId == ablak.FelhasznaloId)
+                {
+                    // Ugyanolyan felhasználóval foglalják vissza → visszaállítjuk az eredeti DB-s adatokat
+                    _cellaValtozasok.Remove(kulcs);
+                    adat.Foglalt = true;
+                    adat.FelhasznaloId = adat.EredetiDmFelhasznaloId;
+                    adat.Felnott = adat.EredetiFelnott;
+                    adat.Gyerek = adat.EredetiGyerek;
+                    adat.Megjegyzes = adat.EredetiMegjegyzes;
+                    cella.Tag = adat;
+                    CellaFrissites(cella, adat);
+                    StatusFrissites();
+                    return;
+                }
+
                 adat.Foglalt = true;
                 adat.FelhasznaloId = ablak.FelhasznaloId;
                 adat.Felnott = ablak.Felnott;
@@ -422,7 +449,7 @@ namespace AdminWPF
             else
             {
                 adat.Foglalt = false;
-                adat.FelhasznaloId = 1;
+                adat.FelhasznaloId = 0;  // 0 = nincs kiválasztva, sosem egyezik valódi ID-val
                 adat.Felnott = 0;
                 adat.Gyerek = 0;
                 adat.Megjegyzes = "";
@@ -430,10 +457,7 @@ namespace AdminWPF
 
             cella.Tag = adat;
             CellaFrissites(cella, adat);
-
-            string kulcs = $"{adat.AsztalId}_{adat.IdopontId}";
             _cellaValtozasok[kulcs] = adat;
-
             StatusFrissites();
         }
 
@@ -530,7 +554,7 @@ namespace AdminWPF
                 catch (Exception ex) { sikertelen++; hibaUzenetek.Add(ex.Message); }
             }
 
-            // 2. Cella változások (foglalás létrehozás/törlés)
+            // 2. Cella változások (foglalás létrehozás/törlés/csere)
             foreach (var v in _cellaValtozasok.Values)
             {
                 try
@@ -539,12 +563,27 @@ namespace AdminWPF
                     {
                         int ora = (int)v.IdopontKezdet;
                         int perc = (int)Math.Round((v.IdopontKezdet - ora) * 60);
-                        // foglalasiadatok.foglalas_datum: a foglalt nap + időpont kezdete (offset nélkül)
-                        string foglaiasDatum = _kivalasztottDatum.Date
-                            .AddHours(ora).AddMinutes(perc).AddHours(1)
-                            .ToString("yyyy-MM-dd HH:mm:ss");
-                        // foglalas.foglalas_datum: mentes pillanata
-                        string mentesIdeje = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss");
+
+                        // Magyar időzóna – kezeli a nyári/téli időszámítást (DST)
+                        var magyarTz = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
+                        DateTime helyi = v.FoglalasDatum.AddHours(ora).AddMinutes(perc);
+                        TimeSpan offset = magyarTz.GetUtcOffset(helyi);
+
+                        string foglaiasDatum = helyi.Add(offset).ToString("yyyy-MM-dd HH:mm:ss");
+                        TimeSpan offsetMost = magyarTz.GetUtcOffset(DateTime.Now);
+                        string mentesIdeje = DateTime.Now.Add(offsetMost).ToString("yyyy-MM-dd HH:mm:ss");
+
+                        // Ha volt régi DB-s foglalás (más felhasználóval csere) → előbb töröljük
+                        if (v.FoglalasId.HasValue)
+                        {
+                            string? torlesHiba = await _foglalasService.DeleteFoglalasAsync(v.FoglalasId.Value, v.FoglalasiAdatokId);
+                            if (torlesHiba != null)
+                            {
+                                sikertelen++;
+                                hibaUzenetek.Add($"Régi foglalás törlése sikertelen #{v.FoglalasId}: {torlesHiba}");
+                                continue;
+                            }
+                        }
 
                         var ujFoglalas = new FoglalasLetrehozas
                         {
@@ -555,7 +594,7 @@ namespace AdminWPF
                         };
                         var ujAdatok = new FoglalasiadatokLetrehozas
                         {
-                            FoglaiasDatum = foglaiasDatum, // UTC foglalt idopont
+                            FoglaiasDatum = foglaiasDatum,
                             Felnott = v.Felnott,
                             Gyerek = v.Gyerek,
                             Megjegyzes = v.Megjegyzes
