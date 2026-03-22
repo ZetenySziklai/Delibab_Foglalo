@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './foglalo.css';
 
 interface ContactForm {
@@ -10,6 +10,12 @@ interface ContactForm {
   terms: boolean;
   adults: number;
   children: number;
+}
+
+interface Idopont {
+  id: number;
+  kezdet: number;
+  veg: number;
 }
 
 interface FoglaloOldalProps {
@@ -24,6 +30,8 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
   const [guests, setGuests] = useState(1);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
+  const [selectedIdopont, setSelectedIdopont] = useState<Idopont | null>(null);
+  const [dbTimeSlots, setDbTimeSlots] = useState<Idopont[]>([]);
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
   const [availableTables, setAvailableTables] = useState<any[]>([]);
   const [isLoadingTables, setIsLoadingTables] = useState(false);
@@ -40,7 +48,27 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [reservedTimes, setReservedTimes] = useState<string[]>([]);
-  const [isLoadingTimes, setIsLoadingTimes] = useState(false);
+  const [isLoadingTimes, setIsLoadingTimes] = useState(true);
+
+  useEffect(() => {
+    const fetchIdopontok = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/idopontok');
+        if (response.ok) {
+          const data = await response.json();
+          setDbTimeSlots(data);
+        } else {
+          setError("Nem sikerült lekérdezni az időpontokat.");
+        }
+      } catch (err) {
+        console.error('Hiba az időpontok lekérésekor:', err);
+        setError("Hiba történt az időpontok betöltésekor.");
+      } finally {
+        setIsLoadingTimes(false);
+      }
+    };
+    fetchIdopontok();
+  }, []);
 
   // Dátum generálás (holnaptól kezdve 30 nap)
   const getNextDays = () => {
@@ -53,10 +81,11 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     return days;
   };
 
-  // Időpont generálás
-  const timeSlots = [
-    '09:00', '10:30', '12:00', '13:30', '15:00', '16:30', '18:00', '19:30', '21:00'
-  ];
+  const formatTimeFromDouble = (num: number) => {
+    const hours = Math.floor(num);
+    const minutes = Math.round((num - hours) * 60);
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
 
   const getMealType = (timeStr: string) => {
     const hour = parseInt(timeStr.split(':')[0], 10);
@@ -66,13 +95,6 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     if (totalMinutes < 12 * 60) return 'Reggeli'; // 11:30-ig tartó sáv még reggeli
     if (totalMinutes < 18 * 60) return 'Ebéd';
     return 'Vacsora';
-  };
-
-  const calculateEndTime = (startTime: string) => {
-    const [hours, minutes] = startTime.split(':').map(Number);
-    const date = new Date();
-    date.setHours(hours + 1, minutes);
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
   };
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -117,9 +139,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
 
     try {
       // Amikorra foglalt → FoglalasiAdatok.foglalas_datum
-      const [hour, minute] = time.split(':').map(Number);
-      const correctedHour = (hour).toString().padStart(2, '0');
-      const reservationDateTime = `${date} ${correctedHour}:${minute.toString().padStart(2, '0')}:00`;
+      const reservationDateTime = `${date} ${time}:00`;
 
       console.log(reservationDateTime);
 
@@ -128,36 +148,11 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       const nowFormatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours() + 1).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
 
-      const endDate = new Date(reservationDateTime);
-      endDate.setHours(endDate.getHours() + 1);
-
-      const idopontResponse = await fetch("http://localhost:8000/api/idopontok",
-        {
-          method: "POST",
-
-          body: JSON.stringify(
-            {
-              kezdet: hour + (minute / 30 == 1 ? 0.5 : 0),
-              veg: Number(endDate.getHours()) + (endDate.getMinutes() / 30 == 1 ? 0.5 : 0),
-            }),
-
-          headers:
-          {
-            "Content-Type": "application/json",
-          },
-        });
-
-      const idopontResult = await idopontResponse.json();
-      const idopontId = idopontResult.id;
-
-      if (!idopontResponse.ok) {
-        console.error('Időpont mentési hiba:', idopontResult);
-      }
       const foglalasData = {
         user_id: user.id,
         asztal_id: selectedTable,
         foglalas_datum: nowFormatted,
-        IdopontId: idopontId,
+        IdopontId: selectedIdopont?.id,
       };
 
       const response = await fetch('http://localhost:8000/api/foglalasok', {
@@ -204,9 +199,9 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${contact.lastName} ${contact.firstName}`,
+          email: contact.email,
           message: `Új foglalás érkezett!\n\nDátum: ${date}\nIdőpont: ${time}\nAsztal ID: ${selectedTable}\nFelnőtt: ${contact.adults}, Gyerek: ${contact.children}\nTelefon: ${contact.phone}${contact.notes ? `\nMegjegyzés: ${contact.notes}` : ''}`,
         }),
-        credentials: "include",
       }).catch(err => console.error('Email küldési hiba:', err));
 
       setStep(6);
@@ -257,63 +252,71 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
                 <p>☕ Reggeli: 11:30-ig | 🍽️ Ebéd: 12:00-18:00 | 🍷 Vacsora: 18:00-tól</p>
               </div>
               <div className="time-grid">
-                {timeSlots.map(slot => {
-                  const displayTime = `${slot}-${calculateEndTime(slot)}`;
+                {dbTimeSlots.length > 0 ? (
+                  dbTimeSlots.map(slot => {
+                    const startTimeStr = formatTimeFromDouble(slot.kezdet);
+                    const endTimeStr = formatTimeFromDouble(slot.veg);
+                    const displayTime = `${startTimeStr}-${endTimeStr}`;
 
-                  // Ellenőrizzük, hogy az időpont a múltban van-e (csak a mai napra)
-                  const isPast = () => {
-                    const today = new Date().toISOString().split('T')[0];
-                    if (date !== today) return false;
+                    // Ellenőrizzük, hogy az időpont a múltban van-e (csak a mai napra)
+                    const isPast = () => {
+                      const today = new Date().toISOString().split('T')[0];
+                      if (date !== today) return false;
 
-                    const now = new Date();
-                    const [slotHour, slotMinute] = slot.split(':').map(Number);
-                    const slotDate = new Date();
-                    slotDate.setHours(slotHour, slotMinute, 0, 0);
+                      const now = new Date();
+                      const slotDate = new Date();
+                      const hours = Math.floor(slot.kezdet);
+                      const minutes = Math.round((slot.kezdet - hours) * 60);
+                      slotDate.setHours(hours, minutes, 0, 0);
 
-                    return slotDate < now;
-                  };
+                      return slotDate < now;
+                    };
 
-                  const isDisabled = isPast();
+                    const isDisabled = isPast();
 
-                  return (
-                    <button
-                      key={slot}
-                      className={`time-btn ${time === slot ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
-                      disabled={isDisabled}
-                      onClick={async () => {
-                        setTime(slot);
-                        setIsLoadingTables(true);
-                        setError(null);
-                        setSelectedTable(null); // Reset table selection when time changes
-                        try {
-                          const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${slot}:00&helyekSzama=${guests}`, {
-                            credentials: 'include',
-                          });
+                    return (
+                      <button
+                        key={slot.id}
+                        className={`time-btn ${time === startTimeStr ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
+                        disabled={isDisabled}
+                        onClick={async () => {
+                          setTime(startTimeStr);
+                          setSelectedIdopont(slot);
+                          setIsLoadingTables(true);
+                          setError(null);
+                          setSelectedTable(null); // Reset table selection when time changes
+                          try {
+                            const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${startTimeStr}:00&helyekSzama=${guests}`, {
+                              credentials: 'include',
+                            });
 
-                          if (response.ok) {
-                            const data = await response.json();
-                            setAvailableTables(data.szabad_asztalok || []);
-                          } else {
-                            if (response.status === 500) {
-                              throw new Error('Nem sikerült csatlakozni a szerverhez.');
+                            if (response.ok) {
+                              const data = await response.json();
+                              setAvailableTables(data.szabad_asztalok || []);
+                            } else {
+                              if (response.status === 500) {
+                                throw new Error('Nem sikerült csatlakozni a szerverhez.');
+                              }
+                              throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
                             }
-                            throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
+                          } catch (err: any) {
+                            if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+                              setError('Nem sikerült csatlakozni a szerverhez.');
+                            } else {
+                              setError(err.message || 'Váratlan hiba történt.');
+                            }
+                          } finally {
+                            setIsLoadingTables(false);
                           }
-                        } catch (err: any) {
-                          if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-                            setError('Nem sikerült csatlakozni a szerverhez.');
-                          } else {
-                            setError(err.message || 'Váratlan hiba történt.');
-                          }
-                        } finally {
-                          setIsLoadingTables(false);
-                        }
-                      }}
-                    >
-                      {displayTime}
-                    </button>
-                  );
-                })}
+                        }}
+                      >
+                        {displayTime}
+                      </button>
+                    );
+                  })
+                ) : (
+                  <p className="no-timeslots-msg">Jelenleg nincsenek foglalható időpontok.</p>
+                )}
               </div>
             </div>
 
