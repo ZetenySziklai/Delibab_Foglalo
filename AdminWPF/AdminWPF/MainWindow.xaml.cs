@@ -17,7 +17,8 @@ namespace AdminWPF
     {
         private readonly HttpClient _httpClient;
 
-        // A bejelentkezett admin felhasználó ID-ja – ezt nem lehet törölni/módosítani
+        // A bejelentkezett admin ID-ja. Erre azért van szükség, mert ezt a felhasználót
+        // nem szabad törölni és nem lehet elvenni tőle az admin jogot.
         private readonly int _bejelentkezettAdminId;
 
         private readonly AsztalService _asztalService;
@@ -25,30 +26,35 @@ namespace AdminWPF
         private readonly FoglalasService _foglalasService;
         private readonly FelhasznaloService _felhasznaloService;
 
-        // API-ból betöltött adatok
+        // Az API-ból betöltött alaplista – ezek az adatbázisban lévő valós adatok.
         private List<Asztal> _asztalok = new();
         private List<Idopont> _idopontok = new();
         private List<Foglalas> _foglalasok = new();
         private List<Felhasznalo> _felhasznalok = new();
 
-        // Rácsban lévő cellák változásai – kulcs: "asztalId_idopontId"
+        // Nyilvántartja a rácson elvégzett, de még nem mentett foglalási változásokat.
+        // Kulcs: "asztalId_idopontId" – így bármelyik cella állapota gyorsan visszakereshető.
         private readonly Dictionary<string, RacsCella> _cellaValtozasok = new();
 
-        // Függőben lévő műveletek (asztal/időpont hozzáadás/törlés)
+        // Asztal/időpont hozzáadás és törlés műveletek, amelyek mentésre várnak.
+        // Ezeket a mentés gomb dolgozza fel sorban.
         private readonly List<FuggoBenMuvelet> _fuggoBenMuveletek = new();
 
-        // Lokálisan hozzáadott, még nem mentett asztalok/időpontok
+        // Lokálisan felvett, de az adatbázisban még nem szereplő asztalok/időpontok.
+        // Negatív ID-val jelennek meg a rácson, hogy megkülönböztethetők legyenek.
         private readonly List<Asztal> _lokalisAsztalok = new();
         private readonly List<Idopont> _lokalisIdopontok = new();
 
-        // Lokálisan törölt asztal/időpont id-k
+        // Törlésre jelölt asztal/időpont ID-k. Ezek már nem jelennek meg a rácson,
+        // de az adatbázisból csak mentéskor törlődnek.
         private readonly HashSet<int> _torolniValoAsztalIds = new();
         private readonly HashSet<int> _torolniValoIdopontIds = new();
 
         private int _lokalisAsztalSorszam = -1;
         private int _lokalisIdopontSorszam = -1;
 
-        // Kiválasztott foglalási nap (alapértelmezett: holnap)
+        // A rácson éppen megjelenített nap. Alapértelmezetten holnap, mert mára már
+        // általában nem lehet foglalni.
         private DateTime _kivalasztottDatum = DateTime.Today.AddDays(1);
 
         public MainWindow(HttpClient httpClient, int bejelentkezettAdminId)
@@ -67,10 +73,6 @@ namespace AdminWPF
                 await AdatokBetoltese();
             };
         }
-
-        // ─────────────────────────────────────────────
-        //  DÁTUM COMBOBOX – holnaptól 30 nap
-        // ─────────────────────────────────────────────
 
         private void DatumComboBoxFeltoltes()
         {
@@ -91,10 +93,6 @@ namespace AdminWPF
             RacsEpitese();
         }
 
-        // ─────────────────────────────────────────────
-        //  ADATOK BETÖLTÉSE API-BÓL
-        // ─────────────────────────────────────────────
-
         private async Task AdatokBetoltese()
         {
             labelStatus.Content = "Betöltés...";
@@ -108,7 +106,8 @@ namespace AdminWPF
                 _foglalasok = await _foglalasService.GetFoglalasokAsync();
                 _felhasznalok = await _felhasznaloService.GetFelhasznalokAsync();
 
-                // FoglalasiAdatok kueloen lekerve (GET /api/foglalasok nem tartalmaz join-t)
+                // A foglalasiadatok táblát külön kell lekérni, mert a GET /api/foglalasok
+                // végpont nem adja vissza ezeket – a join a kliens oldalon történik meg.
                 var foglalasiAdatokLista = await _foglalasService.GetFoglalasiAdatokAsync();
                 foreach (var f in _foglalasok)
                 {
@@ -140,7 +139,7 @@ namespace AdminWPF
             }
         }
 
-        // Friss adatok betöltésekor minden lokális változás törlődik
+        // Frissítéskor minden lokális változás elvész – az adatbázis állapota lesz az igazság.
         private void AllapotVisszaallitas()
         {
             _cellaValtozasok.Clear();
@@ -153,10 +152,8 @@ namespace AdminWPF
             _lokalisIdopontSorszam = -1;
         }
 
-        // ─────────────────────────────────────────────
-        //  MEGJELENÍTENDŐ LISTÁK (API + lokális változások)
-        // ─────────────────────────────────────────────
-
+        // Az API-ból betöltött lista + lokálisan hozzáadottak, a törölt elemek nélkül.
+        // Ezeket a listákat használja a rács – így a mentés előtti állapotot mutatja.
         private List<Asztal> MegjelenithitoAsztalok()
         {
             var lista = _asztalok.Where(a => !_torolniValoAsztalIds.Contains(a.Id)).ToList();
@@ -171,10 +168,8 @@ namespace AdminWPF
             return lista;
         }
 
-        // ─────────────────────────────────────────────
-        //  RÁCS ÉPÍTÉSE
-        // ─────────────────────────────────────────────
-
+        // Felépíti a foglalási rácsot a semmiből. Minden dátumváltáskor és adatmódosításkor
+        // újrafut. Lokálisan hozzáadott (még nem mentett) elemek sárgás fejléccel jelennek meg.
         private void RacsEpitese()
         {
             gridFoglalas.Children.Clear();
@@ -202,7 +197,6 @@ namespace AdminWPF
                 return;
             }
 
-            // Oszlop- és sordefiníciók
             gridFoglalas.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
             foreach (var _ in asztalok)
                 gridFoglalas.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
@@ -211,7 +205,6 @@ namespace AdminWPF
             foreach (var _ in idopontok)
                 gridFoglalas.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            // Fejléc sor
             AddFejlecCella(0, 0, "Időpont \\ Asztal");
             for (int a = 0; a < asztalok.Count; a++)
             {
@@ -221,7 +214,6 @@ namespace AdminWPF
                 AddFejlecCella(0, a + 1, szoveg, asztalok[a].Id < 0);
             }
 
-            // Sorok: időpont fejléc + cellák
             for (int i = 0; i < idopontok.Count; i++)
             {
                 var idopont = idopontok[i];
@@ -235,6 +227,7 @@ namespace AdminWPF
                     var cellaAdat = CellaAdatLekeres(asztal, idopont);
                     bool kattinthato = asztal.Id > 0 && idopont.Id > 0;
 
+                    // Lokális asztal/időpont cellái nem kattinthatók – nincs még érvényes API ID-juk.
                     var cella = CellaLetrehozas(cellaAdat, kattinthato);
                     Grid.SetRow(cella, sor);
                     Grid.SetColumn(cella, a + 1);
@@ -243,7 +236,9 @@ namespace AdminWPF
             }
         }
 
-        // Visszaadja az adott asztal+időpont cellájának adatait
+        // Megkeresi a cella aktuális állapotát. Ha a felhasználó már módosította (de még
+        // nem mentette), a _cellaValtozasok-ból adja vissza. Különben az adatbázisból
+        // betöltött foglalások között keres asztal + időpont + dátum alapján.
         private RacsCella CellaAdatLekeres(Asztal asztal, Idopont idopont)
         {
             string kulcs = $"{asztal.Id}_{idopont.Id}";
@@ -281,10 +276,6 @@ namespace AdminWPF
             };
         }
 
-        // ─────────────────────────────────────────────
-        //  CELLA LÉTREHOZÁS / FRISSÍTÉS
-        // ─────────────────────────────────────────────
-
         private Border CellaLetrehozas(RacsCella cellaAdat, bool kattinthato = true)
         {
             SolidColorBrush hatter = !kattinthato
@@ -312,7 +303,8 @@ namespace AdminWPF
             cella.Child = CellaTartalom(adat);
         }
 
-        // Felépíti a cella belső tartalmát (szövegek)
+        // Összerakja a cella vizuális tartalmát: foglalás esetén vendégszámot és megjegyzést
+        // is megjelenít, szabad cella esetén csak a körjelzőt.
         private StackPanel CellaTartalom(RacsCella adat)
         {
             var panel = new StackPanel
@@ -396,10 +388,11 @@ namespace AdminWPF
                 ? new SolidColorBrush(Color.FromRgb(220, 53, 69))
                 : new SolidColorBrush(Color.FromRgb(40, 167, 69));
 
-        // ─────────────────────────────────────────────
-        //  CELLA KATTINTÁS
-        // ─────────────────────────────────────────────
-
+        // Kezeli a rácscellára való kattintást.
+        // - Szabad cellán: felugró ablak a foglalási adatokhoz, majd a cella foglaltra vált.
+        // - Foglalt cellán: azonnal törlésre jelöli a foglalást.
+        // Különleges eset: ha ugyanolyan felhasználóra foglalják vissza, mint aki DB-ben volt,
+        // a változás visszavonódik (mintha nem történt semmi).
         private void Cella_Kattintas(object sender, MouseButtonEventArgs e)
         {
             if (sender is not Border cella || cella.Tag is not RacsCella adat) return;
@@ -420,14 +413,13 @@ namespace AdminWPF
 
                 if (ablak.ShowDialog() != true) return;
 
-                // Ha az aktuálisan nyilvántartott (legutóbb beállított) felhasználóval egyezik → nincs változás
                 int jelenlegiFelhasznaloId = _cellaValtozasok.TryGetValue(kulcs, out var korabbi)
                     ? korabbi.FelhasznaloId
                     : adat.EredetiDmFelhasznaloId;
 
                 if (adat.FoglalasId.HasValue && jelenlegiFelhasznaloId == ablak.FelhasznaloId)
                 {
-                    // Ugyanolyan felhasználóval foglalják vissza → visszaállítjuk az eredeti DB-s adatokat
+                    // Visszaállítás: a változás törlődik, az eredeti DB-s adatok kerülnek vissza.
                     _cellaValtozasok.Remove(kulcs);
                     adat.Foglalt = true;
                     adat.FelhasznaloId = adat.EredetiDmFelhasznaloId;
@@ -449,7 +441,7 @@ namespace AdminWPF
             else
             {
                 adat.Foglalt = false;
-                adat.FelhasznaloId = 0;  // 0 = nincs kiválasztva, sosem egyezik valódi ID-val
+                adat.FelhasznaloId = 0;  // 0 sosem egyezik valódi user ID-val, így nem okoz félreértést
                 adat.Felnott = 0;
                 adat.Gyerek = 0;
                 adat.Megjegyzes = "";
@@ -461,10 +453,8 @@ namespace AdminWPF
             StatusFrissites();
         }
 
-        // ─────────────────────────────────────────────
-        //  STATUS BAR
-        // ─────────────────────────────────────────────
-
+        // Frissíti a fejlécben lévő státuszsávot. Ha van mentetlen változás,
+        // megjelenik az orange badge a darabszámmal.
         private void StatusFrissites()
         {
             int osszesFuggo = _fuggoBenMuveletek.Count + _cellaValtozasok.Count;
@@ -482,10 +472,11 @@ namespace AdminWPF
             }
         }
 
-        // ─────────────────────────────────────────────
-        //  MENTÉS
-        // ─────────────────────────────────────────────
-
+        // Elküldi az összes függőben lévő változást az API-nak.
+        // Sorrend (idegen kulcs miatt fontos):
+        //   1. Foglalás törlések (előbb, mint az asztal/időpont törlése)
+        //   2. Asztal és időpont műveletek
+        //   3. Cella változások (új foglalás / törlés / felhasználócsere)
         private async void BtnMentes_Click(object sender, RoutedEventArgs e)
         {
             int osszesFuggo = _fuggoBenMuveletek.Count + _cellaValtozasok.Count;
@@ -520,7 +511,7 @@ namespace AdminWPF
             int sikeres = 0, sikertelen = 0;
             var hibaUzenetek = new List<string>();
 
-            // 1a. Kapcsolódó foglalások törlése ELŐSZÖR (asztal/időpont törlés előtt)
+            // 1. lépés: kapcsolódó foglalások törlése, mielőtt az asztal/időpont törlődne
             foreach (var muvelet in _fuggoBenMuveletek.Where(m => m.Tipus == MuveletTipus.FoglalasTöröl))
             {
                 try
@@ -532,7 +523,7 @@ namespace AdminWPF
                 catch (Exception ex) { sikertelen++; hibaUzenetek.Add(ex.Message); }
             }
 
-            // 1b. Asztal/időpont műveletek
+            // 2. lépés: asztal és időpont létrehozás / törlés
             foreach (var muvelet in _fuggoBenMuveletek.Where(m => m.Tipus != MuveletTipus.FoglalasTöröl))
             {
                 try
@@ -554,7 +545,7 @@ namespace AdminWPF
                 catch (Exception ex) { sikertelen++; hibaUzenetek.Add(ex.Message); }
             }
 
-            // 2. Cella változások (foglalás létrehozás/törlés/csere)
+            // 3. lépés: foglalási cella változások (új foglalás / törlés / felhasználócsere)
             foreach (var v in _cellaValtozasok.Values)
             {
                 try
@@ -564,7 +555,8 @@ namespace AdminWPF
                         int ora = (int)v.IdopontKezdet;
                         int perc = (int)Math.Round((v.IdopontKezdet - ora) * 60);
 
-                        // Magyar időzóna – kezeli a nyári/téli időszámítást (DST)
+                        // A Magyar időzóna eltolása naponta eltérhet (nyári/téli időszámítás),
+                        // ezért mindig az adott napra számoljuk ki, nem fixálunk +1 vagy +2 órát.
                         var magyarTz = TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time");
                         DateTime helyi = v.FoglalasDatum.AddHours(ora).AddMinutes(perc);
                         TimeSpan offset = magyarTz.GetUtcOffset(helyi);
@@ -573,7 +565,8 @@ namespace AdminWPF
                         TimeSpan offsetMost = magyarTz.GetUtcOffset(DateTime.Now);
                         string mentesIdeje = DateTime.Now.Add(offsetMost).ToString("yyyy-MM-dd HH:mm:ss");
 
-                        // Ha volt régi DB-s foglalás (más felhasználóval csere) → előbb töröljük
+                        // Felhasználócsere esetén előbb törölni kell a régi foglalást,
+                        // majd létrehozni az újat (a DB nem támogat közvetlen UPDATE-et erre).
                         if (v.FoglalasId.HasValue)
                         {
                             string? torlesHiba = await _foglalasService.DeleteFoglalasAsync(v.FoglalasId.Value, v.FoglalasiAdatokId);
@@ -635,10 +628,8 @@ namespace AdminWPF
                 sikertelen > 0 ? MessageBoxImage.Warning : MessageBoxImage.Information);
         }
 
-        // ─────────────────────────────────────────────
-        //  FRISSÍTÉS API-BÓL
-        // ─────────────────────────────────────────────
-
+        // Ha vannak mentetlen változások, figyelmeztet mielőtt az API-ból frissítene,
+        // mert a frissítés minden lokális módosítást elveszt.
         private async void BtnFrissites_Click(object sender, RoutedEventArgs e)
         {
             int osszesFuggo = _fuggoBenMuveletek.Count + _cellaValtozasok.Count;
@@ -656,10 +647,8 @@ namespace AdminWPF
             await AdatokBetoltese();
         }
 
-        // ─────────────────────────────────────────────
-        //  ASZTAL KEZELÉS
-        // ─────────────────────────────────────────────
-
+        // Új asztal hozzáadása: felugró ablak bekéri a helyek számát, majd lokálisan
+        // eltárolja (negatív ID-val) és felveszi a függőben lévő műveletek közé.
         private void BtnAsztalHozzaad_Click(object sender, RoutedEventArgs e)
         {
             var ablak = new AsztalLetrehozasWindow { Owner = this };
@@ -681,6 +670,8 @@ namespace AdminWPF
             StatusFrissites();
         }
 
+        // Asztal törlése. Ha az asztalhoz foglalások tartoznak, figyelmeztetés után
+        // azokat is törli. Lokális asztal esetén csak a lokális listából távolítja el.
         private void BtnAsztalTorol_Click(object sender, RoutedEventArgs e)
         {
             var jelenlegiAsztalok = MegjelenithitoAsztalok();
@@ -733,10 +724,8 @@ namespace AdminWPF
             StatusFrissites();
         }
 
-        // ─────────────────────────────────────────────
-        //  IDŐPONT KEZELÉS
-        // ─────────────────────────────────────────────
-
+        // Új időpont hozzáadása. Átadja a már meglévő időpontokat az ablaknak,
+        // hogy ott lehessen ellenőrizni az ütközést.
         private void BtnIdopontHozzaad_Click(object sender, RoutedEventArgs e)
         {
             var ablak = new IdopontLetrehozasWindow(MegjelenithitoIdopontok()) { Owner = this };
@@ -759,6 +748,8 @@ namespace AdminWPF
             StatusFrissites();
         }
 
+        // Időpont törlése. Ha az időponthoz foglalások tartoznak, figyelmeztetés után
+        // azokat is törli. Lokális időpont esetén csak a lokális listából távolítja el.
         private void BtnIdopontTorol_Click(object sender, RoutedEventArgs e)
         {
             var jelenlegiIdopontok = MegjelenithitoIdopontok();
@@ -812,10 +803,6 @@ namespace AdminWPF
             StatusFrissites();
         }
 
-        // ─────────────────────────────────────────────
-        //  FELHASZNÁLÓ KEZELÉS
-        // ─────────────────────────────────────────────
-
         private async void BtnFelhasznaloKezeles_Click(object sender, RoutedEventArgs e)
         {
             if (_felhasznalok.Count == 0)
@@ -839,7 +826,6 @@ namespace AdminWPF
 
             MessageBox.Show(uzenet, "Sikeres", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            // Frissítjük a felhasználó listát
             await AdatokBetoltese();
         }
     }
