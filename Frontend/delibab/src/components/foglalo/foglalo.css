@@ -205,28 +205,24 @@
   border-color: #eee;
 }
 
-.time-btn.disabled {
-  background-color: #eee;
-  color: #aaa;
+.time-btn.full {
+  background-color: #f5f5f5;
+  color: #999;
   border-color: #eee;
+  opacity: 0.7;
   cursor: not-allowed;
-  text-decoration: line-through;
 }
 
-.time-btn.disabled:hover {
+.time-btn.full:hover {
   border-color: #eee;
+  background-color: #f5f5f5;
 }
 
-.time-btn.disabled {
-  background-color: #eee;
-  color: #aaa;
-  border-color: #eee;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
-
-.time-btn.disabled:hover {
-  border-color: #eee;
+.time-btn.full.active {
+  background-color: rgb(65, 37, 0);
+  color: white;
+  border-color: rgb(65, 37, 0);
+  opacity: 1;
 }
 
 /* Contact Form */

@@ -7,7 +7,7 @@ export const Oldalsav: React.FC = () => {
         <h2>Délibáb Kávézó és Street Food</h2>
         <div className="info-block">
           <h3>📍 Cím</h3>
-          <p>Cegléd, Szabadság tér 1</p>
+          <p>Cegléd, Szabadság tér 1.</p>
         </div>
         <div className="info-block">
           <h3>🕒 Nyitvatartás</h3>

@@ -9,7 +9,6 @@ import { SikeresFoglalas } from './SikeresFoglalas';
 
 export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, onLoginClick, user }) => {
   const [step, setStep] = useState(1);
-  const [guests, setGuests] = useState(1);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [selectedIdopont, setSelectedIdopont] = useState<Idopont | null>(null);
@@ -30,6 +29,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoadingTimes, setIsLoadingTimes] = useState(true);
+  const [timeSlotAvailability, setTimeSlotAvailability] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const fetchIdopontok = async () => {
@@ -50,6 +50,43 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     };
     fetchIdopontok();
   }, []);
+
+  const formatTimeFromDouble = (num: number) => {
+    const hours = Math.floor(num);
+    const minutes = Math.round((num - hours) * 60);
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    const fetchAllAvailability = async () => {
+      if (!date || dbTimeSlots.length === 0) return;
+
+      const availability: Record<string, boolean> = {};
+      
+      const checkPromises = dbTimeSlots.map(async (slot) => {
+        const startTimeStr = formatTimeFromDouble(slot.kezdet);
+        try {
+          const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${startTimeStr}:00&helyekSzama=${contact.adults + contact.children}`, {
+            credentials: 'include',
+          });
+          if (response.ok) {
+            const data = await response.json();
+            availability[startTimeStr] = (data.szabad_asztalok || []).length > 0;
+          } else {
+            availability[startTimeStr] = false;
+          }
+        } catch (err) {
+          console.error(`Hiba az elérhetőség lekérésekor (${startTimeStr}):`, err);
+          availability[startTimeStr] = false;
+        }
+      });
+
+      await Promise.all(checkPromises);
+      setTimeSlotAvailability(availability);
+    };
+
+    fetchAllAvailability();
+  }, [date, dbTimeSlots, contact.adults, contact.children]);
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -187,12 +224,13 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
             setIsLoadingTables={setIsLoadingTables}
             setError={setError}
             setSelectedTable={setSelectedTable}
-            guests={guests}
+            guests={contact.adults + contact.children}
             isLoadingTables={isLoadingTables}
             availableTables={availableTables}
             setAvailableTables={setAvailableTables}
             selectedTable={selectedTable}
             error={error}
+            timeSlotAvailability={timeSlotAvailability}
           />
         );
       case 5:

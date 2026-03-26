@@ -130,7 +130,7 @@ function App() {
               id="gasztronomia"
               title="Gasztronómia"
               text={
-                'Egy hely, ahol a kávé illata és a street food ízei találkoznak. Merüljön el a Délibáb hangulatában, ahol a friss, illatos kávékülönlegességek és a street food fogások laza, modern világát egyesítjük! Kóstolja meg zamatos hamburgereinket, ropogós wrapjeinket, frissensült street food kedvenceinket, és élvezze mellé a legfinomabb kávék és desszertek varázsát! A Délibábban minden falat és korty egy kis élmény, amelyet minőségi alapanyagokkal és szenvedéllyel készítünk. Legyen szó reggeli kávéról, gyors ebédről, délutáni sütizésről vagy esti baráti összejövetelről, a Délibáb Kávézó és Street Food mindig tökéletes választás – barátságos, pezsgő és otthonos egyszerre. A modern enteriőr és a kellemes terasz légköre találkozóhelyet teremt mindenkinek, aki szereti a jó ízeket, a laza hangulatot és a közös pillanatokat. A Délibáb több mint egy kávézó: egy hely, ahol a város szíve és az ízek harmóniája találkozik.'
+                'Merüljön el a Délibáb laza, mégis modern világában, ahol a frissen főzött kávékülönlegességek illata és a legfinomabb utcai ételek ízvilága alkot tökéletes harmóniát! Kóstolja meg zamatos hamburgereinket vagy ropogós wrapjeinket, majd koronázza meg az élményt egy mennyei desszerttel. Nálunk minden falatot és kortyot szenvedéllyel, kiváló minőségi alapanyagokból készítünk. Legyen szó pörgős reggeliről, egy gyors ebédről, délutáni lazításról vagy esti baráti összejövetelről, barátságos enteriőrünk és kellemes teraszunk mindig nyitva áll.'
               }
             />
 
@@ -159,7 +159,7 @@ function App() {
                   <strong>Telefon:</strong> +36 30 322 9001
                 </p>
                 <p>
-                  <strong>Cím:</strong> Cegléd, Szabadság tér 1
+                  <strong>Cím:</strong> Cegléd, Szabadság tér 1.
                 </p>
                 <p>
                   <strong>Email:</strong> delibabcegled@gmail.com

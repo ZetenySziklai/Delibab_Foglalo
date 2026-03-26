@@ -17,6 +17,7 @@ interface IdopontEsAsztalValasztasProps {
   setAvailableTables: (tables: any[]) => void;
   selectedTable: number | null;
   error: string | null;
+  timeSlotAvailability?: Record<string, boolean>;
 }
 
 export const IdopontEsAsztalValasztas: React.FC<IdopontEsAsztalValasztasProps> = ({
@@ -35,6 +36,7 @@ export const IdopontEsAsztalValasztas: React.FC<IdopontEsAsztalValasztasProps> =
   setAvailableTables,
   selectedTable,
   error,
+  timeSlotAvailability = {},
 }) => {
   const formatTimeFromDouble = (num: number) => {
     const hours = Math.floor(num);
@@ -53,67 +55,70 @@ export const IdopontEsAsztalValasztas: React.FC<IdopontEsAsztalValasztasProps> =
         </div>
         <div className="time-grid">
           {dbTimeSlots.length > 0 ? (
-            dbTimeSlots.map(slot => {
-              const startTimeStr = formatTimeFromDouble(slot.kezdet);
-              const endTimeStr = formatTimeFromDouble(slot.veg);
-              const displayTime = `${startTimeStr}-${endTimeStr}`;
+            [...dbTimeSlots]
+              .sort((a, b) => a.kezdet - b.kezdet)
+              .map(slot => {
+                const startTimeStr = formatTimeFromDouble(slot.kezdet);
+                const endTimeStr = formatTimeFromDouble(slot.veg);
+                const displayTime = `${startTimeStr}-${endTimeStr}`;
 
-              // Ellenőrizzük, hogy az időpont a múltban van-e (csak a mai napra)
-              const isPast = () => {
-                const today = new Date().toISOString().split('T')[0];
-                if (date !== today) return false;
+                // Ellenőrizzük, hogy az időpont a múltban van-e (csak a mai napra)
+                const isPast = () => {
+                  const today = new Date().toISOString().split('T')[0];
+                  if (date !== today) return false;
 
-                const now = new Date();
-                const slotDate = new Date();
-                const hours = Math.floor(slot.kezdet);
-                const minutes = Math.round((slot.kezdet - hours) * 60);
-                slotDate.setHours(hours, minutes, 0, 0);
+                  const now = new Date();
+                  const slotDate = new Date();
+                  const hours = Math.floor(slot.kezdet);
+                  const minutes = Math.round((slot.kezdet - hours) * 60);
+                  slotDate.setHours(hours, minutes, 0, 0);
 
-                return slotDate < now;
-              };
+                  return slotDate < now;
+                };
 
-              const isDisabled = isPast();
+                const isDisabled = isPast();
+                const isFull = timeSlotAvailability[startTimeStr] === false;
 
-              return (
-                <button
-                  key={slot.id}
-                  className={`time-btn ${time === startTimeStr ? 'active' : ''} ${isDisabled ? 'disabled' : ''}`}
-                  disabled={isDisabled}
-                  onClick={async () => {
-                    setTime(startTimeStr);
-                    setSelectedIdopont(slot);
-                    setIsLoadingTables(true);
-                    setError(null);
-                    setSelectedTable(null); // Reset table selection when time changes
-                    try {
-                      const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${startTimeStr}:00&helyekSzama=${guests}`, {
-                        credentials: 'include',
-                      });
+                return (
+                  <button
+                    key={slot.id}
+                    className={`time-btn ${time === startTimeStr ? 'active' : ''} ${isDisabled ? 'disabled' : ''} ${isFull ? 'full' : ''}`}
+                    disabled={isDisabled || isFull}
+                    onClick={async () => {
+                      setTime(startTimeStr);
+                      setSelectedIdopont(slot);
+                      setIsLoadingTables(true);
+                      setError(null);
+                      setSelectedTable(null); // Reset table selection when time changes
+                      try {
+                        const response = await fetch(`http://localhost:8000/api/asztalok/szabad/list?datum=${date}&idopont=${startTimeStr}:00&helyekSzama=${guests}`, {
+                          credentials: 'include',
+                        });
 
-                      if (response.ok) {
-                        const data = await response.json();
-                        setAvailableTables(data.szabad_asztalok || []);
-                      } else {
-                        if (response.status === 500) {
-                          throw new Error('Nem sikerült csatlakozni a szerverhez.');
+                        if (response.ok) {
+                          const data = await response.json();
+                          setAvailableTables(data.szabad_asztalok || []);
+                        } else {
+                          if (response.status === 500) {
+                            throw new Error('Nem sikerült csatlakozni a szerverhez.');
+                          }
+                          throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
                         }
-                        throw new Error("Nem sikerült lekérdezni a szabad asztalokat.");
+                      } catch (err: any) {
+                        if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+                          setError('Nem sikerült csatlakozni a szerverhez.');
+                        } else {
+                          setError(err.message || 'Váratlan hiba történt.');
+                        }
+                      } finally {
+                        setIsLoadingTables(false);
                       }
-                    } catch (err: any) {
-                      if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-                        setError('Nem sikerült csatlakozni a szerverhez.');
-                      } else {
-                        setError(err.message || 'Váratlan hiba történt.');
-                      }
-                    } finally {
-                      setIsLoadingTables(false);
-                    }
-                  }}
-                >
-                  {displayTime}
-                </button>
-              );
-            })
+                    }}
+                  >
+                    {displayTime}
+                  </button>
+                );
+              })
           ) : (
             <p className="no-timeslots-msg">Jelenleg nincsenek foglalható időpontok.</p>
           )}
@@ -127,18 +132,20 @@ export const IdopontEsAsztalValasztas: React.FC<IdopontEsAsztalValasztasProps> =
             <p className="text-center">Asztalok betöltése...</p>
           ) : availableTables.length > 0 ? (
             <div className="table-grid">
-              {availableTables.map(table => (
-                <button
-                  key={table.id}
-                  className={`table-btn ${selectedTable === table.id ? 'active' : ''}`}
-                  onClick={() => {
-                    setSelectedTable(table.id);
-                    setStep(5);
-                  }}
-                >
-                  Asztal ({table.helyek_szama} fő)
-                </button>
-              ))}
+              {[...availableTables]
+                .sort((a, b) => a.helyek_szama - b.helyek_szama || a.id - b.id)
+                .map(table => (
+                  <button
+                    key={table.id}
+                    className={`table-btn ${selectedTable === table.id ? 'active' : ''}`}
+                    onClick={() => {
+                      setSelectedTable(table.id);
+                      setStep(5);
+                    }}
+                  >
+                    Asztal ({table.helyek_szama} fő)
+                  </button>
+                ))}
             </div>
           ) : (
             <p className="text-center">Sajnos nincs szabad asztal ebben az időpontban.</p>
