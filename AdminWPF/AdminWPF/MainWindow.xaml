@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AdminWPF"
         mc:Ignorable="d"
         Title="Délibáb Étterem - Admin Felület"
-        Height="700" Width="1300"
+        Height="700" Width="1537"
         MinHeight="620" MinWidth="820"
         WindowStartupLocation="CenterScreen"
         Background="#F5F5F5">

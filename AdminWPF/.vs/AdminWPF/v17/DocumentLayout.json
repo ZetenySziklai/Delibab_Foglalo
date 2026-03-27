@@ -1,12 +1,216 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "H:\\13\\Vizsga\\Delibab_Foglalo\\AdminWPF\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\windows\\idopontletrehozaswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\windows\\idopontletrehozaswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\windows\\foglalasadatokwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\windows\\foglalasadatokwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\windows\\felhasznalokezeleswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\windows\\felhasznalokezeleswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\windows\\bejelentkezeswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\windows\\bejelentkezeswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\windows\\asztaltorlaswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\windows\\asztaltorlaswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\windows\\asztalletrehozaswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\windows\\asztalletrehozaswindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\services\\idopontservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\services\\idopontservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\services\\asztalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\services\\asztalservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|c:\\users\\zeten\\onedrive\\asztali g\u00E9p\\\u00FAj mappa\\delibab_foglalo\\adminwpf\\adminwpf\\models\\foglalas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2BA33FA-4F54-4B46-AC3F-C2D925B9A94C}|AdminWPF\\AdminWPF.csproj|solutionrelative:adminwpf\\models\\foglalas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\App.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\App.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\App.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\App.xaml.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:21:27.171Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IdopontLetrehozasWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\IdopontLetrehozasWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Windows\\IdopontLetrehozasWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\IdopontLetrehozasWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\Windows\\IdopontLetrehozasWindow.xaml.cs",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAAACcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:20:57.329Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FoglalasAdatokWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\FoglalasAdatokWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Windows\\FoglalasAdatokWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\FoglalasAdatokWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\Windows\\FoglalasAdatokWindow.xaml.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:20:53.441Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FelhasznaloKezelesWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\FelhasznaloKezelesWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Windows\\FelhasznaloKezelesWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\FelhasznaloKezelesWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\Windows\\FelhasznaloKezelesWindow.xaml.cs",
+              "ViewState": "AgIAAN4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:20:40.556Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "BejelentkezesWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\BejelentkezesWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Windows\\BejelentkezesWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\BejelentkezesWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\Windows\\BejelentkezesWindow.xaml.cs",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAAE4AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:19:08.019Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AsztalTorlasWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\AsztalTorlasWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Windows\\AsztalTorlasWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\AsztalTorlasWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\Windows\\AsztalTorlasWindow.xaml.cs",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:19:03.199Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AsztalLetrehozasWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\Windows\\AsztalLetrehozasWindow.xaml.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:19:00.331Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\MainWindow.xaml.cs",
+              "ViewState": "AgIAANsCAAAAAAAAAAAAAO8CAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:16:19.659Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IdopontService.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Services\\IdopontService.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Services\\IdopontService.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Services\\IdopontService.cs",
+              "RelativeToolTip": "AdminWPF\\Services\\IdopontService.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:18:57.17Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml",
+              "RelativeToolTip": "AdminWPF\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-03-25T20:16:24.666Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "AsztalService.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Services\\AsztalService.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Services\\AsztalService.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Services\\AsztalService.cs",
+              "RelativeToolTip": "AdminWPF\\Services\\AsztalService.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAADIAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:15:34.413Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Foglalas.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Models\\Foglalas.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\Models\\Foglalas.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Models\\Foglalas.cs",
+              "RelativeToolTip": "AdminWPF\\Models\\Foglalas.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:15:30.545Z"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
