@@ -21,6 +21,7 @@ const foglalasiAdatokController = require("../controllers/FoglalasiAdatokControl
  *         foglalas_datum:
  *           type: string
  *           format: date-time
+ *           nullable: true
  *         megjegyzes:
  *           type: string
  *           nullable: true
@@ -28,42 +29,58 @@ const foglalasiAdatokController = require("../controllers/FoglalasiAdatokControl
  *           type: integer
  *         gyerek:
  *           type: integer
- *       required: [foglalas_datum, felnott, gyerek]
+ *         FoglalasId:
+ *           type: integer
+ *           nullable: true
  *       example:
  *         id: 1
- *         foglalas_datum: "2025-06-01 18:00:00"
+ *         foglalas_datum: "2025-06-01T19:00:00.000Z"
  *         megjegyzes: "Ablak melletti asztal kérés"
  *         felnott: 2
  *         gyerek: 1
+ *         FoglalasId: 1
  *     CreateFoglalasiAdatok:
  *       type: object
+ *       required: [felnott, gyerek]
  *       properties:
- *         foglalas_id:
+ *         FoglalasId:
  *           type: integer
+ *           nullable: true
+ *           description: "Opcionális – a kapcsolódó foglalás ID-ja"
  *         foglalas_datum:
  *           type: string
  *           format: date-time
+ *           nullable: true
+ *           description: "Opcionális"
  *         megjegyzes:
  *           type: string
  *           nullable: true
  *         felnott:
  *           type: integer
+ *           minimum: 0
  *         gyerek:
  *           type: integer
- *       required: [foglalas_datum, felnott, gyerek]
+ *           minimum: 0
  *       example:
- *         foglalas_id: 1
- *         foglalas_datum: "2025-06-01 18:00:00"
+ *         FoglalasId: 1
+ *         foglalas_datum: "2025-06-01T19:00:00.000Z"
  *         megjegyzes: "Ablak melletti asztal kérés"
  *         felnott: 2
  *         gyerek: 1
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *         msg:
+ *           type: string
  */
 
 /**
  * @swagger
  * /api/foglalasi-adatok:
  *   get:
- *     description: Visszaadja az összes foglalási adatot
+ *     summary: Összes foglalási adat lekérdezése
  *     tags: [FoglalasiAdatok]
  *     responses:
  *       200:
@@ -81,7 +98,7 @@ router.get("/", foglalasiAdatokController.getFoglalasiAdatok);
  * @swagger
  * /api/foglalasi-adatok/{id}:
  *   get:
- *     description: Foglalási adatok lekérdezése ID alapján
+ *     summary: Foglalási adat lekérdezése ID alapján
  *     tags: [FoglalasiAdatok]
  *     parameters:
  *       - in: path
@@ -98,6 +115,10 @@ router.get("/", foglalasiAdatokController.getFoglalasiAdatok);
  *               $ref: "#/components/schemas/FoglalasiAdatok"
  *       404:
  *         description: Foglalási adatok nem találhatók
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/:id", foglalasiAdatokController.getFoglalasiAdatokById);
 
@@ -105,7 +126,7 @@ router.get("/:id", foglalasiAdatokController.getFoglalasiAdatokById);
  * @swagger
  * /api/foglalasi-adatok:
  *   post:
- *     description: Új foglalási adatok létrehozása
+ *     summary: Új foglalási adat létrehozása
  *     tags: [FoglalasiAdatok]
  *     requestBody:
  *       required: true
@@ -120,6 +141,18 @@ router.get("/:id", foglalasiAdatokController.getFoglalasiAdatokById);
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/FoglalasiAdatok"
+ *       400:
+ *         description: Hiányzó felnott/gyerek mező, vagy negatív érték
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
+ *       404:
+ *         description: A megadott foglalás (FoglalasId) nem létezik
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post("/", foglalasiAdatokController.createFoglalasiAdatok);
 
@@ -127,7 +160,7 @@ router.post("/", foglalasiAdatokController.createFoglalasiAdatok);
  * @swagger
  * /api/foglalasi-adatok/{id}:
  *   put:
- *     description: Foglalási adatok módosítása
+ *     summary: Foglalási adatok módosítása
  *     tags: [FoglalasiAdatok]
  *     parameters:
  *       - in: path
@@ -144,8 +177,22 @@ router.post("/", foglalasiAdatokController.createFoglalasiAdatok);
  *     responses:
  *       200:
  *         description: Módosított foglalási adatok
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/FoglalasiAdatok"
+ *       400:
+ *         description: Negatív felnott vagy gyerek érték
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  *       404:
  *         description: Foglalási adatok nem találhatók
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put("/:id", foglalasiAdatokController.updateFoglalasiAdatok);
 
@@ -153,7 +200,7 @@ router.put("/:id", foglalasiAdatokController.updateFoglalasiAdatok);
  * @swagger
  * /api/foglalasi-adatok/{id}:
  *   delete:
- *     description: Foglalási adatok törlése
+ *     summary: Foglalási adatok törlése
  *     tags: [FoglalasiAdatok]
  *     parameters:
  *       - in: path
@@ -164,8 +211,21 @@ router.put("/:id", foglalasiAdatokController.updateFoglalasiAdatok);
  *     responses:
  *       200:
  *         description: Foglalási adatok sikeresen törölve
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *               example:
+ *                 message: "Foglalási adatok sikeresen törölve"
  *       404:
  *         description: Foglalási adatok nem találhatók
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete("/:id", foglalasiAdatokController.deleteFoglalasiAdatok);
 

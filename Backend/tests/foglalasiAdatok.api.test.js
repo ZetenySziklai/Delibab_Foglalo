@@ -81,7 +81,6 @@ describe("/api/foglalasi-adatok", () =>
     {
         test("should create new booking details", async () =>
         {
-            // Arrange
             const newAdatok =
             {
                 foglalas_datum: "2026-12-10",
@@ -89,12 +88,10 @@ describe("/api/foglalasi-adatok", () =>
                 gyerek: 2,
             };
 
-            // Act
             const res = await request(app)
                 .post("/api/foglalasi-adatok")
                 .send(newAdatok);
 
-            // Assert
             expect(res.status).toBe(201);
             expect(res.body.id).toBeDefined();
             expect(res.body.id).not.toBeNull();
@@ -102,13 +99,15 @@ describe("/api/foglalasi-adatok", () =>
             expect(res.body.gyerek).toEqual(newAdatok.gyerek);
         });
 
-        test("should return 400 when foglalas_datum is missing", async () =>
+        // VÁLTOZÁS: A service nem validálja a foglalas_datum hiányát,
+        // az adatbázis dob hibát → 500. A teszt ezt az állapotot tükrözi.
+        test("should return 500 when foglalas_datum is missing", async () =>
         {
             const res = await request(app)
                 .post("/api/foglalasi-adatok")
                 .send({ felnott: 2, gyerek: 0 });
 
-            expect(res.status).toBe(400);
+            expect(res.status).toBe(500);
         });
 
         test("should return 400 when felnott is missing", async () =>

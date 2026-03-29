@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for Backend/api/repositories/IdopontRepository.js</title>
+    <title>Code coverage report for Backend/api/middlewares/authMiddleware.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">Backend/api/repositories</a> IdopontRepository.js</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">Backend/api/middlewares</a> authMiddleware.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">21.73% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>5/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">27.77% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>5/18</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -99,91 +99,79 @@
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
 <a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L37'></a><a href='#L37'>37</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">240x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span></td><td class="text"><pre class="prettyprint lang-js">class IdopontRepository {
-    constructor(db) {
-        this.Idopont = db.Idopont;
-    }
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const jwt = require("jsonwebtoken");
+const { UnauthorizedError } = require("../errors");
 &nbsp;
-    async getIdopont(options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
-        return await this.Idopont.findAll({
-            transaction: options.transaction,
-        });
-    }
+const authUtils = require("../utilities/authUtils");
 &nbsp;
-    async createIdopont(data, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
-        return await this.Idopont.create(data, {
-            transaction: options.transaction,
-        });
-    }
+exports.verifyToken = <span class="fstat-no" title="function not covered" >as</span>ync (req, res, next) =&gt;
+{
+    const { user_token } = <span class="cstat-no" title="statement not covered" >req.cookies || {};</span>
 &nbsp;
-    async getIdopontById(id, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
-        return await this.Idopont.findByPk(id, {
-            transaction: options.transaction,
-        });
-    }
+<span class="cstat-no" title="statement not covered" >    if (!user_token) <span class="cstat-no" title="statement not covered" >return next(new UnauthorizedError("Be kell jelentkezni a funkció használatához"));</span></span>
 &nbsp;
-    async updateIdopont(id, data, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
-        await this.Idopont.update(data, {
-            where: { id },
-            transaction: options.transaction,
-        });
-        return await this.getIdopontById(id, options);
-    }
+    const user = <span class="cstat-no" title="statement not covered" >authUtils.verifyToken(user_token);</span>
 &nbsp;
-    async deleteIdopont(id, options = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
-        const deleted = await this.Idopont.destroy({
-            where: { id },
-            transaction: options.transaction,
-        });
-        return deleted &gt; 0;
-    }
+<span class="cstat-no" title="statement not covered" >    if (!user) <span class="cstat-no" title="statement not covered" >return next(new UnauthorizedError("Érvénytelen vagy lejárt token"));</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    req.user = user;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    next();</span>
 }
 &nbsp;
-module.exports = IdopontRepository;</pre></td></tr></table></pre>
+exports.verifyAdmin = <span class="fstat-no" title="function not covered" >as</span>ync (req, res, next) =&gt;
+{
+    const { user_token } = <span class="cstat-no" title="statement not covered" >req.cookies || {};</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user_token) <span class="cstat-no" title="statement not covered" >return next(new UnauthorizedError("Be kell jelentkezni a funkció használatához"));</span></span>
+&nbsp;
+    const user = <span class="cstat-no" title="statement not covered" >authUtils.verifyToken(user_token);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user) <span class="cstat-no" title="statement not covered" >return next(new UnauthorizedError("Érvénytelen vagy lejárt token"));</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!user.isAdmin) <span class="cstat-no" title="statement not covered" >return next(new UnauthorizedError("Nincs jogosultsága ehhez a művelethez"));</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    req.user = user;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    next();</span>
+}
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->

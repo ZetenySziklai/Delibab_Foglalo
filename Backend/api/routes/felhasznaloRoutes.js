@@ -29,17 +29,41 @@ const userController = require("../controllers/FelhasznaloController");
  *         regisztracio_datuma:
  *           type: string
  *           format: date-time
- *         jelszo:
- *           type: string
- *       required: [vezeteknev, keresztnev, email, telefonszam, jelszo]
+ *         isAdmin:
+ *           type: boolean
  *       example:
  *         id: 1
  *         vezeteknev: "Kovács"
  *         keresztnev: "János"
  *         email: "kovacs.janos@email.hu"
  *         telefonszam: "06301234567"
- *         jelszo: "titkosJelszo"
+ *         regisztracio_datuma: "2025-01-01T10:00:00.000Z"
+ *         isAdmin: false
  *     CreateFelhasznalo:
+ *       type: object
+ *       required: [vezeteknev, keresztnev, email, telefonszam, jelszo]
+ *       properties:
+ *         vezeteknev:
+ *           type: string
+ *           description: "Csak betűket tartalmazhat (magyar ékezetes betűk is elfogadottak)"
+ *         keresztnev:
+ *           type: string
+ *           description: "Csak betűket tartalmazhat (magyar ékezetes betűk is elfogadottak)"
+ *         email:
+ *           type: string
+ *           description: "Érvényes email cím, pl. nev@example.com"
+ *         telefonszam:
+ *           type: string
+ *           description: "Magyar formátum: +36301234567, 06301234567, 0036301234567. Szóköz, kötőjel, zárójel is elfogadott."
+ *         jelszo:
+ *           type: string
+ *       example:
+ *         vezeteknev: "Kovács"
+ *         keresztnev: "János"
+ *         email: "kovacs.janos@email.hu"
+ *         telefonszam: "06301234567"
+ *         jelszo: "titkosJelszo"
+ *     UpdateFelhasznalo:
  *       type: object
  *       properties:
  *         vezeteknev:
@@ -48,24 +72,28 @@ const userController = require("../controllers/FelhasznaloController");
  *           type: string
  *         email:
  *           type: string
- *         telefonszam:
- *           type: string
  *         jelszo:
  *           type: string
- *       required: [vezeteknev, keresztnev, email, telefonszam, jelszo]
  *       example:
  *         vezeteknev: "Kovács"
- *         keresztnev: "János"
- *         email: "kovacs.janos@email.hu"
- *         telefonszam: "06301234567"
- *         jelszo: "titkosJelszo"
+ *         keresztnev: "Béla"
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *         msg:
+ *           type: string
+ *       example:
+ *         code: 400
+ *         msg: "Érvényes email címet adjon meg"
  */
 
 /**
  * @swagger
  * /api/users/email/{email}:
  *   get:
- *     description: Felhasználó lekérdezése email cím alapján
+ *     summary: Felhasználó lekérdezése email cím alapján
  *     tags: [Felhasznalo]
  *     parameters:
  *       - in: path
@@ -73,13 +101,28 @@ const userController = require("../controllers/FelhasznaloController");
  *         required: true
  *         schema:
  *           type: string
+ *         example: "kovacs.janos@email.hu"
  *     responses:
  *       200:
  *         description: Felhasználó adatai
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Felhasznalo"
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Felhasznalo"
+ *       400:
+ *         description: Érvénytelen email formátum
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
+ *       404:
+ *         description: Felhasználó nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/email/:email", userController.getUserByEmail);
 
@@ -87,11 +130,22 @@ router.get("/email/:email", userController.getUserByEmail);
  * @swagger
  * /api/users/count/by-email:
  *   get:
- *     description: Felhasználók számának lekérdezése email cím szerint csoportosítva
+ *     summary: Felhasználók száma email cím szerint csoportosítva (csak ahol több foglalás van)
  *     tags: [Felhasznalo]
  *     responses:
  *       200:
  *         description: Email és foglalások száma
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   email:
+ *                     type: string
+ *                   foglalasok_szama:
+ *                     type: integer
  */
 router.get("/count/by-email", userController.getUserCountByEmail);
 
@@ -99,16 +153,33 @@ router.get("/count/by-email", userController.getUserCountByEmail);
  * @swagger
  * /api/users/top/list:
  *   get:
- *     description: Legtöbbet foglaló felhasználók listája
+ *     summary: Legtöbbet foglaló felhasználók listája
  *     tags: [Felhasznalo]
  *     parameters:
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
+ *           default: 5
+ *         description: Visszaadott felhasználók maximális száma
  *     responses:
  *       200:
  *         description: Top felhasználók listája
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   vezeteknev:
+ *                     type: string
+ *                   keresztnev:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   osszes_foglalas:
+ *                     type: integer
  */
 router.get("/top/list", userController.getTopUsers);
 
@@ -116,7 +187,7 @@ router.get("/top/list", userController.getTopUsers);
  * @swagger
  * /api/users/date-range/list:
  *   get:
- *     description: Felhasználók lekérdezése dátumtartomány alapján
+ *     summary: Felhasználók lekérdezése dátumtartomány alapján
  *     tags: [Felhasznalo]
  *     parameters:
  *       - in: query
@@ -125,15 +196,29 @@ router.get("/top/list", userController.getTopUsers);
  *         schema:
  *           type: string
  *           format: date
+ *         example: "2025-01-01"
  *       - in: query
  *         name: endDate
  *         required: true
  *         schema:
  *           type: string
  *           format: date
+ *         example: "2025-12-31"
  *     responses:
  *       200:
  *         description: Felhasználók listája
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Felhasznalo"
+ *       400:
+ *         description: Hiányzó vagy érvénytelen dátum
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/date-range/list", userController.getUsersByDateRange);
 
@@ -141,7 +226,7 @@ router.get("/date-range/list", userController.getUsersByDateRange);
  * @swagger
  * /api/users/etkezes/list:
  *   get:
- *     description: Felhasználók étkezés típus szerint
+ *     summary: Felhasználók étkezés típus szerint
  *     tags: [Felhasznalo]
  *     responses:
  *       200:
@@ -153,7 +238,7 @@ router.get("/etkezes/list", userController.getUsersByEtkezesType);
  * @swagger
  * /api/users:
  *   get:
- *     description: Visszaadja az összes felhasználót
+ *     summary: Összes felhasználó lekérdezése
  *     tags: [Felhasznalo]
  *     responses:
  *       200:
@@ -171,7 +256,7 @@ router.get("/", userController.getUser);
  * @swagger
  * /api/users/{id}:
  *   get:
- *     description: Felhasználó lekérdezése ID alapján
+ *     summary: Felhasználó lekérdezése ID alapján
  *     tags: [Felhasznalo]
  *     parameters:
  *       - in: path
@@ -188,6 +273,10 @@ router.get("/", userController.getUser);
  *               $ref: "#/components/schemas/Felhasznalo"
  *       404:
  *         description: Felhasználó nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/:id", userController.getUserById);
 
@@ -195,7 +284,7 @@ router.get("/:id", userController.getUserById);
  * @swagger
  * /api/users:
  *   post:
- *     description: Új felhasználó létrehozása
+ *     summary: Új felhasználó létrehozása
  *     tags: [Felhasznalo]
  *     requestBody:
  *       required: true
@@ -205,11 +294,17 @@ router.get("/:id", userController.getUserById);
  *             $ref: "#/components/schemas/CreateFelhasznalo"
  *     responses:
  *       201:
- *         description: Létrehozott felhasználó
+ *         description: Sikeresen létrehozott felhasználó (jelszó nélkül)
  *         content:
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Felhasznalo"
+ *       400:
+ *         description: Hiányzó mező / érvénytelen email vagy telefonszám / már foglalt email vagy telefonszám
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post("/", userController.createUser);
 
@@ -217,7 +312,8 @@ router.post("/", userController.createUser);
  * @swagger
  * /api/users/{id}:
  *   put:
- *     description: Felhasználó módosítása
+ *     summary: Felhasználó adatainak módosítása
+ *     description: "Csak a megadott mezők frissülnek. Telefonszám módosítása nem támogatott ezen az endpointon."
  *     tags: [Felhasznalo]
  *     parameters:
  *       - in: path
@@ -230,12 +326,26 @@ router.post("/", userController.createUser);
  *       content:
  *         application/json:
  *           schema:
- *             $ref: "#/components/schemas/CreateFelhasznalo"
+ *             $ref: "#/components/schemas/UpdateFelhasznalo"
  *     responses:
  *       200:
- *         description: Módosított felhasználó
+ *         description: Módosított felhasználó adatai
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Felhasznalo"
+ *       400:
+ *         description: Érvénytelen adat
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  *       404:
  *         description: Felhasználó nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put("/:id", userController.updateUser);
 
@@ -243,7 +353,7 @@ router.put("/:id", userController.updateUser);
  * @swagger
  * /api/users/{id}:
  *   delete:
- *     description: Felhasználó törlése
+ *     summary: Felhasználó törlése
  *     tags: [Felhasznalo]
  *     parameters:
  *       - in: path
@@ -254,8 +364,21 @@ router.put("/:id", userController.updateUser);
  *     responses:
  *       200:
  *         description: Felhasználó sikeresen törölve
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *               example:
+ *                 message: "Felhasználó sikeresen törölve"
  *       404:
  *         description: Felhasználó nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete("/:id", userController.deleteUser);
 

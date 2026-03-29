@@ -18,33 +18,43 @@ class UserService {
         if (!data || !data.vezeteknev || !data.keresztnev || !data.email || !data.telefonszam || !data.jelszo) {
             throw new BadRequestError("Minden kötelező mezőt ki kell tölteni");
         }
-
+ 
         const nameRegex = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+$/;
         if (!nameRegex.test(data.vezeteknev) || !nameRegex.test(data.keresztnev)) {
             throw new BadRequestError("A név csak betűket tartalmazhat");
         }
-
-        if (!data.email.includes('@')) {
-            throw new BadRequestError("Érvényes email címet adjon meg");
+ 
+        // Kibővített email validáció: @ és TLD (.com, .hu, stb.) ellenőrzése
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(data.email)) {
+            throw new BadRequestError("Érvényes email címet adjon meg (pl. nev@example.com)");
         }
-
-        const phoneNormalized = String(data.telefonszam).replace(/[\s-]/g, "");
-        if (!/^\+?\d{7,15}$/.test(phoneNormalized)) {
-            throw new BadRequestError("A telefonszám csak szám lehet (7-15 számjegy)");
+ 
+        // Kibővített telefonszám normalizálás és validáció
+        // Eltávolítja: szóközök, kötőjelek, zárójelek, pontok
+        const phoneNormalized = String(data.telefonszam).replace(/[\s\-(). ]/g, "");
+ 
+        // Magyar formátumok: +36XXXXXXXXX, 0036XXXXXXXXX, 06XXXXXXXXX
+        // Nemzetközi formátum: +[ország kód][szám]
+        const phoneRegex = /^(\+36|0036|06)\d{8,9}$|^\+[1-9]\d{6,14}$/;
+        if (!phoneRegex.test(phoneNormalized)) {
+            throw new BadRequestError(
+                "Érvényes telefonszámot adjon meg (pl. +36301234567, 06301234567)"
+            );
         }
-
+ 
         const existingByEmail = await this.userRepository.getUserByEmail(data.email, options);
         const existingByPhone = await this.userRepository.getUserByPhone(phoneNormalized, options);
         if (existingByEmail?.length > 0 || existingByPhone?.length > 0) {
             throw new BadRequestError("Ezzel az emaillel vagy telefonszámmal már van felhasználó");
         }
-
+ 
         data.telefonszam = phoneNormalized;
-
+ 
         // Jelszó hashelése
         const saltRounds = 10;
         data.jelszo = await bcrypt.hash(data.jelszo, saltRounds);
-
+ 
         return await this.userRepository.createUser(data, options);
     }
 

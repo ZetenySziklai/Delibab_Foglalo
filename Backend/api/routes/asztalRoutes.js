@@ -20,25 +20,33 @@ const asztalController = require("../controllers/AsztalController");
  *           type: integer
  *         helyek_szama:
  *           type: integer
- *       required: [helyek_szama]
  *       example:
  *         id: 1
  *         helyek_szama: 4
  *     CreateAsztal:
  *       type: object
+ *       required: [helyek_szama]
  *       properties:
  *         helyek_szama:
  *           type: integer
- *       required: [helyek_szama]
+ *           minimum: 1
  *       example:
  *         helyek_szama: 4
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *         msg:
+ *           type: string
  */
 
 /**
  * @swagger
  * /api/asztalok/szabad/list:
  *   get:
- *     description: Szabad asztalok lekérdezése adott dátumra és időpontra
+ *     summary: Szabad asztalok lekérdezése adott dátumra és időpontra
+ *     description: "Visszaadja azokat az asztalokat, amelyekre a megadott időpontban nincs érvényes foglalás. Opcionálisan szűrhető minimális férőhely szerint."
  *     tags: [Asztal]
  *     parameters:
  *       - in: query
@@ -47,18 +55,42 @@ const asztalController = require("../controllers/AsztalController");
  *         schema:
  *           type: string
  *           format: date
+ *         example: "2025-06-01"
  *       - in: query
  *         name: idopont
  *         required: true
  *         schema:
  *           type: string
+ *         example: "12:00:00"
+ *         description: "Formátum: HH:MM vagy HH:MM:SS"
  *       - in: query
  *         name: helyekSzama
+ *         required: false
  *         schema:
  *           type: integer
+ *         description: "Minimálisan szükséges férőhelyek száma (opcionális)"
  *     responses:
  *       200:
  *         description: Szabad asztalok listája
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 datum:
+ *                   type: string
+ *                 idopont:
+ *                   type: string
+ *                 szabad_asztalok:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/Asztal"
+ *       400:
+ *         description: Hiányzó datum vagy idopont paraméter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/szabad/list", asztalController.getSzabadAsztalok);
 
@@ -66,7 +98,7 @@ router.get("/szabad/list", asztalController.getSzabadAsztalok);
  * @swagger
  * /api/asztalok:
  *   get:
- *     description: Visszaadja az összes asztalt
+ *     summary: Összes asztal lekérdezése
  *     tags: [Asztal]
  *     responses:
  *       200:
@@ -84,7 +116,7 @@ router.get("/", asztalController.getAsztal);
  * @swagger
  * /api/asztalok/{id}:
  *   get:
- *     description: Asztal lekérdezése ID alapján
+ *     summary: Asztal lekérdezése ID alapján
  *     tags: [Asztal]
  *     parameters:
  *       - in: path
@@ -101,6 +133,10 @@ router.get("/", asztalController.getAsztal);
  *               $ref: "#/components/schemas/Asztal"
  *       404:
  *         description: Asztal nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/:id", asztalController.getAsztalById);
 
@@ -108,7 +144,7 @@ router.get("/:id", asztalController.getAsztalById);
  * @swagger
  * /api/asztalok:
  *   post:
- *     description: Új asztal létrehozása
+ *     summary: Új asztal létrehozása
  *     tags: [Asztal]
  *     requestBody:
  *       required: true
@@ -123,6 +159,12 @@ router.get("/:id", asztalController.getAsztalById);
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Asztal"
+ *       400:
+ *         description: Hiányzó vagy érvénytelen helyek_szama (pozitív egész szám szükséges)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post("/", asztalController.createAsztal);
 
@@ -130,7 +172,7 @@ router.post("/", asztalController.createAsztal);
  * @swagger
  * /api/asztalok/{id}:
  *   put:
- *     description: Asztal módosítása
+ *     summary: Asztal módosítása
  *     tags: [Asztal]
  *     parameters:
  *       - in: path
@@ -146,9 +188,17 @@ router.post("/", asztalController.createAsztal);
  *             $ref: "#/components/schemas/CreateAsztal"
  *     responses:
  *       200:
- *         description: Módosított asztal
+ *         description: Módosított asztal adatai
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Asztal"
  *       404:
  *         description: Asztal nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put("/:id", asztalController.updateAsztal);
 
@@ -156,7 +206,7 @@ router.put("/:id", asztalController.updateAsztal);
  * @swagger
  * /api/asztalok/{id}:
  *   delete:
- *     description: Asztal törlése
+ *     summary: Asztal törlése
  *     tags: [Asztal]
  *     parameters:
  *       - in: path
@@ -167,8 +217,21 @@ router.put("/:id", asztalController.updateAsztal);
  *     responses:
  *       200:
  *         description: Asztal sikeresen törölve
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *               example:
+ *                 message: "Asztal sikeresen törölve"
  *       404:
  *         description: Asztal nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete("/:id", asztalController.deleteAsztal);
 

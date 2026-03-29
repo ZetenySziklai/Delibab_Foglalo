@@ -62,7 +62,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       if (!date || dbTimeSlots.length === 0) return;
 
       const availability: Record<string, boolean> = {};
-      
+
       const checkPromises = dbTimeSlots.map(async (slot) => {
         const startTimeStr = formatTimeFromDouble(slot.kezdet);
         try {
@@ -177,12 +177,17 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
         console.error('Foglalási adatok mentési hiba:', errorData);
       }
 
+      const tableInfo = availableTables.find(t => t.id === selectedTable);
+      const tableLabel = tableInfo
+        ? `${tableInfo.id}-es asztal (${tableInfo.helyek_szama} fő)`
+        : `${selectedTable}-es asztal`;
+
       await fetch('http://localhost:8000/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${contact.lastName} ${contact.firstName}`,
-          message: `Új foglalás érkezett!\n\nDátum: ${date}\nIdőpont: ${time}\nAsztal ID: ${selectedTable}\nFelnőtt: ${contact.adults}, Gyerek: ${contact.children}\nTelefon: ${contact.phone}${contact.notes ? `\nMegjegyzés: ${contact.notes}` : ''}`,
+          message: `Új foglalás érkezett!\n\nDátum: ${date}\nIdőpont: ${time}\nAsztal: ${tableLabel}\nFelnőtt: ${contact.adults}, Gyerek: ${contact.children}\nTelefon: ${contact.phone}${contact.notes ? `\nMegjegyzés: ${contact.notes}` : ''}`,
         }),
         credentials: "include",
       }).catch(err => console.error('Email küldési hiba:', err));

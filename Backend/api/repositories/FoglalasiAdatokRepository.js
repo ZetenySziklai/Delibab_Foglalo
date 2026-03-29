@@ -27,6 +27,7 @@ class FoglalasiAdatokRepository {
         return await this.FoglalasiAdatok.findByPk(id, {
             include: [{
                 model: this.Foglalas,
+                as: "foglalas", // VÁLTOZÁS: as alias hozzáadva (korábban hiányzott)
                 attributes: ["id"]
             }],
             transaction: options.transaction,

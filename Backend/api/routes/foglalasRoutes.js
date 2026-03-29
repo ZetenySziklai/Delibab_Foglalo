@@ -28,14 +28,31 @@ const foglalasController = require("../controllers/FoglalasController");
  *         IdopontId:
  *           type: integer
  *           nullable: true
- *       required: [user_id, asztal_id, foglalas_datum]
+ *         Felhasznalo:
+ *           type: object
+ *           properties:
+ *             vezeteknev:
+ *               type: string
+ *             keresztnev:
+ *               type: string
+ *             email:
+ *               type: string
+ *             telefonszam:
+ *               type: string
+ *         asztal:
+ *           type: object
+ *           properties:
+ *             helyek_szama:
+ *               type: integer
  *       example:
  *         id: 1
  *         user_id: 1
  *         asztal_id: 2
- *         foglalas_datum: "2025-06-01 18:00:00"
+ *         foglalas_datum: "2025-06-01T18:00:00.000Z"
+ *         IdopontId: 1
  *     CreateFoglalas:
  *       type: object
+ *       required: [user_id, asztal_id, foglalas_datum]
  *       properties:
  *         user_id:
  *           type: integer
@@ -44,18 +61,28 @@ const foglalasController = require("../controllers/FoglalasController");
  *         foglalas_datum:
  *           type: string
  *           format: date-time
- *       required: [user_id, asztal_id, foglalas_datum]
+ *         IdopontId:
+ *           type: integer
+ *           nullable: true
  *       example:
  *         user_id: 1
  *         asztal_id: 2
  *         foglalas_datum: "2025-06-01 18:00:00"
+ *         IdopontId: 1
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *         msg:
+ *           type: string
  */
 
 /**
  * @swagger
  * /api/foglalasok/foglalt-idopontok/list:
  *   get:
- *     description: Foglalt időpontok lekérdezése adott dátumra és asztalra
+ *     summary: Foglalt időpontok lekérdezése adott dátumra és asztalra
  *     tags: [Foglalas]
  *     parameters:
  *       - in: query
@@ -64,14 +91,29 @@ const foglalasController = require("../controllers/FoglalasController");
  *         schema:
  *           type: string
  *           format: date
+ *         example: "2025-06-01"
  *       - in: query
  *         name: asztalId
  *         required: true
  *         schema:
  *           type: integer
+ *         example: 1
  *     responses:
  *       200:
  *         description: Foglalt időpontok listája
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 datum:
+ *                   type: string
+ *                 asztal_id:
+ *                   type: string
+ *                 foglalt_idopontok:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/Foglalas"
  */
 router.get("/foglalt-idopontok/list", foglalasController.getFoglaltIdopontok);
 
@@ -79,7 +121,7 @@ router.get("/foglalt-idopontok/list", foglalasController.getFoglaltIdopontok);
  * @swagger
  * /api/foglalasok/datum/list:
  *   get:
- *     description: Foglalások lekérdezése dátum alapján
+ *     summary: Foglalások lekérdezése dátum alapján
  *     tags: [Foglalas]
  *     parameters:
  *       - in: query
@@ -88,9 +130,22 @@ router.get("/foglalt-idopontok/list", foglalasController.getFoglaltIdopontok);
  *         schema:
  *           type: string
  *           format: date
+ *         example: "2025-06-01"
  *     responses:
  *       200:
- *         description: Foglalások listája
+ *         description: Foglalások listája az adott napra
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Foglalas"
+ *       400:
+ *         description: Hiányzó datum paraméter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/datum/list", foglalasController.getFoglalasByDatum);
 
@@ -98,7 +153,7 @@ router.get("/datum/list", foglalasController.getFoglalasByDatum);
  * @swagger
  * /api/foglalasok/user/{userId}:
  *   get:
- *     description: Foglalások lekérdezése felhasználó alapján
+ *     summary: Adott felhasználó összes foglalása
  *     tags: [Foglalas]
  *     parameters:
  *       - in: path
@@ -109,6 +164,18 @@ router.get("/datum/list", foglalasController.getFoglalasByDatum);
  *     responses:
  *       200:
  *         description: Foglalások listája
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Foglalas"
+ *       400:
+ *         description: Hiányzó userId paraméter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/user/:userId", foglalasController.getFoglalasByUser);
 
@@ -116,7 +183,7 @@ router.get("/user/:userId", foglalasController.getFoglalasByUser);
  * @swagger
  * /api/foglalasok:
  *   get:
- *     description: Visszaadja az összes foglalást
+ *     summary: Összes foglalás lekérdezése
  *     tags: [Foglalas]
  *     responses:
  *       200:
@@ -134,7 +201,7 @@ router.get("/", foglalasController.getFoglalas);
  * @swagger
  * /api/foglalasok/{id}:
  *   get:
- *     description: Foglalás lekérdezése ID alapján
+ *     summary: Foglalás lekérdezése ID alapján
  *     tags: [Foglalas]
  *     parameters:
  *       - in: path
@@ -151,6 +218,10 @@ router.get("/", foglalasController.getFoglalas);
  *               $ref: "#/components/schemas/Foglalas"
  *       404:
  *         description: Foglalás nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.get("/:id", foglalasController.getFoglalasById);
 
@@ -158,7 +229,7 @@ router.get("/:id", foglalasController.getFoglalasById);
  * @swagger
  * /api/foglalasok:
  *   post:
- *     description: Új foglalás létrehozása
+ *     summary: Új foglalás létrehozása
  *     tags: [Foglalas]
  *     requestBody:
  *       required: true
@@ -173,6 +244,18 @@ router.get("/:id", foglalasController.getFoglalasById);
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Foglalas"
+ *       400:
+ *         description: Hiányzó kötelező mező
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
+ *       404:
+ *         description: A megadott felhasználó vagy asztal nem létezik
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.post("/", foglalasController.createFoglalas);
 
@@ -180,7 +263,7 @@ router.post("/", foglalasController.createFoglalas);
  * @swagger
  * /api/foglalasok/{id}:
  *   put:
- *     description: Foglalás módosítása
+ *     summary: Foglalás módosítása
  *     tags: [Foglalas]
  *     parameters:
  *       - in: path
@@ -197,8 +280,16 @@ router.post("/", foglalasController.createFoglalas);
  *     responses:
  *       200:
  *         description: Módosított foglalás
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Foglalas"
  *       404:
  *         description: Foglalás nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.put("/:id", foglalasController.updateFoglalas);
 
@@ -206,7 +297,7 @@ router.put("/:id", foglalasController.updateFoglalas);
  * @swagger
  * /api/foglalasok/{id}:
  *   delete:
- *     description: Foglalás törlése
+ *     summary: Foglalás törlése
  *     tags: [Foglalas]
  *     parameters:
  *       - in: path
@@ -217,8 +308,21 @@ router.put("/:id", foglalasController.updateFoglalas);
  *     responses:
  *       200:
  *         description: Foglalás sikeresen törölve
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *               example:
+ *                 message: "Foglalás sikeresen törölve"
  *       404:
  *         description: Foglalás nem található
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/ErrorResponse"
  */
 router.delete("/:id", foglalasController.deleteFoglalas);
 
