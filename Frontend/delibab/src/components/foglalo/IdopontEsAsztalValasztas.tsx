@@ -46,7 +46,14 @@ export const IdopontEsAsztalValasztas: React.FC<IdopontEsAsztalValasztasProps> =
 
   return (
     <div className="step-container fade-in">
-      <button className="back-btn" onClick={() => setStep(1)}>← Vissza</button>
+      <button className="back-btn" onClick={() => {
+        setTime('');
+        setSelectedIdopont(null);
+        setSelectedTable(null);
+        setAvailableTables([]);
+        setError(null);
+        setStep(1);
+      }}>← Vissza</button>
 
       <div className="time-selection-section">
         <h2>Mikor érkeztek?</h2>

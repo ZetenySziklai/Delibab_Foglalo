@@ -267,7 +267,14 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
           <DatumValasztas
             onBack={onBack}
             date={date}
-            setDate={setDate}
+            setDate={(newDate) => {
+              setDate(newDate);
+              setTime('');
+              setSelectedIdopont(null);
+              setSelectedTable(null);
+              setAvailableTables([]);
+              setError(null);
+            }}
             setStep={setStep}
             isLoadingTimes={isLoadingTimes}
           />
