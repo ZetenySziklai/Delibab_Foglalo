@@ -58,8 +58,25 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
+              "RelativeToolTip": "AdminWPF\\MainWindow.xaml.cs",
+              "ViewState": "AgIAANsCAAAAAAAAAAAAAO8CAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T20:16:19.659Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 1,
@@ -146,19 +163,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
-              "RelativeDocumentMoniker": "AdminWPF\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\MainWindow.xaml.cs",
-              "RelativeToolTip": "AdminWPF\\MainWindow.xaml.cs",
-              "ViewState": "AgIAANsCAAAAAAAAAAAAAO8CAABOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-25T20:16:19.659Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 8,
               "Title": "IdopontService.cs",
               "DocumentMoniker": "C:\\Users\\zeten\\OneDrive\\Asztali g\u00E9p\\\u00DAj mappa\\Delibab_Foglalo\\AdminWPF\\AdminWPF\\Services\\IdopontService.cs",
@@ -203,10 +207,6 @@
               "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-25T20:15:30.545Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{e5c86464-96be-4d7c-9a8b-abcb3bbf5f92}"
             }
           ]
         }

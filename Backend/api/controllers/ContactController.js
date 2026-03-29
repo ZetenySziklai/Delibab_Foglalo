@@ -79,7 +79,7 @@ const getContactEmailTemplate = (name, email, message) => `
                     display:block;
                   ">
                     <strong style="color:#8a5000;">Feladó neve:</strong><br/>
-                    <span style="font-size:16px;">${escapeHtml(name)}</span>
+                    <span style="font-size:16px;">Délibáb Kávézó és Street Food</span>
                   </td>
                 </tr>
                 <tr><td style="height:12px;"></td></tr>
@@ -93,7 +93,7 @@ const getContactEmailTemplate = (name, email, message) => `
                     color:#3e1f00;
                   ">
                     <strong style="color:#8a5000;">Email cím:</strong><br/>
-                    <span style="font-size:16px;">${escapeHtml(email)}</span>
+                    <span style="font-size:16px;">delibabcegled@gmail.com</span>
                   </td>
                 </tr>
                 <tr><td style="height:20px;"></td></tr>

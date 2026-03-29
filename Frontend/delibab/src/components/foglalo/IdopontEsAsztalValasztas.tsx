@@ -97,7 +97,37 @@ export const IdopontEsAsztalValasztas: React.FC<IdopontEsAsztalValasztasProps> =
 
                         if (response.ok) {
                           const data = await response.json();
-                          setAvailableTables(data.szabad_asztalok || []);
+                          let szabadAsztalok: any[] = data.szabad_asztalok || [];
+
+                          // Lekérjük az összes foglalást + foglalási adatot, szűrünk dátum + IdopontId + asztal_id alapján
+                          try {
+                            const [foglalasResponse, adatokResponse] = await Promise.all([
+                              fetch(`http://localhost:8000/api/foglalasok`, { credentials: 'include' }),
+                              fetch(`http://localhost:8000/api/foglalasi-adatok`, { credentials: 'include' }),
+                            ]);
+                            if (foglalasResponse.ok && adatokResponse.ok) {
+                              const foglalasok = await foglalasResponse.json();
+                              const foglalasiAdatok = await adatokResponse.json();
+
+                              const foglaltAsztalIds = new Set(
+                                foglalasok
+                                  .filter((f: any) => {
+                                    if (f.IdopontId !== slot.id) return false;
+                                    const adat = foglalasiAdatok.find((a: any) => a.FoglalasId === f.id);
+                                    if (!adat) return false;
+                                    const foglaltNap = new Date(adat.foglalas_datum).toISOString().split('T')[0];
+                                    return foglaltNap === date;
+                                  })
+                                  .map((f: any) => f.asztal_id)
+                              );
+
+                              szabadAsztalok = szabadAsztalok.filter((t: any) => !foglaltAsztalIds.has(t.id));
+                            }
+                          } catch {
+                            // Ha a lekérés nem sikerül, maradjon az eredeti lista
+                          }
+
+                          setAvailableTables(szabadAsztalok);
                         } else {
                           if (response.status === 500) {
                             throw new Error('Nem sikerült csatlakozni a szerverhez.');

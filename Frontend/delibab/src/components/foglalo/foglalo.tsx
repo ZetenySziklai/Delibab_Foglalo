@@ -61,6 +61,18 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     const fetchAllAvailability = async () => {
       if (!date || dbTimeSlots.length === 0) return;
 
+      // Lekérjük a foglalásokat és foglalási adatokat a dátum+IdopontId alapú szűréshez
+      let osszesFoglalas: any[] = [];
+      let osszesFoglalasiAdatok: any[] = [];
+      try {
+        const [foglalasRes, adatokRes] = await Promise.all([
+          fetch(`http://localhost:8000/api/foglalasok`, { credentials: 'include' }),
+          fetch(`http://localhost:8000/api/foglalasi-adatok`, { credentials: 'include' }),
+        ]);
+        if (foglalasRes.ok) osszesFoglalas = await foglalasRes.json();
+        if (adatokRes.ok) osszesFoglalasiAdatok = await adatokRes.json();
+      } catch {}
+
       const availability: Record<string, boolean> = {};
 
       const checkPromises = dbTimeSlots.map(async (slot) => {
@@ -71,7 +83,23 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
           });
           if (response.ok) {
             const data = await response.json();
-            availability[startTimeStr] = (data.szabad_asztalok || []).length > 0;
+            let szabadAsztalok = data.szabad_asztalok || [];
+
+            // Kiszűrjük az adott napon + adott időponton már foglalt asztalokat
+            const foglaltIds = new Set(
+              osszesFoglalas
+                .filter((f: any) => {
+                  if (f.IdopontId !== slot.id) return false;
+                  const adat = osszesFoglalasiAdatok.find((a: any) => a.FoglalasId === f.id);
+                  if (!adat) return false;
+                  const foglaltNap = new Date(adat.foglalas_datum).toISOString().split('T')[0];
+                  return foglaltNap === date;
+                })
+                .map((f: any) => f.asztal_id)
+            );
+            szabadAsztalok = szabadAsztalok.filter((t: any) => !foglaltIds.has(t.id));
+
+            availability[startTimeStr] = szabadAsztalok.length > 0;
           } else {
             availability[startTimeStr] = false;
           }
@@ -129,9 +157,36 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
     setError(null);
 
     try {
+      // Ellenőrzés: az asztal még szabad-e közvetlenül a foglalás előtt (dátum + IdopontId + asztal_id alapján)
+      try {
+        const [checkFoglalas, checkAdatok] = await Promise.all([
+          fetch(`http://localhost:8000/api/foglalasok`, { credentials: 'include' }),
+          fetch(`http://localhost:8000/api/foglalasi-adatok`, { credentials: 'include' }),
+        ]);
+        if (checkFoglalas.ok && checkAdatok.ok) {
+          const foglalasok = await checkFoglalas.json();
+          const foglalasiAdatok = await checkAdatok.json();
+          const mar_foglalt = foglalasok.some((f: any) => {
+            if (f.IdopontId !== selectedIdopont?.id || f.asztal_id !== selectedTable) return false;
+            const adat = foglalasiAdatok.find((a: any) => a.FoglalasId === f.id);
+            if (!adat) return false;
+            const foglaltNap = new Date(adat.foglalas_datum).toISOString().split('T')[0];
+            return foglaltNap === date;
+          });
+          if (mar_foglalt) {
+            setError("Ez az asztal már nem szabad ebben az időpontban. Kérjük válasszon másikat.");
+            setSelectedTable(null);
+            setStep(3);
+            setIsSubmitting(false);
+            return;
+          }
+        }
+      } catch {}
+
       const reservationDateTime = `${date} ${time}:00`;
       const now = new Date();
-      const nowFormatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours() + 1).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      now.setHours(now.getHours() + 2);
+      const nowFormatted = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
       const foglalasData = {
         user_id: user.id,
@@ -158,7 +213,7 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
       const foglalasId = result.id;
 
       const startDate = new Date(reservationDateTime);
-      startDate.setHours(startDate.getHours() + 1);
+      startDate.setHours(startDate.getHours() + 2);
 
       const fogAdatokResponse = await fetch('http://localhost:8000/api/foglalasi-adatok', {
         method: 'POST',
@@ -179,15 +234,15 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
 
       const tableInfo = availableTables.find(t => t.id === selectedTable);
       const tableLabel = tableInfo
-        ? `${tableInfo.id}-es asztal (${tableInfo.helyek_szama} fő)`
-        : `${selectedTable}-es asztal`;
+        ? `${tableInfo.id}. számú asztal`
+        : `${selectedTable}. számú asztal`;
 
       await fetch('http://localhost:8000/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${contact.lastName} ${contact.firstName}`,
-          message: `Új foglalás érkezett!\n\nDátum: ${date}\nIdőpont: ${time}\nAsztal: ${tableLabel}\nFelnőtt: ${contact.adults}, Gyerek: ${contact.children}\nTelefon: ${contact.phone}${contact.notes ? `\nMegjegyzés: ${contact.notes}` : ''}`,
+          message: `Sikeres asztal foglalás\n\nDátum: ${date}\nIdőpont: ${time}\nAsztal: ${tableLabel}\nFelnőtt: ${contact.adults}, Gyerek: ${contact.children}\nTelefon: ${contact.phone}${contact.notes ? `\nMegjegyzés: ${contact.notes}` : ''}`,
         }),
         credentials: "include",
       }).catch(err => console.error('Email küldési hiba:', err));
