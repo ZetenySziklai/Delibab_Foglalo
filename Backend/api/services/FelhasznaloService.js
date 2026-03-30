@@ -24,18 +24,13 @@ class UserService {
             throw new BadRequestError("A név csak betűket tartalmazhat");
         }
  
-        // Kibővített email validáció: @ és TLD (.com, .hu, stb.) ellenőrzése
         const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(data.email)) {
             throw new BadRequestError("Érvényes email címet adjon meg (pl. nev@example.com)");
         }
  
-        // Kibővített telefonszám normalizálás és validáció
-        // Eltávolítja: szóközök, kötőjelek, zárójelek, pontok
         const phoneNormalized = String(data.telefonszam).replace(/[\s\-(). ]/g, "");
  
-        // Magyar formátumok: +36XXXXXXXXX, 0036XXXXXXXXX, 06XXXXXXXXX
-        // Nemzetközi formátum: +[ország kód][szám]
         const phoneRegex = /^(\+36|0036|06)\d{8,9}$|^\+[1-9]\d{6,14}$/;
         if (!phoneRegex.test(phoneNormalized)) {
             throw new BadRequestError(
@@ -51,7 +46,6 @@ class UserService {
  
         data.telefonszam = phoneNormalized;
  
-        // Jelszó hashelése
         const saltRounds = 10;
         data.jelszo = await bcrypt.hash(data.jelszo, saltRounds);
  
@@ -72,7 +66,6 @@ class UserService {
             throw new BadRequestError("A név csak betűket tartalmazhat");
         }
 
-        // Ha jelszót is frissítenek, azt is hashelni kell
         if (data.jelszo) {
             const saltRounds = 10;
             data.jelszo = await bcrypt.hash(data.jelszo, saltRounds);

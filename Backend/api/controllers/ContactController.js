@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer");
 const { BadRequestError } = require("../errors");
 
-// ====== Helper: HTML escape (XSS védelem) ======
 const escapeHtml = (unsafe) => {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -11,7 +10,6 @@ const escapeHtml = (unsafe) => {
     .replace(/'/g, "&#039;");
 };
 
-// ====== Email Template ======
 const getContactEmailTemplate = (name, email, message) => `
 <!DOCTYPE html>
 <html>
@@ -145,7 +143,6 @@ const getContactEmailTemplate = (name, email, message) => `
 </html>
 `;
 
-// ====== Controller ======
 exports.sendContactMessage = async (req, res, next) => {
   try {
     const { name, message } = req.body;

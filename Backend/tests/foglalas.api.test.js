@@ -57,7 +57,6 @@ describe("/api/foglalasok", () =>
         await db.Asztal.destroy({ where: {} });
     });
 
-    // ── GET /api/foglalasok ─────────────────────────────────────────────────
     describe("GET /api/foglalasok", () =>
     {
         test("should return all bookings with status 200", async () =>
@@ -73,7 +72,6 @@ describe("/api/foglalasok", () =>
         });
     });
 
-    // ── GET /api/foglalasok/:id ─────────────────────────────────────────────
     describe("GET /api/foglalasok/:id", () =>
     {
         test.each([0, 1])("should return the correct booking by id #%#", async (index) =>
@@ -97,7 +95,6 @@ describe("/api/foglalasok", () =>
         });
     });
 
-    // ── POST /api/foglalasok ────────────────────────────────────────────────
     describe("POST /api/foglalasok", () =>
     {
         test("should create a new booking", async () =>
@@ -151,8 +148,6 @@ describe("/api/foglalasok", () =>
             expect(res.status).toBe(404);
         });
 
-        // VÁLTOZÁS: A duplikáció-ellenőrzés ki van kommentelve a FoglalasService-ben,
-        // ezért a már foglalt időpontra küldött kérés 201-et ad vissza.
         test("should return 201 when table is already booked at the same time", async () =>
         {
             const res = await request(app).post("/api/foglalasok").send(
@@ -166,7 +161,6 @@ describe("/api/foglalasok", () =>
         });
     });
 
-    // ── PUT /api/foglalasok/:id ─────────────────────────────────────────────
     describe("PUT /api/foglalasok/:id", () =>
     {
         test.each(
@@ -196,7 +190,6 @@ describe("/api/foglalasok", () =>
         });
     });
 
-    // ── DELETE /api/foglalasok/:id ──────────────────────────────────────────
     describe("DELETE /api/foglalasok/:id", () =>
     {
         test.each([0, 1])("should delete the booking #%#", async (index) =>
@@ -220,7 +213,6 @@ describe("/api/foglalasok", () =>
         });
     });
 
-    // ── GET /api/foglalasok/foglalt-idopontok/list ──────────────────────────
     describe("GET /api/foglalasok/foglalt-idopontok/list", () =>
     {
         test("should return booked times for a given date and table", async () =>
@@ -248,7 +240,6 @@ describe("/api/foglalasok", () =>
         });
     });
 
-    // ── GET /api/foglalasok/datum/list ──────────────────────────────────────
     describe("GET /api/foglalasok/datum/list", () =>
     {
         test("should return bookings for a given date", async () =>
@@ -280,7 +271,6 @@ describe("/api/foglalasok", () =>
         });
     });
 
-    // ── GET /api/foglalasok/user/:userId ────────────────────────────────────
     describe("GET /api/foglalasok/user/:userId", () =>
     {
         test("should return bookings for a specific user", async () =>

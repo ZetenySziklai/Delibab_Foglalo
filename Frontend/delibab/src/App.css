@@ -1,5 +1,4 @@
-
-  html {
+ html {
     scroll-behavior: smooth;
   }
 
@@ -7,10 +6,9 @@
       margin: 0;
       font-family: Arial, sans-serif;
       overflow-x: hidden;
-      background-color: #1a1106; /* Alap háttérszín a villódzás ellen */
+      background-color: #1a1106; 
   }
 
-  /* Fő konténer, ami kettéválasztja a nézetet */
   .app-layout {
     display: flex;
     flex-direction: row;
@@ -19,7 +17,7 @@
 
   main {
     flex: 1;
-    margin-left: 220px; /* A navbar szélessége */
+    margin-left: 220px; 
     min-height: 100vh;
     position: relative;
     z-index: 1;
@@ -33,7 +31,6 @@
     text-transform: uppercase;
   }
 
-  /* Responsive navbar and layout */
   @media (max-width: 768px) {
     .app-layout {
       flex-direction: column;
@@ -55,7 +52,7 @@
 
     section {
       min-height: auto !important;
-      padding: 60px 20px !important; /* Added top padding for hamburger */
+      padding: 60px 20px !important; 
     }
 
     .container {
@@ -81,7 +78,7 @@
       padding: 10px 20px !important;
       margin: 8px 5px !important;
       font-size: 0.95rem !important;
-      display: block; /* Stack buttons on very small screens */
+      display: block; 
       width: 100%;
       box-sizing: border-box;
     }
@@ -94,21 +91,19 @@
   width: 10px;
 }
 
-/* Track */
 ::-webkit-scrollbar-track {
   background:  #734f20;
-  border-radius: 20px; 
+  border-radius: 20px;
 }
  
-/* Handle */
+
 ::-webkit-scrollbar-thumb {
   background: rgb(65, 37, 0);
   border-radius: 10px;
 }
 
-/* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #332100; 
+  background: #332100;
 }
 
 
@@ -127,9 +122,6 @@
     margin-bottom: 20px;
   }
 
-
-
-  /* use min-height so sections can grow on small screens and don't force overflow */
   section{
     min-height: 100vh;
     display: flex;
@@ -138,17 +130,17 @@
     box-sizing: border-box;
   }
 
-/* menü */
+
   #menu {  
   position: relative;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: center;  
-  align-items: center; 
+  align-items: center;
   padding: 40px 100px;
-  text-align: center;     
+  text-align: center;    
   overflow: hidden;
-  z-index: 1; 
+  z-index: 1;
   }
 
   #menu::before {
@@ -185,18 +177,17 @@
   }
 
 
-/* gasztronómia */
 
  #gasztronomia {
   position: relative;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: center;  
-  align-items: center; 
+  align-items: center;
   padding: 40px 100px;
-  text-align: center;     
+  text-align: center;    
   overflow: hidden;
-  z-index: 1; 
+  z-index: 1;
 }
 
 
@@ -251,17 +242,16 @@
   max-width: 800px;
 }
 
-/* kapcsolat */
 #kapcsolat {
   position: relative;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   justify-content: center;  
-  align-items: center; 
+  align-items: center;
   padding: 40px 100px;
-  text-align: center;     
+  text-align: center;    
   overflow: hidden;
-  z-index: 1; 
+  z-index: 1;
 }
 
 #kapcsolat::before {
@@ -298,7 +288,6 @@
 }
 
 
-/* containerek */
 .container {
   background: rgba(0, 0, 0, 0.75);
   color: white;
@@ -339,7 +328,6 @@
   }
 }
 
-/* button */
 .btn {
   background-color:  #734f20;
   color: white;
@@ -354,7 +342,6 @@
   background-color: #593700;
 }
 
-/* Auth styles */
 .auth-page {
   min-height: 100vh;
   min-height: 100dvh;
@@ -362,32 +349,30 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Fix háttér mindenhol */
-  background: #1a1106 url("/kepek/menu_bg.jpg") no-repeat center center fixed;
-  background-size: cover;
+  background-color: #1a1106;
   padding: 40px 20px;
   box-sizing: border-box;
   position: relative;
   width: 100%;
 }
 
-/* Sötétítő réteg fixálása, hogy mindig fedje a teljes képernyőt */
 .auth-page::before {
   content: "";
-  position: fixed; /* Fixed pozíció, hogy görgetéskor is ott maradjon */
+  position: fixed; 
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+              url("/kepek/menu_bg.jpg") no-repeat center center;
+  background-size: cover;
   z-index: 0;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
   .auth-page {
-    /* Mobilnézetben a fixed háttér néha vibrál, de a centering miatt kell a 100vh */
-    padding-top: 80px;
+    padding-top: 120px; 
     padding-bottom: 40px;
     justify-content: center;
     min-height: 100vh;
@@ -407,7 +392,7 @@
   z-index: 1;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   animation: authFadeIn 0.6s ease-out forwards;
-  margin: 20px 0; /* Biztosítja a távolságot felül/alul */
+  margin: 20px 0;
 }
 
 @keyframes authFadeIn {
@@ -449,13 +434,14 @@
   .auth-page {
     padding-left: 15px;
     padding-right: 15px;
+    padding-top: 130px;
   }
 
   .auth-container {
     padding: 25px 20px;
-    margin: 10px 0;
+    margin: 20px 0; 
   }
-  
+ 
   .auth-container h2 {
     font-size: 1.5rem;
   }

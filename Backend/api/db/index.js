@@ -3,9 +3,7 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const dialect = process.env.DB_DIALECT || 'mysql';
 const dialectOptions = {};
 
-
-
-//specialis karakterek kezelese (kiveheto) 
+ 
 if (dialect === 'mysql') {
   dialectOptions.charset = 'utf8mb4';
   dialectOptions.dateStrings = true;
@@ -21,8 +19,6 @@ const sequelize = new Sequelize(
     dialect: dialect,
     port: process.env.DB_PORT,
     logging: false,
-    //storage: dialect === 'sqlite' ? process.env.DB_NAME : undefined,
-    // ez kell a felso dialecthez
     dialectOptions: Object.keys(dialectOptions).length > 0 ? dialectOptions : undefined
   }
 );
@@ -35,8 +31,6 @@ const db = {
   ...models,
 };
 
-
-// ennek nezzek utanna elvileg testhez kell
 if (process.env.NODE_ENV !== 'test' && !process.env.JEST_WORKER_ID) {
   (async () =>{
     try {

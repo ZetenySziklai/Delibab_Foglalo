@@ -47,7 +47,6 @@ describe("/api/users", () =>
         await db.Felhasznalo.destroy({ where: {} });
     });
 
-    // ── GET /api/users ──────────────────────────────────────────────────────
     describe("GET /api/users", () =>
     {
         test("should return all users with status 200", async () =>
@@ -63,7 +62,6 @@ describe("/api/users", () =>
         });
     });
 
-    // ── GET /api/users/:id ──────────────────────────────────────────────────
     describe("GET /api/users/:id", () =>
     {
         test.each([0, 1])("should return the correct user's data #%#", async (index) =>
@@ -89,12 +87,10 @@ describe("/api/users", () =>
         });
     });
 
-    // ── POST /api/users ─────────────────────────────────────────────────────
     describe("POST /api/users", () =>
     {
         test("should create a new user", async () =>
         {
-            // Arrange
             const newUser =
             {
                 vezeteknev: "Tóth",
@@ -104,10 +100,8 @@ describe("/api/users", () =>
                 jelszo: "pass123",
             };
 
-            // Act
             const res = await request(app).post("/api/users").send(newUser);
 
-            // Assert
             expect(res.status).toBe(201);
             expect(res.body.id).toBeDefined();
             expect(res.body.id).not.toBeNull();
@@ -151,7 +145,6 @@ describe("/api/users", () =>
         });
     });
 
-    // ── PUT /api/users/:id ──────────────────────────────────────────────────
     describe("PUT /api/users/:id", () =>
     {
         test.each(
@@ -185,7 +178,6 @@ describe("/api/users", () =>
         });
     });
 
-    // ── DELETE /api/users/:id ───────────────────────────────────────────────
     describe("DELETE /api/users/:id", () =>
     {
         test.each([0, 1])("should delete the user #%#", async (index) =>

@@ -36,7 +36,6 @@ describe("/api/asztalok", () =>
         await db.Asztal.destroy({ where: {} });
     });
 
-    // ── GET /api/asztalok ───────────────────────────────────────────────────
     describe("GET /api/asztalok", () =>
     {
         test("should return all tables with status 200", async () =>
@@ -52,7 +51,6 @@ describe("/api/asztalok", () =>
         });
     });
 
-    // ── GET /api/asztalok/:id ───────────────────────────────────────────────
     describe("GET /api/asztalok/:id", () =>
     {
         test.each([0, 1, 2])("should return the correct table by id #%#", async (index) =>
@@ -75,7 +73,6 @@ describe("/api/asztalok", () =>
         });
     });
 
-    // ── POST /api/asztalok ──────────────────────────────────────────────────
     describe("POST /api/asztalok", () =>
     {
         test("should create a new table", async () =>
@@ -116,7 +113,6 @@ describe("/api/asztalok", () =>
         });
     });
 
-    // ── PUT /api/asztalok/:id ───────────────────────────────────────────────
     describe("PUT /api/asztalok/:id", () =>
     {
         test.each(
@@ -147,7 +143,6 @@ describe("/api/asztalok", () =>
         });
     });
 
-    // ── DELETE /api/asztalok/:id ────────────────────────────────────────────
     describe("DELETE /api/asztalok/:id", () =>
     {
         test.each([0, 1, 2])("should delete the table #%#", async (index) =>
@@ -171,7 +166,6 @@ describe("/api/asztalok", () =>
         });
     });
 
-    // ── GET /api/asztalok/szabad/list ───────────────────────────────────────
     describe("GET /api/asztalok/szabad/list", () =>
     {
         test("should return free tables for a given date and time", async () =>
@@ -187,8 +181,6 @@ describe("/api/asztalok", () =>
             expect(Array.isArray(res.body.szabad_asztalok)).toBe(true);
         });
 
-        // VÁLTOZÁS: A helyekSzama szűrés nincs implementálva a backendben,
-        // ezért csak azt ellenőrizzük, hogy a válasz 200-as és a struktúra helyes.
         test("should filter by helyek_szama when provided", async () =>
         {
             const res = await request(app)

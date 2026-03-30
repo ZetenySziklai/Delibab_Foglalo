@@ -118,12 +118,33 @@ export const FoglaloOldal: React.FC<FoglaloOldalProps> = ({ onBack, isLoggedIn, 
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
+   
+    if (type === 'number') {
+      // Remove leading zeros, but allow "0" as a single digit
+      let sanitizedValue = value.replace(/^0+/, '');
+      if (sanitizedValue === '' && value.includes('0')) {
+        sanitizedValue = '0';
+      }
+     
+      // Force the input element to show the sanitized value immediately
+      (e.target as HTMLInputElement).value = sanitizedValue;
+     
+      const numValue = parseInt(sanitizedValue, 10);
+      const finalValue = isNaN(numValue) ? 0 : numValue;
+     
+      setContact(prev => ({
+        ...prev,
+        [name]: finalValue
+      }));
+      return;
+    }
+
     const checked = (e.target as HTMLInputElement).checked;
 
     setContact(prev => {
       const updated = {
         ...prev,
-        [name]: type === 'checkbox' ? checked : (type === 'number' ? parseInt(value, 10) || 0 : value)
+        [name]: type === 'checkbox' ? checked : value
       };
       return updated;
     });

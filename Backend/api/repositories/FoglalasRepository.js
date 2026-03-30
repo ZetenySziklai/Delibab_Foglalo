@@ -14,7 +14,7 @@ class FoglalasRepository {
                 },
                 {
                     model: this.Asztal,
-                    as: "asztal", // VÁLTOZÁS
+                    as: "asztal", 
                     attributes: ["helyek_szama"]
                 }
             ],
@@ -37,7 +37,7 @@ class FoglalasRepository {
                 },
                 {
                     model: this.Asztal,
-                    as: "asztal", // VÁLTOZÁS
+                    as: "asztal", 
                     attributes: ["helyek_szama"]
                 }
             ],
@@ -95,7 +95,7 @@ class FoglalasRepository {
                 },
                 {
                     model: this.Asztal,
-                    as: "asztal", // VÁLTOZÁS
+                    as: "asztal", 
                     attributes: ["helyek_szama"]
                 }
             ],
@@ -113,7 +113,7 @@ class FoglalasRepository {
                 },
                 {
                     model: this.Asztal,
-                    as: "asztal", // VÁLTOZÁS
+                    as: "asztal",
                     attributes: ["helyek_szama"]
                 }
             ],

@@ -36,7 +36,6 @@ describe("/api/foglalasi-adatok", () =>
         await db.FoglalasiAdatok.destroy({ where: {} });
     });
 
-    // ── GET /api/foglalasi-adatok ───────────────────────────────────────────
     describe("GET /api/foglalasi-adatok", () =>
     {
         test("should return all booking details with status 200", async () =>
@@ -52,7 +51,6 @@ describe("/api/foglalasi-adatok", () =>
         });
     });
 
-    // ── GET /api/foglalasi-adatok/:id ───────────────────────────────────────
     describe("GET /api/foglalasi-adatok/:id", () =>
     {
         test.each([0, 1, 2])("should return the correct booking detail by id #%#", async (index) =>
@@ -76,7 +74,6 @@ describe("/api/foglalasi-adatok", () =>
         });
     });
 
-    // ── POST /api/foglalasi-adatok ──────────────────────────────────────────
     describe("POST /api/foglalasi-adatok", () =>
     {
         test("should create new booking details", async () =>
@@ -99,8 +96,6 @@ describe("/api/foglalasi-adatok", () =>
             expect(res.body.gyerek).toEqual(newAdatok.gyerek);
         });
 
-        // VÁLTOZÁS: A service nem validálja a foglalas_datum hiányát,
-        // az adatbázis dob hibát → 500. A teszt ezt az állapotot tükrözi.
         test("should return 500 when foglalas_datum is missing", async () =>
         {
             const res = await request(app)
@@ -138,7 +133,6 @@ describe("/api/foglalasi-adatok", () =>
         });
     });
 
-    // ── PUT /api/foglalasi-adatok/:id ───────────────────────────────────────
     describe("PUT /api/foglalasi-adatok/:id", () =>
     {
         test.each(
@@ -194,7 +188,6 @@ describe("/api/foglalasi-adatok", () =>
         });
     });
 
-    // ── DELETE /api/foglalasi-adatok/:id ────────────────────────────────────
     describe("DELETE /api/foglalasi-adatok/:id", () =>
     {
         test.each([0, 1, 2])("should delete the booking detail #%#", async (index) =>

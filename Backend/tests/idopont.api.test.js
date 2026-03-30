@@ -36,7 +36,6 @@ describe("/api/idopontok", () =>
         await db.Idopont.destroy({ where: {} });
     });
 
-    // ── GET /api/idopontok ──────────────────────────────────────────────────
     describe("GET /api/idopontok", () =>
     {
         test("should return all time slots with status 200", async () =>
@@ -52,7 +51,6 @@ describe("/api/idopontok", () =>
         });
     });
 
-    // ── GET /api/idopontok/:id ──────────────────────────────────────────────
     describe("GET /api/idopontok/:id", () =>
     {
         test.each([0, 1, 2])("should return the correct time slot by id #%#", async (index) =>
@@ -76,18 +74,14 @@ describe("/api/idopontok", () =>
         });
     });
 
-    // ── POST /api/idopontok ─────────────────────────────────────────────────
     describe("POST /api/idopontok", () =>
     {
         test("should create a new time slot", async () =>
         {
-            // Arrange
             const newIdopont = { kezdet: 16, veg: 18 };
 
-            // Act
             const res = await request(app).post("/api/idopontok").send(newIdopont);
 
-            // Assert
             expect(res.status).toBe(201);
             expect(res.body.id).toBeDefined();
             expect(res.body.id).not.toBeNull();
@@ -141,7 +135,6 @@ describe("/api/idopontok", () =>
         });
     });
 
-    // ── PUT /api/idopontok/:id ──────────────────────────────────────────────
     describe("PUT /api/idopontok/:id", () =>
     {
         test.each(
@@ -186,7 +179,6 @@ describe("/api/idopontok", () =>
         });
     });
 
-    // ── DELETE /api/idopontok/:id ───────────────────────────────────────────
     describe("DELETE /api/idopontok/:id", () =>
     {
         test.each([0, 1, 2])("should delete the time slot #%#", async (index) =>
