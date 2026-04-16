@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AdminWPF.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+935293b0f107e54365f26e9ddbd17d5259662875")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33bd9224ea89211d435dd1cb2a78ae04bd602c4b")]
 [assembly: System.Reflection.AssemblyProductAttribute("AdminWPF.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AdminWPF.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
